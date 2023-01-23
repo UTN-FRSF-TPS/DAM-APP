@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/agregarClaseFragment"
+        android:name="com.fvt.dondeestudio.AgregarClaseFragment"
+        android:label="fragment_agregar_clase"
+        tools:layout="@layout/fragment_agregar_clase" />
+    <fragment
+        android:id="@+id/clasesReservadasFragment"
+        android:name="com.fvt.dondeestudio.ClasesReservadasFragment"
+        android:label="fragment_clases_reservadas"
+        tools:layout="@layout/fragment_clases_reservadas" >
+        <action
+            android:id="@+id/action_clasesReservadasFragment_to_detalleClaseFragment"
+            app:destination="@id/detalleClaseFragment" />
+        <action
+            android:id="@+id/action_clasesReservadasFragment_to_buscarClasesFragment"
+            app:destination="@id/buscarClasesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/buscarClasesFragment"
+        android:name="com.fvt.dondeestudio.BuscarClasesFragment"
+        android:label="fragment_buscar_clases"
+        tools:layout="@layout/fragment_buscar_clases" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.fvt.dondeestudio.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registroFragment"
+            app:destination="@id/registroFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_clasesReservadasFragment"
+            app:destination="@id/clasesReservadasFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_clasesProgramadasFragment"
+            app:destination="@id/clasesProgramadasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detalleClaseFragment"
+        android:name="com.fvt.dondeestudio.DetalleClaseFragment"
+        android:label="fragment_detalle_clase"
+        tools:layout="@layout/fragment_detalle_clase" />
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.fvt.dondeestudio.RegistroFragment"
+        android:label="fragment_registro"
+        tools:layout="@layout/fragment_registro" />
+    <fragment
+        android:id="@+id/clasesProgramadasFragment"
+        android:name="com.fvt.dondeestudio.ClasesProgramadasFragment"
+        android:label="fragment_clases_programadas"
+        tools:layout="@layout/fragment_clases_programadas" >
+        <action
+            android:id="@+id/action_clasesProgramadasFragment_to_detalleClaseFragment"
+            app:destination="@id/detalleClaseFragment" />
+        <action
+            android:id="@+id/action_clasesProgramadasFragment_to_agregarClaseFragment"
+            app:destination="@id/agregarClaseFragment" />
+    </fragment>
+</navigation>
