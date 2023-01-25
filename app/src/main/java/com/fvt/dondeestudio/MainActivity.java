@@ -1,12 +1,15 @@
 package com.fvt.dondeestudio;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.model.Clase;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.zip.ZipEntry;
 
@@ -17,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+/*
         Button botonTest = findViewById(R.id.button);
         botonTest.setOnClickListener(e->{
             GestorClases gestor = new GestorClases();
@@ -29,5 +34,6 @@ public class MainActivity extends AppCompatActivity {
             gestor.actualizarClase("CPwFcORPxLg3jNFRr2FN", claseTest2);
 
         });
+    }*/
     }
 }
