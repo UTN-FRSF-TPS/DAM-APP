@@ -2,4 +2,7 @@
     <string name="app_name">Donde estudio</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- to toggle the open close button of the navigation drawer -->
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>
