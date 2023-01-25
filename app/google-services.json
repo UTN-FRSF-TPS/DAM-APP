@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "537987635759",
+    "project_id": "donde-estudio",
+    "storage_bucket": "donde-estudio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537987635759:android:730493c1d16533768804da",
+        "android_client_info": {
+          "package_name": "com.fvt.dondeestudio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537987635759-h7560lap3j3e7n1frgukkpt5m23fljqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvkN36y3Gyg-NpuiMrAVt2Xw3MD1jcPhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537987635759-h7560lap3j3e7n1frgukkpt5m23fljqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
