@@ -49,7 +49,6 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -72,106 +71,22 @@ public class LoginFragment extends Fragment {
         return fragment;
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            System.out.println("funco");
-                            FirebaseUser user = task.getResult().getUser();
-                            // Update UI
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                            }
-                        }
-                    }
-                });
-    }
+
 
     private void loginOrRegister(View view) {
         TextView numeroText = binding.numeroText;
         CountryCodePicker codigoPais = binding.ccp;
 
-        String numeroCompleto = codigoPais.getSelectedCountryCode() + binding.numeroText.getText().toString();
-
-
-        PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        String mVerificationId;
-        PhoneAuthProvider.ForceResendingToken mResendToken;
-            @Override
-            public void onVerificationCompleted(PhoneAuthCredential credential) {
-                // This callback will be invoked in two situations:
-                // 1 - Instant verification. In some cases the phone number can be instantly
-                //     verified without needing to send or enter a verification code.
-                // 2 - Auto-retrieval. On some devices Google Play services can automatically
-                //     detect the incoming verification SMS and perform verification without
-                //     user action.
-                Log.d(TAG, "onVerificationCompleted:" + credential);
+        String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
 
 
 
 
-                CharSequence text = "funco";
+        Bundle bundle = new Bundle();
 
-                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
+        bundle.putString("numeroCompleto", numeroCompleto);
 
-
-                toast.show();
-                //signInWithPhoneAuthCredential(credential);
-            }
-
-            @Override
-            public void onVerificationFailed(FirebaseException e) {
-                // This callback is invoked in an invalid request for verification is made,
-                // for instance if the the phone number format is not valid.
-                Log.w(TAG, "onVerificationFailed", e);
-
-                if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    // Invalid request
-                } else if (e instanceof FirebaseTooManyRequestsException) {
-                    // The SMS quota for the project has been exceeded
-                }
-
-                // Show a message and update the UI
-            }
-
-            @Override
-            public void onCodeSent(@NonNull String verificationId,
-                                   @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
-                Log.d(TAG, "onCodeSent:" + verificationId);
-
-                // Save verification ID and resending token so we can use them later
-                mVerificationId = verificationId;
-                mResendToken = token;
-                System.out.println(mVerificationId);
-
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, "123456");
-                signInWithPhoneAuthCredential(credential);
-            }
-        };
-
-
-        System.out.println("aca llegaste");
-        Log.d("test", "passed");
-        //Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registroFragment);
-        System.out.println(numeroCompleto);
-        PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber(numeroCompleto)       // Phone number to verify
-                        .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                        .setActivity(this.getActivity())                 // Activity (for callback binding)
-                        .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
-                        .build();
-        PhoneAuthProvider.verifyPhoneNumber(options);
+        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_verificacionFragment, bundle);
 
     }
 

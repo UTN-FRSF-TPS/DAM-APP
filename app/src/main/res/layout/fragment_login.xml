@@ -58,7 +58,11 @@
                 android:id="@+id/ccp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:ccp_defaultNameCode="AR"/>
+                app:ccp_defaultNameCode="AR"
+                app:ccpDialog_backgroundColor="?attr/colorOnPrimary"
+                app:ccpDialog_textColor="?attr/colorOnBackground"
+                app:ccpDialog_fastScroller_bubbleColor="?attr/colorOnPrimary"
+                app:ccp_contentColor="?attr/colorOnBackground"/>
             <EditText
                 android:id="@+id/numeroText"
                 android:layout_width="wrap_content"
