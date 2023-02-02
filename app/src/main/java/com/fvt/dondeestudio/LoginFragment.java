@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
 
@@ -95,85 +96,83 @@ public class LoginFragment extends Fragment {
 
     private void loginOrRegister(View view) {
         TextView numeroText = binding.numeroText;
+        CountryCodePicker codigoPais = binding.ccp;
 
-        if (false) { //Implementar que revise si ya esta registrado
+        String numeroCompleto = codigoPais.getSelectedCountryCode() + binding.numeroText.getText().toString();
 
-        }
-        else {
 
-            PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            String mVerificationId;
-            PhoneAuthProvider.ForceResendingToken mResendToken;
-                @Override
-                public void onVerificationCompleted(PhoneAuthCredential credential) {
-                    // This callback will be invoked in two situations:
-                    // 1 - Instant verification. In some cases the phone number can be instantly
-                    //     verified without needing to send or enter a verification code.
-                    // 2 - Auto-retrieval. On some devices Google Play services can automatically
-                    //     detect the incoming verification SMS and perform verification without
-                    //     user action.
-                    Log.d(TAG, "onVerificationCompleted:" + credential);
-
+        PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        String mVerificationId;
+        PhoneAuthProvider.ForceResendingToken mResendToken;
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential credential) {
+                // This callback will be invoked in two situations:
+                // 1 - Instant verification. In some cases the phone number can be instantly
+                //     verified without needing to send or enter a verification code.
+                // 2 - Auto-retrieval. On some devices Google Play services can automatically
+                //     detect the incoming verification SMS and perform verification without
+                //     user action.
+                Log.d(TAG, "onVerificationCompleted:" + credential);
 
 
 
-                    CharSequence text = "funco";
 
-                    Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
+                CharSequence text = "funco";
+
+                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
 
 
-                    toast.show();
-                    //signInWithPhoneAuthCredential(credential);
+                toast.show();
+                //signInWithPhoneAuthCredential(credential);
+            }
+
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+                // This callback is invoked in an invalid request for verification is made,
+                // for instance if the the phone number format is not valid.
+                Log.w(TAG, "onVerificationFailed", e);
+
+                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    // Invalid request
+                } else if (e instanceof FirebaseTooManyRequestsException) {
+                    // The SMS quota for the project has been exceeded
                 }
 
-                @Override
-                public void onVerificationFailed(FirebaseException e) {
-                    // This callback is invoked in an invalid request for verification is made,
-                    // for instance if the the phone number format is not valid.
-                    Log.w(TAG, "onVerificationFailed", e);
+                // Show a message and update the UI
+            }
 
-                    if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        // Invalid request
-                    } else if (e instanceof FirebaseTooManyRequestsException) {
-                        // The SMS quota for the project has been exceeded
-                    }
+            @Override
+            public void onCodeSent(@NonNull String verificationId,
+                                   @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                // The SMS verification code has been sent to the provided phone number, we
+                // now need to ask the user to enter the code and then construct a credential
+                // by combining the code with a verification ID.
+                Log.d(TAG, "onCodeSent:" + verificationId);
 
-                    // Show a message and update the UI
-                }
+                // Save verification ID and resending token so we can use them later
+                mVerificationId = verificationId;
+                mResendToken = token;
+                System.out.println(mVerificationId);
 
-                @Override
-                public void onCodeSent(@NonNull String verificationId,
-                                       @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                    // The SMS verification code has been sent to the provided phone number, we
-                    // now need to ask the user to enter the code and then construct a credential
-                    // by combining the code with a verification ID.
-                    Log.d(TAG, "onCodeSent:" + verificationId);
-
-                    // Save verification ID and resending token so we can use them later
-                    mVerificationId = verificationId;
-                    mResendToken = token;
-                    System.out.println(mVerificationId);
-
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, "123456");
-                    signInWithPhoneAuthCredential(credential);
-                }
-            };
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, "123456");
+                signInWithPhoneAuthCredential(credential);
+            }
+        };
 
 
-            System.out.println("aca llegaste");
-            Log.d("test", "passed");
-            //Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registroFragment);
-            System.out.println(binding.numeroText.getText().toString());
-            PhoneAuthOptions options =
-                    PhoneAuthOptions.newBuilder(mAuth)
-                            .setPhoneNumber(binding.numeroText.getText().toString())       // Phone number to verify
-                            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                            .setActivity(this.getActivity())                 // Activity (for callback binding)
-                            .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
-                            .build();
-            PhoneAuthProvider.verifyPhoneNumber(options);
+        System.out.println("aca llegaste");
+        Log.d("test", "passed");
+        //Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registroFragment);
+        System.out.println(numeroCompleto);
+        PhoneAuthOptions options =
+                PhoneAuthOptions.newBuilder(mAuth)
+                        .setPhoneNumber(numeroCompleto)       // Phone number to verify
+                        .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                        .setActivity(this.getActivity())                 // Activity (for callback binding)
+                        .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
+                        .build();
+        PhoneAuthProvider.verifyPhoneNumber(options);
 
-        }
     }
 
     @Override
