@@ -1,12 +1,23 @@
 package com.fvt.dondeestudio;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.fvt.dondeestudio.databinding.FragmentRegistroBinding;
+import com.fvt.dondeestudio.gestores.GestorAlumnos;
+import com.fvt.dondeestudio.gestores.GestorProfesores;
+import com.fvt.dondeestudio.model.Alumno;
+import com.fvt.dondeestudio.model.Profesor;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +25,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class RegistroFragment extends Fragment {
-
+    private FragmentRegistroBinding binding;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -55,10 +66,39 @@ public class RegistroFragment extends Fragment {
         }
     }
 
+    private void registrar() {
+
+        FirebaseUser user = getArguments().getParcelable("user");
+
+        String email = binding.textoEmail.getText().toString();
+        String nombre = binding.textoNombre.getText().toString();
+        String apellido = binding.textoApellido.getText().toString();
+
+        user.updateEmail(email);
+
+
+        if (binding.spinnerRol.getSelectedItem().equals("Alumno")) {
+            Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido);
+            GestorAlumnos gestor = new GestorAlumnos();
+            gestor.agregarAlumno(alumno);
+        }
+        else {
+            Profesor profesor = new Profesor(user.getUid(), email, nombre, apellido);
+            GestorProfesores gestor = new GestorProfesores();
+            gestor.agregarProfesor(profesor);
+        }
+
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registro, container, false);
+        binding = FragmentRegistroBinding.inflate(inflater, container, false);
+
+        binding.botonRegistrar.setOnClickListener(lambda -> registrar());
+
+        return binding.getRoot();
     }
 }

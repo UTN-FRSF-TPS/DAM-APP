@@ -33,14 +33,8 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_registroFragment"
-            app:destination="@id/registroFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_clasesReservadasFragment"
-            app:destination="@id/clasesReservadasFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_clasesProgramadasFragment"
-            app:destination="@id/clasesProgramadasFragment" />
+            android:id="@+id/action_loginFragment_to_verificacionFragment"
+            app:destination="@id/verificacionFragment" />
     </fragment>
     <fragment
         android:id="@+id/detalleClaseFragment"
@@ -63,5 +57,20 @@
         <action
             android:id="@+id/action_clasesProgramadasFragment_to_agregarClaseFragment"
             app:destination="@id/agregarClaseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verificacionFragment"
+        android:name="com.fvt.dondeestudio.VerificacionFragment"
+        android:label="fragment_verificacion"
+        tools:layout="@layout/fragment_verificacion" >
+        <action
+            android:id="@+id/action_verificacionFragment_to_clasesReservadasFragment"
+            app:destination="@id/clasesReservadasFragment" />
+        <action
+            android:id="@+id/action_verificacionFragment_to_clasesProgramadasFragment"
+            app:destination="@id/clasesProgramadasFragment" />
+        <action
+            android:id="@+id/action_verificacionFragment_to_registroFragment"
+            app:destination="@id/registroFragment" />
     </fragment>
 </navigation>
