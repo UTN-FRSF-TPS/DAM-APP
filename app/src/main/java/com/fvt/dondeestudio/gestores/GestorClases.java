@@ -13,32 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GestorClases {
-    private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public Boolean agregarClase(Clase clase) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("tarifaHoras", clase.getTarifaHora());
-        map.put("asignatura", clase.getAsignatura());
-        //...seguir agregando, ver como es el tema de agregar un alumno o profesor
-
-        mFirestore.collection("clase").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                System.out.println("Cargado");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("Error");
-            }
-        });
-        return null;
+    public void agregarClase(Clase clase) {
+        db.collection("clase").add(clase);
     }
 
 
     public boolean eliminarClase(String id) {
 
-        mFirestore.collection("clase").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("clase").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 System.out.println("Borrado correctamente");
@@ -52,19 +36,12 @@ public class GestorClases {
         return true;
     }
 
-    public void getClase(String id){
-        mFirestore.collection("clase").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    public void getClase(String id) {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("clase").document(id);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                System.out.println("Tarifa: " + documentSnapshot.get("tarifaHoras"));
-                System.out.println("Asignatura: " + documentSnapshot.get("asignatura"));
-                System.out.println("IDFirebase: " + documentSnapshot.getId());
-                //la idea es despues devolver un objeto clase con los campos, esto es para probar nomas
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("Error");
+                Clase clase = documentSnapshot.toObject(Clase.class);
             }
         });
     }
@@ -74,7 +51,7 @@ public class GestorClases {
         nuevo.put("tarifaHoras", actualizada.getTarifaHora());
         nuevo.put("asignatura", actualizada.getAsignatura());
 
-        mFirestore.collection("clase").document(id).update(nuevo).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("clase").document(id).update(nuevo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 System.out.println("Actualizada correctamente");
@@ -87,6 +64,14 @@ public class GestorClases {
         });
 
     }
+
+    public interface Callback<T> {
+        void onSuccess(T result);
+        void onFailure(Exception e);
+    }
+
+
+
 }
 
 
