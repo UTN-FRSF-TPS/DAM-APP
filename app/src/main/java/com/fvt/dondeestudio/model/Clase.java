@@ -18,6 +18,7 @@ public class Clase {
     private Integer valoracion;
     private Date horario;
 
+    public Clase(){};
 
     public Clase(Profesor profesor, List<Alumno> alumnos, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, Date horario) {
         this.profesor = profesor;
@@ -99,5 +100,13 @@ public class Clase {
 
     public Date getHorario() {
         return horario;
+    }
+
+    public void setAsignatura(String asignatura) {
+        this.asignatura = asignatura;
+    }
+
+    public void setID(String id) {
+        this.id = id;
     }
 }
