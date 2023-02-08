@@ -73,13 +73,6 @@ public class LoginFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        /*
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) { //El usuario no está logueado, se tiene que registrar o loguear
-
-        } else { //Pasar a la siguiente
-
-        }
-        */
     }
 
     @Override
