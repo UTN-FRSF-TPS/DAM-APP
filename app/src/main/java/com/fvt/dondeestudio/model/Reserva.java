@@ -6,9 +6,7 @@ public class Reserva {
     private Clase clase; //es la clase_id de la clase
     private Boolean leido; //Cuando se hace click en la notificacion deberia marcarse leido=true
     private Profesor profesor; //deberia ser el profesor de la clase, lo pongo aca para q sea mas facil la consulta
-    public Reserva(String p1, String p2){
-
-    }
+    private String estado;
 
     public Reserva(String idAlumno, Clase clase, Boolean leido, Profesor profesor) {
         this.alumno = alumno;

@@ -1,10 +1,8 @@
 package com.fvt.dondeestudio.gestores;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.fvt.dondeestudio.model.Alumno;
+import com.fvt.dondeestudio.DTO.ReservaDTO;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Reserva;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -13,8 +11,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -27,38 +25,40 @@ public class GestorReservas {
 private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    public ArrayList<Reserva> getReservasNuevas(String idProfesor){
-        CollectionReference reservationsRef = db.collection("clase");
-        ArrayList<Reserva> retorno = new ArrayList<Reserva>();
-        reservationsRef
-                .whereEqualTo("idProfesor", idProfesor)
-                .whereEqualTo("estado", "nueva")
+    public void getReservasNuevas(String idProfesor, final GestorClases.Callback<ArrayList<ReservaDTO>> callback){
+        CollectionReference reservationsRef = db.collection("reserva");
+         reservationsRef.whereEqualTo("idProfesor", idProfesor).whereEqualTo("estado", "pendiente")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> reservationData = document.getData();
-                                String estudiante = (String) reservationData.get("idAlumno");
-                                //retorno.add(new Reserva());
-                            }
-                        } else {
-                            Log.d("Firestore", "Error al obtener los datos: " + task.getException());
+                            QuerySnapshot result = task.getResult();
+                            List<DocumentSnapshot> documents = result.getDocuments();
+                            ArrayList<ReservaDTO> lista =  new ArrayList<ReservaDTO>();
+                           for(DocumentSnapshot documento : documents){
+                               ReservaDTO rDTO = new ReservaDTO();
+                                rDTO.setIdAlumno(documento.get("idAlumno").toString());
+                                rDTO.setIdProfesor(documento.get("idProfesor").toString());
+                                rDTO.setEstado(documento.get("estado").toString());
+                                rDTO.setIdClase(documento.get("idClase").toString());
+                                lista.add(rDTO);
+                           }
+                           callback.onComplete(lista);
+
                         }
+
                     }
                 });
-
-        return retorno;
     }
 
-    public void guardarReserva(String idAlumno, String idClase, String estado) {
+    public void guardarReserva(String idAlumno, Clase clase) {
             Map<String, Object> map = new HashMap<>();
             map.put("idAlumno", idAlumno);
-            map.put("idClase", idClase);
-            map.put("estado", "nueva");
-            map.put("idProfesor", "iriaiddeusuarioprofesor");
-            //estado: nueva, leida, cancelada
+            map.put("idClase", clase.getId());
+            map.put("estado", "pendiente");
+            map.put("idProfesor", clase.getProfesor().getId());
+            //estado: pendiente, aprobada, cancelada
             db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 
                 public void onSuccess(DocumentReference documentReference) {
@@ -71,4 +71,42 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
                 }
             });
         }
+
+    public void confirmarReserva(String idReserva){
+
+        Map<String, Object> confirmacion= new HashMap<>();
+        confirmacion.put("estado", "confirmada");
+
+        db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                System.out.println("Reserva confirmada ");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+    }
+
+    public void cancelarReserva(String idReserva){
+
+        Map<String, Object> confirmacion= new HashMap<>();
+        confirmacion.put("estado", "cancelada");
+
+        db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                System.out.println("Reserva confirmada ");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+
+    }
+
     }

@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Profesor {
@@ -18,7 +19,6 @@ public class Profesor {
     private String apellido;
     private String email;
     private Integer valoracion;
-    private List<Clase> clases;
 
     public String getId() {
         return id;
@@ -60,11 +60,5 @@ public class Profesor {
         this.valoracion = valoracion;
     }
 
-    public List<Clase> getClases() {
-        return clases;
-    }
 
-    public void setClases(List<Clase> clases) {
-        this.clases = clases;
-    }
 }

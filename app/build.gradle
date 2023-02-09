@@ -9,6 +9,10 @@ android {
     namespace 'com.fvt.dondeestudio'
     compileSdk 33
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "com.fvt.dondeestudio"
         minSdk 21

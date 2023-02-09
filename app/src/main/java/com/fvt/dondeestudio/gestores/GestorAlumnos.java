@@ -7,6 +7,7 @@ import com.fvt.dondeestudio.model.Clase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -19,6 +20,18 @@ public class GestorAlumnos {
     public Boolean agregarAlumno(Alumno alumno) {
         mFirestore.collection("alumno").document(alumno.getId()).set(alumno);
         return null;
+    }
+
+    public void obtenerAlumno(String id, final GestorClases.Callback<Alumno> callback){
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("alumno").document(id);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+               Alumno alumno= documentSnapshot.toObject(Alumno.class);
+               // alumno.setId(documentSnapshot.getId());
+                callback.onComplete(alumno);
+            }
+        });
     }
 
 }

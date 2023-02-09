@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DondeEstudio"
         tools:targetApi="31">
+        <service android:name=".services.NotificacionService">
+        </service>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -27,12 +29,6 @@
                 android:value="" />
         </activity>
 
-        <receiver android:name=".MyBroadcastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.MY_ACTION"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
