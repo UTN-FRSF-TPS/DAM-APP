@@ -1,41 +1,43 @@
 package com.fvt.dondeestudio.DTO;
 
+import com.google.firebase.firestore.DocumentReference;
+
 public class ReservaDTO {
 
-    private String idAlumno;
-    private String idProfesor;
-    private String idClase;
+    private DocumentReference idAlumno;
+    private DocumentReference idProfesor;
+    private DocumentReference idClase;
     private String estado;
 
-    public String getIdAlumno() {
+    public DocumentReference getIdAlumno() {
         return idAlumno;
+    }
+
+    public void setIdAlumno(DocumentReference idAlumno) {
+        this.idAlumno = idAlumno;
+    }
+
+    public DocumentReference getIdProfesor() {
+        return idProfesor;
+    }
+
+    public void setIdProfesor(DocumentReference idProfesor) {
+        this.idProfesor = idProfesor;
+    }
+
+    public DocumentReference getIdClase() {
+        return idClase;
+    }
+
+    public void setIdClase(DocumentReference idClase) {
+        this.idClase = idClase;
     }
 
     public String getEstado() {
         return estado;
     }
 
-    public  void setEstado(String estado) {
-       this.estado = estado;
-    }
-
-    public void setIdAlumno(String idAlumno) {
-        this.idAlumno = idAlumno;
-    }
-
-    public String getIdProfesor() {
-        return idProfesor;
-    }
-
-    public void setIdProfesor(String idProfesor) {
-        this.idProfesor = idProfesor;
-    }
-
-    public String getIdClase() {
-        return idClase;
-    }
-
-    public void setIdClase(String idClase) {
-        this.idClase = idClase;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

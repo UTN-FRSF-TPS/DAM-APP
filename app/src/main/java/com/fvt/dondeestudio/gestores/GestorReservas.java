@@ -3,6 +3,8 @@ package com.fvt.dondeestudio.gestores;
 import androidx.annotation.NonNull;
 
 import com.fvt.dondeestudio.DTO.ReservaDTO;
+import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.listeners.AlumnoClaseListener;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Reserva;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,8 +26,8 @@ public class GestorReservas {
 
 private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    public void getReservasNuevas(String idProfesor, final GestorClases.Callback<ArrayList<ReservaDTO>> callback){
+/* En teoria ya no se deberia usar, lo dejo por las dudas
+    public void getReservasNuevas(String idProfesor, final Callback<ArrayList<ReservaDTO>> callback){
         CollectionReference reservationsRef = db.collection("reserva");
          reservationsRef.whereEqualTo("idProfesor", idProfesor).whereEqualTo("estado", "pendiente")
                 .get()
@@ -51,36 +53,71 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
                     }
                 });
     }
+*/
 
+    /**
+     *
+     * @param idAlumno
+     * @param clase
+     *
+     * Crea una reserva a una clase si hay cupos disponibles con estado="pendiente"
+     */
     public void guardarReserva(String idAlumno, Clase clase) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("idAlumno", idAlumno);
-            map.put("idClase", clase.getId());
-            map.put("estado", "pendiente");
-            map.put("idProfesor", clase.getProfesor().getId());
-            //estado: pendiente, aprobada, cancelada
+        Map<String, Object> map = new HashMap<>();
+        map.put("idAlumno", idAlumno);
+        map.put("idClase", clase.getId());
+        map.put("estado", "pendiente");
+        map.put("idProfesor", clase.getProfesor().getId());
+        if (clase.getCupo() > 0) {
             db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-
                 public void onSuccess(DocumentReference documentReference) {
-                    //insertado
+                    GestorClases g = new GestorClases();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 public void onFailure(@NonNull Exception e) {
-
-                    //error;
+                    System.out.println("Ocurrio un error al registrar la clase");
                 }
             });
-        }
+        } else {
+            /*
+                Si el usuario quiere escuchar la clase debe iniciar
+                AlumnoClaseListener.seguirClase(clase.getId());
+            */
 
-    public void confirmarReserva(String idReserva){
+            System.out.println("No existen cupos para esta clase. Puede suscribirse para saber si se libera un cupo");
+;        }
+    }
 
+    /**
+     * CAMBIAR ESTADO DE UNA RESERVA
+     *
+     * @param idReserva
+     * @param estado
+     * @param cupo
+     *
+     *
+     * PARA CONFIRMAR RESERVA estado="confirmada", cupo =-1
+     * PARA RECHAZAR RESERVA estado="rechazada", cupo =1
+     * PARA CANCELAR RESERVA estado="cancelada", cupo=1
+     */
+
+
+    public void cambiarEstadoReserva(String idReserva, String estado, Integer cupo){
         Map<String, Object> confirmacion= new HashMap<>();
-        confirmacion.put("estado", "confirmada");
-
+        confirmacion.put("estado", estado);
+        //se debe notificar al alumno.
         db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                System.out.println("Reserva confirmada ");
+                db.collection("reserva").document(idReserva).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        GestorClases g = new GestorClases();
+                        String idClase = (String) documentSnapshot.get("idClase");
+                        g.cambiarCupo(idClase, cupo);
+
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -88,25 +125,6 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
                 System.out.println(e.getMessage());
             }
         });
-    }
-
-    public void cancelarReserva(String idReserva){
-
-        Map<String, Object> confirmacion= new HashMap<>();
-        confirmacion.put("estado", "cancelada");
-
-        db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                System.out.println("Reserva confirmada ");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println(e.getMessage());
-            }
-        });
 
     }
-
-    }
+}
