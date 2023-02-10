@@ -14,9 +14,17 @@ import android.widget.Button;
 import com.fvt.dondeestudio.databinding.FragmentAgregarClaseBinding;
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.gestores.GestorClases;
+import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Clase;
+import com.fvt.dondeestudio.model.Nivel;
+import com.fvt.dondeestudio.model.Profesor;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,75 +91,6 @@ public class AgregarClaseFragment extends Fragment {
         binding = FragmentAgregarClaseBinding.inflate(inflater, container, false);
         agregarClase = binding.button5;
 
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    String token = task.getResult();
-                    System.out.println("TOKEN" + token);
-
-                    //  AQUI PODEMOS MANDAR LLAMAR A UNA FUNCION PARA QUE LO GUARDEMOS EN NUESTRO BACKEND
-                });
-
-
-
-                agregarClase.setOnClickListener(e->{
-            //todos los campos
-            //convertir strings a objetos (LocalDate, Date, Double, etc)
-            //llamar al gestor y crear clase
-            ClaseDTO filtro = new ClaseDTO();
-            filtro.setValoracionProfesor(2);
-            GestorClases gestor = new GestorClases();
-            //gestor.agregarRetroalimentacion("O9PkVVZyPLA3h3ZiNLtC", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    //gestor.agregarRetroalimentacion("O9PkVVZyPLA3h3ZiNLtC", "abcde");
-          gestor.getClase("O9PkVVZyPLA3h3ZiNLtC", new Callback<Clase>() {
-                @Override
-                public void onComplete(Clase data) {
-                    System.out.println("CLASE A: " + data.getAsignatura());
-                }
-            });
-            /*
-            gestor.filtrarClases(filtro,new Callback<ArrayList<Clase>>() {
-                @Override
-                public void onComplete(ArrayList<Clase> data) {
-                    System.out.println("TAMAÑO: " + data.size());
-                    Clase c0 = data.get(0);
-                    GestorReservas gestorReservas = new GestorReservas();
-                    //el id del profesor deberia ser el de la sesion
-                   /* gestorReservas.getReservasNuevas("lpWjYgGw8RYkwxnfgI24j7VGhof2", new Callback<ArrayList<ReservaDTO>>() {
-                        @Override
-                        public void onComplete(ArrayList<ReservaDTO> data) {
-
-                        }});
-                        */
-
-                    //gestorReservas.confirmarReserva("MKmArL3vn2jbt6UGW7qd");
-                    //NotificationHelper notificationHelper = new NotificationHelper();
-                    //notificationHelper.showNotification(contexto, "Hola", "Que onda", null);
-                    /*Alumno alumno = new Alumno("", "valefontana15@gmail.com", "Valentin", "Fontana");
-                    GestorAlumnos gestorAlumnos = new GestorAlumnos();
-                    gestorAlumnos.agregarAlumno(alumno);*/
-                   // Intent i = new Intent(getActivity(), NotificacionProfesorService.class);
-                    //i.putExtra("idProfesor", "lpWjYgGw8RYkwxnfgI24j7VGhof2");
-                    //getActivity().startService(i);
-                   // gestor.claseReservadasAlumno("wlZW8w9VdWaonYhkyuxh", new Callback<ArrayList<Clase>>());
-                    /*gestor.claseReservadasAlumno("wlZW8w9VdWaonYhkyuxh", new Callback<ArrayList<Clase>>() {
-
-                                @Override
-                                public void onComplete(ArrayList<Clase> data) {
-                                    System.out.println("CANTIDAD " + data.size());
-                                    System.out.println("ASIGNATURA" + data.get(0).getAsignatura());
-                                }
-                            });
-                //mejorar notificacion agregando boton para confirmar y rechazar
-                //se deberia hacer el adapter para mostrar las clases que cumplen con una busqueda -> OK
-                //guardar la fecha, hora de la clase.
-                //implementar metodos para ver el radio maximo -> Hay que hacer un mapa para q elija el lugar
-
-            LatLng latLng1 = new LatLng(37.7749, -122.4194);
-            LatLng latLng2 = new LatLng(40.7128, -74.0060);
-            System.out.println("Distancia" + Util.calcularDistancia(latLng1, latLng2));
-
-*/
-            });
         return binding.getRoot();
 
     }

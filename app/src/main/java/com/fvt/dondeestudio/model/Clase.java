@@ -30,7 +30,7 @@ public class Clase {
         this.estadoUsuario = estadoUsuario;
     }
 
-    public Clase(Profesor profesor, List<Alumno> alumnos, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, Date horario) {
+    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, Date horario) {
         this.profesor = profesor;
         this.tarifaHora = tarifaHora;
         this.cupo = cupo;
