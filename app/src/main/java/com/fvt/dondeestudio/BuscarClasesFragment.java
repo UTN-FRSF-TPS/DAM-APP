@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fvt.dondeestudio.helpers.NotificacionHelper;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BuscarClasesFragment#newInstance} factory method to
@@ -59,6 +61,10 @@ public class BuscarClasesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        NotificacionHelper nHelper = new NotificacionHelper();
+        nHelper.showNotification(getActivity(), "Hola ", "Tenes una notificion", null, null);
         return inflater.inflate(R.layout.fragment_buscar_clases, container, false);
+
+
     }
 }

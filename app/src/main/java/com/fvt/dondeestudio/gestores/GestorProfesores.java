@@ -1,8 +1,11 @@
 package com.fvt.dondeestudio.gestores;
 
+import androidx.annotation.NonNull;
+
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Profesor;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,7 +26,8 @@ public class GestorProfesores {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Profesor profesor= documentSnapshot.toObject(Profesor.class);
-                profesor.setId(documentSnapshot.getId());
+                if(profesor != null)
+                    profesor.setId(documentSnapshot.getId());
                 callback.onComplete(profesor);
             }
         });

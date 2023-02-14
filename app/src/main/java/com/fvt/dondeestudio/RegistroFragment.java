@@ -96,9 +96,7 @@ public class RegistroFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentRegistroBinding.inflate(inflater, container, false);
-
         binding.botonRegistrar.setOnClickListener(lambda -> registrar());
-
         return binding.getRoot();
     }
 }

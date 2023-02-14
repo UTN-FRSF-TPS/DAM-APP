@@ -2,6 +2,7 @@ package com.fvt.dondeestudio.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Clase {
     private LatLng ubicacion;
     private String asignatura;
     private Integer valoracion;
-    private Date horario;
+    private LocalDateTime horario;
     private String estadoUsuario;
 
     public Clase(){};
@@ -30,7 +31,7 @@ public class Clase {
         this.estadoUsuario = estadoUsuario;
     }
 
-    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, Date horario) {
+    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, LocalDateTime horario) {
         this.profesor = profesor;
         this.tarifaHora = tarifaHora;
         this.cupo = cupo;
@@ -102,7 +103,7 @@ public class Clase {
         return valoracion;
     }
 
-    public Date getHorario() {
+    public LocalDateTime getHorario() {
         return horario;
     }
 

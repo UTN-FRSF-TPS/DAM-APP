@@ -54,9 +54,6 @@ public class LoginFragment extends Fragment {
 
         String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
 
-
-
-
         Bundle bundle = new Bundle();
 
         bundle.putString("numeroCompleto", numeroCompleto);

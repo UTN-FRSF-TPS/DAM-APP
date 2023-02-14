@@ -32,6 +32,11 @@ public class GestorAlumnos {
                // alumno.setId(documentSnapshot.getId());
                 callback.onComplete(alumno);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onComplete(null);
+            }
         });
     }
 

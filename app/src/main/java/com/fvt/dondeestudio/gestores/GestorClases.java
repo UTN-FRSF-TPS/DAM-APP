@@ -1,6 +1,7 @@
 package com.fvt.dondeestudio.gestores;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -199,7 +202,9 @@ public class GestorClases {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Clase clase = documentSnapshot.toObject(Clase.class); //Falla pq no tiene el profesor
-                clase.setID(documentSnapshot.getId());
+               System.out.println("Asignatura" + clase.getAsignatura());
+                if(clase != null)
+                    clase.setID(documentSnapshot.getId());
                 callback.onComplete(clase);
             }
 
@@ -303,7 +308,10 @@ public class GestorClases {
                             @Override
                             public void onComplete(Clase clase) {
                                 clase.setEstadoUsuario(document.get("estado").toString()); //se setea el estado de la reserva para mostrarlo en el cardview
-                                clases.add(clase);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    if(clase.getHorario().isAfter(LocalDateTime.now()))
+                                        clases.add(clase);
+                                }
                                 count[0]++;
                                 if (count[0] == task.getResult().size()) { //si ya estan todos los registros llamo a on complete
                                     callback.onComplete(clases);
@@ -337,8 +345,11 @@ public class GestorClases {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot document : task.getResult()) {
                         Clase clase = document.toObject(Clase.class);
-                        clase.setID(document.getId());
-                        clases.add(clase);
+                            clase.setID(document.getId());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if(clase.getHorario().isAfter(LocalDateTime.now()))
+                                clases.add(clase);
+                        }
                     }
                 }
                 callback.onComplete(clases);

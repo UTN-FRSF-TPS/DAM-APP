@@ -28,7 +28,6 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
             mBinding.asignatura.setText(clase.getAsignatura());
             mBinding.profesor.setText(clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
             mBinding.estado.setText(clase.getEstadoUsuario());
-
         }
     }
 
