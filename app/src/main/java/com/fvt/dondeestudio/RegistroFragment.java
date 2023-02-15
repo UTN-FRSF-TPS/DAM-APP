@@ -18,6 +18,7 @@ import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,7 +76,11 @@ public class RegistroFragment extends Fragment {
         String apellido = binding.textoApellido.getText().toString();
 
         user.updateEmail(email);
+        UserProfileChangeRequest cambioNombre = new UserProfileChangeRequest.Builder()
+                .setDisplayName(nombre + " " + apellido)
+                .build();
 
+        user.updateProfile(cambioNombre);
 
         if (binding.spinnerRol.getSelectedItem().equals("Alumno")) {
             Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido);

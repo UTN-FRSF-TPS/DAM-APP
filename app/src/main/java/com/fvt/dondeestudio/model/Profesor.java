@@ -3,21 +3,16 @@ package com.fvt.dondeestudio.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Profesor {
+public class Profesor extends Usuario {
 
-    public Profesor(){};
-
-    public Profesor(String id, String email, String nombre, String apellido) {
-        this.id = id;
-        this.email = email;
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Profesor() {
+        super();
     }
 
-    private String id;
-    private String nombre;
-    private String apellido;
-    private String email;
+    public Profesor(String id, String nombre, String apellido, String email) {
+        super(id, nombre, apellido, email);
+    }
+
     private Integer valoracion;
 
     public String getId() {

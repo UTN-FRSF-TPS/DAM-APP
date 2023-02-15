@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/agregarClaseFragment">
+    app:startDestination="@id/buscarUsuario">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_loginFragment_to_verificacionFragment"
             app:destination="@id/verificacionFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_fragment_mensajeria"
+            app:destination="@id/fragment_mensajeria" />
     </fragment>
     <fragment
         android:id="@+id/detalleClaseFragment"
@@ -73,4 +76,14 @@
             android:id="@+id/action_verificacionFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/fragment_mensajeria"
+        android:name="com.fvt.dondeestudio.fragment_mensajeria"
+        android:label="fragment_mensajeria"
+        tools:layout="@layout/fragment_mensajeria" />
+    <fragment
+        android:id="@+id/buscarUsuario"
+        android:name="com.fvt.dondeestudio.BuscarUsuario"
+        android:label="fragment_buscar_usuario"
+        tools:layout="@layout/fragment_buscar_usuario" />
 </navigation>

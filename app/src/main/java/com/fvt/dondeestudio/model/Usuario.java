@@ -1,15 +1,29 @@
 package com.fvt.dondeestudio.model;
 
-public class Alumno extends Usuario {
+public class Usuario {
 
-    public Alumno(){};
+    protected String id;
+    protected String nombre;
+    protected String apellido;
+    protected String email;
+    protected String photoUrl;
 
+    public Usuario() {
+    }
 
-    public Alumno(String id, String email, String nombre, String apellido) {
+    public Usuario(String id, String nombre, String apellido, String email) {
         this.id = id;
-        this.email = email;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.email = email;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public String getId() {
@@ -43,5 +57,4 @@ public class Alumno extends Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
-
 }
