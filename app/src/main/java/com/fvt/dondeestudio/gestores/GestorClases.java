@@ -256,15 +256,13 @@ public class GestorClases {
      * @param ubicacion
      *
      * Devuelve en el callback las clases que cumplen con el filtro de busqueda filtro
-     *
+     * TODO: REFACTORIZAR EL METODO
      */
 
-    @SuppressLint("SuspiciousIndentation")
     //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
     public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback, LatLng ubicacion) {
 
         Query q1 = FirebaseFirestore.getInstance().collection("clase");
-        Query q2 = FirebaseFirestore.getInstance().collection("clase");
         if (filtro.getAsignatura() != null)
             q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
         if (filtro.getNivel() != null)
@@ -274,43 +272,53 @@ public class GestorClases {
         if (filtro.getTarifaHoraMax() != null)
             q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
         if (filtro.getValoracionProfesor() != null)
-                q2 = q2.whereGreaterThanOrEqualTo("profesor.valoracion", filtro.getValoracionProfesor());
-        Tasks.whenAllSuccess(q1.get(), q2.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
+        Tasks.whenAllSuccess(q1.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
             @Override
             public void onComplete(@NonNull Task<List<Object>> task) {
                 ArrayList<Clase> clases = new ArrayList<Clase>();
                 if (task.isSuccessful()) {
                     QuerySnapshot q1Result = (QuerySnapshot) task.getResult().get(0);
-                    QuerySnapshot q2Result = (QuerySnapshot) task.getResult().get(1);
                     for (DocumentSnapshot document : q1Result) {
-                        if (q2Result.getDocuments().contains(document)) {
                             String horario = (String) document.get("horario");
                             DateTimeFormatter formatter = null;
                             LocalDateTime dateTime = null;
+
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                                 dateTime = LocalDateTime.parse(horario, formatter);
                                 if (dateTime.isAfter(LocalDateTime.now())) {
-                                    if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
-                                        //si es presencial tengo que verificar el limite de kilometros
-                                        GeoPoint ubi = document.getGeoPoint("ubicacion");
-                                        if (Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())) < filtro.getRadioMaxMetros()) {
-                                            Clase clase = document.toObject(Clase.class); //si es menor la distancia lo agrego.
-                                            clase.setId(document.getId());
-                                            clases.add(clase);
+
+                                    //Controlar aca que la valoracion del filtro sea mayor a la valoracion del profesor
+                                    GestorProfesores gP = new GestorProfesores();
+                                    gP.calcularReputacion(document.get("profesor.id").toString(), new Callback<Double>() {
+                                        @Override
+                                        public void onComplete(Double reputacion) {
+                                            if(reputacion > filtro.getValoracionProfesor()){
+
+                                                if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
+
+                                                    GeoPoint ubi = document.getGeoPoint("ubicacion");
+                                                    if (Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())) < filtro.getRadioMaxMetros()) {
+
+                                                        Clase clase = document.toObject(Clase.class); //si es menor la distancia lo agrego.
+                                                        clase.setId(document.getId());
+                                                        clases.add(clase);
+                                                        System.out.println("ID " + clases.get(0).getId());
+                                                    }
+                                                } else { //si no es presencial lo agrego directamente
+                                                    Clase clase = document.toObject(Clase.class);
+                                                    clase.setId(document.getId());
+                                                    clases.add(clase);
+                                                }
+                                            }
+                                            callback.onComplete(clases);
                                         }
-                                    } else { //si no es presencial lo agrego directamente
-                                        Clase clase = document.toObject(Clase.class);
-                                        clase.setId(document.getId());
-                                        clases.add(clase);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                callback.onComplete(clases);
-            }
+                                    });
+                                } //fecha anterior a la actual
+                            } //version
+                        } //recorre documentos
+                } //si fue exitoso
+            } //callback
         });
     }
 

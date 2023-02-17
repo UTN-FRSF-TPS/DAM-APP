@@ -34,7 +34,7 @@ public class GestorProfesores {
     }
 
     public void calcularReputacion(String id, final Callback<Double> callback){
-        mFirestore.collection("clase").whereEqualTo("profesor.idProfesor", id).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        mFirestore.collection("clase").whereEqualTo("profesor.id", id).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 Long suma = 0L;
