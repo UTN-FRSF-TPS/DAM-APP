@@ -1,6 +1,8 @@
 package com.fvt.dondeestudio.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,11 +17,12 @@ public class Clase {
     private Integer cupo;
     private Integer cupoActual;
     private Nivel nivel;
-    private LatLng ubicacion;
+    private GeoPoint ubicacion;
     private String asignatura;
     private Integer valoracion;
-    private LocalDateTime horario;
+    private String horario;
     private String estadoUsuario;
+    private String tipo;
 
     public Clase(){};
 
@@ -31,7 +34,7 @@ public class Clase {
         this.estadoUsuario = estadoUsuario;
     }
 
-    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, LatLng ubicacion, String asignatura, Integer valoracion, LocalDateTime horario) {
+    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, GeoPoint ubicacion, String asignatura, Integer valoracion, String horario) {
         this.profesor = profesor;
         this.tarifaHora = tarifaHora;
         this.cupo = cupo;
@@ -50,6 +53,15 @@ public class Clase {
         this.asignatura = asignatura;
     }
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Profesor getProfesor() {
         return profesor;
     }
@@ -57,7 +69,6 @@ public class Clase {
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
     }
-
 
     public Double getTarifaHora() {
         return tarifaHora;
@@ -75,6 +86,14 @@ public class Clase {
         this.cupo = cupo;
     }
 
+    public Integer getCupoActual() {
+        return cupoActual;
+    }
+
+    public void setCupoActual(Integer cupoActual) {
+        this.cupoActual = cupoActual;
+    }
+
     public Nivel getNivel() {
         return nivel;
     }
@@ -83,35 +102,43 @@ public class Clase {
         this.nivel = nivel;
     }
 
-    public LatLng getUbicacion() {
+    public GeoPoint getUbicacion() {
         return ubicacion;
     }
 
-    public void setUbicacion(LatLng ubicacion) {
+    public void setUbicacion(GeoPoint ubicacion) {
         this.ubicacion = ubicacion;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getAsignatura() {
         return asignatura;
     }
 
-    public Integer getValoracion() {
-        return valoracion;
-    }
-
-    public LocalDateTime getHorario() {
-        return horario;
-    }
-
     public void setAsignatura(String asignatura) {
         this.asignatura = asignatura;
     }
 
-    public void setID(String id) {
-        this.id = id;
+    public Integer getValoracion() {
+        return valoracion;
+    }
+
+    public void setValoracion(Integer valoracion) {
+        this.valoracion = valoracion;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

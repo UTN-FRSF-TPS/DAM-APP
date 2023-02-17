@@ -14,8 +14,9 @@ public class Util {
                 latLng1.latitude, latLng1.longitude,
                 latLng2.latitude, latLng2.longitude,
                 dist);
-        return dist[0];
+        return dist[0]/1000.0; //devuelve distancia en km
     }
+
 }
 
 

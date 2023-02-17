@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Valoracion;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,17 +16,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GestorClases {
@@ -204,7 +209,7 @@ public class GestorClases {
                 Clase clase = documentSnapshot.toObject(Clase.class); //Falla pq no tiene el profesor
                System.out.println("Asignatura" + clase.getAsignatura());
                 if(clase != null)
-                    clase.setID(documentSnapshot.getId());
+                    clase.setId(documentSnapshot.getId());
                 callback.onComplete(clase);
             }
 
@@ -251,40 +256,62 @@ public class GestorClases {
      * @param ubicacion
      *
      * Devuelve en el callback las clases que cumplen con el filtro de busqueda filtro
-     * TODO la ubicacion podria estar en el filtro
+     *
      */
 
     @SuppressLint("SuspiciousIndentation")
-    //si FiltroDTO tiene radioMax null ubicacion se puede pasar como nulo.
+    //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
     public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback, LatLng ubicacion) {
+
         Query q1 = FirebaseFirestore.getInstance().collection("clase");
+        Query q2 = FirebaseFirestore.getInstance().collection("clase");
         if (filtro.getAsignatura() != null)
             q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
-        if (filtro.getTarifaHoraMax() != null)
-            q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
         if (filtro.getNivel() != null)
             q1 = q1.whereEqualTo("nivel", filtro.getNivel());
-        if(filtro.getRadioMaxMetros() != null)
-                //Hola
+        if (filtro.getTipo() != null)
+            q1 = q1.whereEqualTo("tipo", filtro.getTipo());
+        if (filtro.getTarifaHoraMax() != null)
+            q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
         if (filtro.getValoracionProfesor() != null)
-            q1 = q1.whereGreaterThanOrEqualTo("profesor.valoracion", filtro.getValoracionProfesor());
-        q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                q2 = q2.whereGreaterThanOrEqualTo("profesor.valoracion", filtro.getValoracionProfesor());
+        Tasks.whenAllSuccess(q1.get(), q2.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<List<Object>> task) {
                 ArrayList<Clase> clases = new ArrayList<Clase>();
                 if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        Clase clase = document.toObject(Clase.class);
-                        clase.setID(document.getId());
-                        clases.add(clase);
+                    QuerySnapshot q1Result = (QuerySnapshot) task.getResult().get(0);
+                    QuerySnapshot q2Result = (QuerySnapshot) task.getResult().get(1);
+                    for (DocumentSnapshot document : q1Result) {
+                        if (q2Result.getDocuments().contains(document)) {
+                            String horario = (String) document.get("horario");
+                            DateTimeFormatter formatter = null;
+                            LocalDateTime dateTime = null;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                                dateTime = LocalDateTime.parse(horario, formatter);
+                                if (dateTime.isAfter(LocalDateTime.now())) {
+                                    if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
+                                        //si es presencial tengo que verificar el limite de kilometros
+                                        GeoPoint ubi = document.getGeoPoint("ubicacion");
+                                        if (Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())) < filtro.getRadioMaxMetros()) {
+                                            Clase clase = document.toObject(Clase.class); //si es menor la distancia lo agrego.
+                                            clase.setId(document.getId());
+                                            clases.add(clase);
+                                        }
+                                    } else { //si no es presencial lo agrego directamente
+                                        Clase clase = document.toObject(Clase.class);
+                                        clase.setId(document.getId());
+                                        clases.add(clase);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 callback.onComplete(clases);
             }
         });
-
-
-
     }
 
     /**
@@ -309,7 +336,9 @@ public class GestorClases {
                             public void onComplete(Clase clase) {
                                 clase.setEstadoUsuario(document.get("estado").toString()); //se setea el estado de la reserva para mostrarlo en el cardview
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    if(clase.getHorario().isAfter(LocalDateTime.now()))
+                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                                    LocalDateTime dateTime = LocalDateTime.parse(clase.getHorario(), formatter);
+                                    if(dateTime.isAfter(LocalDateTime.now()))
                                         clases.add(clase);
                                 }
                                 count[0]++;
@@ -331,8 +360,8 @@ public class GestorClases {
      * @param idProfesor
      * @param callback
      *
-     * Devuelve en el callback los objetos clases que fueron creadas por el profesor.
-     * TODO Habria que agregar que solo muestre las clases que tienen fecha despues de la fecha actual
+     * Devuelve en el callback los objetos clases que fueron creadas por el profesor
+     * Solo devuelve las clases creadas con fecha posterior a la actual
      */
 
     public void claseReservadasProfesor(String idProfesor, final Callback<ArrayList<Clase>> callback) {
@@ -345,9 +374,11 @@ public class GestorClases {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot document : task.getResult()) {
                         Clase clase = document.toObject(Clase.class);
-                            clase.setID(document.getId());
+                            clase.setId(document.getId());
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            if(clase.getHorario().isAfter(LocalDateTime.now()))
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                            LocalDateTime dateTime = LocalDateTime.parse(clase.getHorario(), formatter);
+                            if(dateTime.isAfter(LocalDateTime.now()))
                                 clases.add(clase);
                         }
                     }
@@ -358,7 +389,7 @@ public class GestorClases {
     }
 
     /**
-     * Aumenta el cupo de la clase claseId en cant unidades
+     * Aumenta o disminuye el cupo de la clase claseId en cant unidades
      * @param claseId
      * @param cant
      */

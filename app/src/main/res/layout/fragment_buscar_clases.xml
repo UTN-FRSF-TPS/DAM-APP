@@ -1,14 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BuscarClasesFragment">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
 
-    <!-- TODO: Update blank fragment layout -->
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:ignore="ExtraText">
+
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="¿Qué clase querés buscar hoy?"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
 
-</FrameLayout>
+
+    <!-- Filtro por nombre de la clase -->
+    <TextView
+        android:id="@+id/tv_class_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Asignatura de la clase:"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/asignatura"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:hint="Ej: Matemáticas"
+        android:textSize="16sp"
+        android:inputType="text"/>
+
+    <!-- Filtro por asignatura -->
+    <TextView
+        android:id="@+id/nivelView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Nivel"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/nivel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:entries="@array/niveles"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tv_subject2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Tipo de clase"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    <!-- Filtro de clase presencial o virtual -->
+
+    <Spinner
+        android:id="@+id/tipo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:entries="@array/tipo"
+        android:textSize="16sp"/>
+
+    <!-- Filtro por tarifa -->
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tarifa máxima en $:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <SeekBar
+        android:id="@+id/tarifa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="1000"
+        android:progress="500"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_price_range"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="500 - 1000 $"
+        android:textSize="16sp"
+        android:textAlignment="center"/>
+
+    <!-- Filtro por cercanía -->
+    <TextView
+        android:id="@+id/distanciaView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Distancia en km:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <SeekBar
+        android:id="@+id/distancia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="10"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_distance_range"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1 - 10 km"
+        android:textSize="16sp"
+        android:textAlignment="center"/>
+
+    <!-- Filtro por valoración -->
+    <TextView
+        android:id="@+id/tv_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valoración mínima del profesor:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+    <SeekBar
+        android:id="@+id/valoracion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="5"
+        android:progress="3"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_rating_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3.0"
+        android:textSize="16sp"
+        android:textAlignment="center"/>
+
+    <!-- Botón de búsqueda -->
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buscar"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:backgroundTint="#f85f6a"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>
+</ScrollView>

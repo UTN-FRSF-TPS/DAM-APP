@@ -1,17 +1,31 @@
 package com.fvt.dondeestudio.DTO;
 
-public class ClaseDTO {
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
+
+public class ClaseDTO implements Serializable {
 
     private Double radioMaxMetros;
     private Double tarifaHoraMax;
     private String nivel;
     private String asignatura;
     private Integer valoracionProfesor;
+    private String tipo;
+    private LatLng ubicacion;
 
 
 public ClaseDTO(){
 
 };
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String presencial) {
+        this.tipo = presencial;
+    }
 
     public Double getRadioMaxMetros() {
         return radioMaxMetros;
@@ -51,5 +65,13 @@ public ClaseDTO(){
 
     public void setValoracionProfesor(Integer valoracionProfesor) {
         this.valoracionProfesor = valoracionProfesor;
+    }
+
+    public LatLng getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(LatLng ubicacion) {
+        this.ubicacion = ubicacion;
     }
 }
