@@ -5,4 +5,9 @@
     <!-- to toggle the open close button of the navigation drawer -->
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="nivel_FragmentBuscar">Nivel:</string>
+    <string name="valoracion_FragmentBuscar">Valoración:</string>
+    <string name="tarifa_FragmentBuscar">Tarifa:</string>
+    <string name="cercania_FragmentBuscar">Cercanía:</string>
+    <string name="reservar_ItemBuscarClase">Reservar</string>
 </resources>

@@ -2,14 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@+id/nav"
     app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
         android:name="com.fvt.dondeestudio.AgregarClaseFragment"
         android:label="fragment_agregar_clase"
-        tools:layout="@layout/fragment_agregar_clase" />
+        tools:layout="@layout/fragment_agregar_clase" >
+        <action
+            android:id="@+id/action_agregarClaseFragment_to_clasesProgramadasFragment"
+            app:destination="@id/clasesProgramadasFragment" />
+    </fragment>
     <fragment
         android:id="@+id/clasesReservadasFragment"
         android:name="com.fvt.dondeestudio.ClasesReservadasFragment"
@@ -26,7 +30,11 @@
         android:id="@+id/buscarClasesFragment"
         android:name="com.fvt.dondeestudio.BuscarClasesFragment"
         android:label="fragment_buscar_clases"
-        tools:layout="@layout/fragment_buscar_clases" />
+        tools:layout="@layout/fragment_buscar_clases" >
+        <action
+            android:id="@+id/action_buscarClasesFragment_to_detalleClaseFragment"
+            app:destination="@id/detalleClaseFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.fvt.dondeestudio.LoginFragment"
@@ -51,7 +59,14 @@
         android:id="@+id/registroFragment"
         android:name="com.fvt.dondeestudio.RegistroFragment"
         android:label="fragment_registro"
-        tools:layout="@layout/fragment_registro" />
+        tools:layout="@layout/fragment_registro" >
+        <action
+            android:id="@+id/action_registroFragment_to_clasesProgramadasFragment"
+            app:destination="@id/clasesProgramadasFragment" />
+        <action
+            android:id="@+id/action_registroFragment_to_clasesReservadasFragment"
+            app:destination="@id/clasesReservadasFragment" />
+    </fragment>
     <fragment
         android:id="@+id/clasesProgramadasFragment"
         android:name="com.fvt.dondeestudio.ClasesProgramadasFragment"
