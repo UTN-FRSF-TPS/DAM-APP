@@ -53,14 +53,13 @@ public class BuscarUsuario extends Fragment {
 
         textoEmail = binding.textoEmailBusqueda;
 
-        listaUsuarios = new ArrayList<>();
-
         binding.botonBuscar.setOnClickListener(lambda -> getUsers());
 
         return binding.getRoot();
     }
 
     public void getUsers() {
+        listaUsuarios = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

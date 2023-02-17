@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/buscarUsuario">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
@@ -80,10 +80,26 @@
         android:id="@+id/fragment_mensajeria"
         android:name="com.fvt.dondeestudio.fragment_mensajeria"
         android:label="fragment_mensajeria"
-        tools:layout="@layout/fragment_mensajeria" />
+        tools:layout="@layout/fragment_mensajeria" >
+        <action
+            android:id="@+id/action_fragment_mensajeria_to_buscarUsuario"
+            app:destination="@id/buscarUsuario" />
+        <action
+            android:id="@+id/action_fragment_mensajeria_to_mensajeFragment"
+            app:destination="@id/mensajeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/buscarUsuario"
         android:name="com.fvt.dondeestudio.BuscarUsuario"
         android:label="fragment_buscar_usuario"
-        tools:layout="@layout/fragment_buscar_usuario" />
+        tools:layout="@layout/fragment_buscar_usuario" >
+        <action
+            android:id="@+id/action_buscarUsuario_to_mensajeFragment"
+            app:destination="@id/mensajeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mensajeFragment"
+        android:name="com.fvt.dondeestudio.MensajeFragment"
+        android:label="fragment_mensaje"
+        tools:layout="@layout/fragment_mensaje" />
 </navigation>
