@@ -1,5 +1,7 @@
 package com.fvt.dondeestudio.gestores;
 
+import android.icu.text.BidiClassifier;
+
 import androidx.annotation.NonNull;
 
 import com.fvt.dondeestudio.DTO.ReservaDTO;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class GestorReservas {
 
-private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 /* En teoria ya no se deberia usar, lo dejo por las dudas
     public void getReservasNuevas(String idProfesor, final Callback<ArrayList<ReservaDTO>> callback){
@@ -56,11 +58,8 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
 */
 
     /**
-     *
      * @param idAlumno
-     * @param clase
-     *
-     * Crea una reserva a una clase si hay cupos disponibles con estado="pendiente"
+     * @param clase    Crea una reserva a una clase si hay cupos disponibles con estado="pendiente"
      */
     public void guardarReserva(String idAlumno, Clase clase) {
         Map<String, Object> map = new HashMap<>();
@@ -69,14 +68,23 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
         map.put("estado", "pendiente");
         map.put("idProfesor", clase.getProfesor().getId());
         if (clase.getCupo() > 0) {
-            db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                public void onSuccess(DocumentReference documentReference) {
-                    GestorClases g = new GestorClases();
+            usuarioReservoClase(idAlumno, clase.getId(), new Callback<Boolean>() {
+                @Override
+                public void onComplete(Boolean data) {
+                    if (data == true)
+                        System.out.println("Ya reservaste esta clase");
+                    else {
+                        db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            public void onSuccess(DocumentReference documentReference) {
+                                GestorClases g = new GestorClases();
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                public void onFailure(@NonNull Exception e) {
-                    System.out.println("Ocurrio un error al registrar la clase");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            public void onFailure(@NonNull Exception e) {
+                                System.out.println("Ocurrio un error al registrar la clase");
+                            }
+                        });
+                    }
                 }
             });
         } else {
@@ -86,7 +94,8 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
             */
 
             System.out.println("No existen cupos para esta clase. Puede suscribirse para saber si se libera un cupo");
-;        }
+            ;
+        }
     }
 
     /**
@@ -127,5 +136,18 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
             }
         });
 
+    }
+
+    public void usuarioReservoClase(String idAlumno, String idClase, Callback<Boolean> callback) {
+        db.collection("reserva").whereEqualTo("idAlumno", idAlumno).whereEqualTo("idClase", idClase).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() > 0) {
+                    callback.onComplete(true);
+                } else {
+                    callback.onComplete(false);
+                }
+            }
+        });
     }
 }
