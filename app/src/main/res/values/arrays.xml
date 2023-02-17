@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="niveles">
+        <item>Primario</item>
+        <item>Secundario</item>
+        <item>Universitario</item>
+    </string-array>
+    <string-array name="tipo">
+        <item>Presencial</item>
+        <item>Virtual</item>
+    </string-array>
+</resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/detalleClaseFragment">
+    app:startDestination="@id/buscarClasesFragment">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
@@ -26,7 +26,11 @@
         android:id="@+id/buscarClasesFragment"
         android:name="com.fvt.dondeestudio.BuscarClasesFragment"
         android:label="fragment_buscar_clases"
-        tools:layout="@layout/fragment_buscar_clases" />
+        tools:layout="@layout/fragment_buscar_clases" >
+        <action
+            android:id="@+id/action_buscarClasesFragment_to_resultadosBusqueda"
+            app:destination="@id/resultadosBusqueda" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.fvt.dondeestudio.LoginFragment"
@@ -72,5 +76,14 @@
         <action
             android:id="@+id/action_verificacionFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultadosBusqueda"
+        android:name="com.fvt.dondeestudio.ResultadosBusqueda"
+        android:label="fragment_resultados_busqueda"
+        tools:layout="@layout/fragment_resultados_busqueda" >
+        <action
+            android:id="@+id/action_resultadosBusqueda_to_clasesReservadasFragment"
+            app:destination="@id/clasesReservadasFragment" />
     </fragment>
 </navigation>
