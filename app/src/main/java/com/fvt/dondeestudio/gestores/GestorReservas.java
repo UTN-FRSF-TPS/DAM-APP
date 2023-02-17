@@ -72,6 +72,7 @@ private FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 public void onSuccess(DocumentReference documentReference) {
                     GestorClases g = new GestorClases();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 public void onFailure(@NonNull Exception e) {
