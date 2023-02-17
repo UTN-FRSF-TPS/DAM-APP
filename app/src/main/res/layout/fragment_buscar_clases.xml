@@ -82,7 +82,7 @@
         android:id="@+id/tv_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tarifa máxima en $:"
+        android:text="Tarifa máxima (en $):"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp"/>
@@ -109,7 +109,7 @@
         android:id="@+id/distanciaView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Distancia en km:"
+        android:text="Distancia máxima (en km):"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp"/>

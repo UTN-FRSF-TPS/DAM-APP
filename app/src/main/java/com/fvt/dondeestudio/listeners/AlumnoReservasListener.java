@@ -102,7 +102,5 @@ public class AlumnoReservasListener {
                     }
                 });
 
-//Solo permitir eliminar clase si fecha < actual, y solo mostrar clases (tanto para alumnos y profesores)
-        //cuya fecha es mayor a la actual.
     }
 }

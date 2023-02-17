@@ -2,6 +2,7 @@ package com.fvt.dondeestudio;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -56,6 +57,8 @@ public class BuscarClasesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
 
        binding = FragmentBuscarClasesBinding.inflate(inflater, container, false);

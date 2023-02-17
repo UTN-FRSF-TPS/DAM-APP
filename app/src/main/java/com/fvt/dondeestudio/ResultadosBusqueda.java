@@ -2,6 +2,8 @@ package com.fvt.dondeestudio;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +78,10 @@ public class ResultadosBusqueda extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentResultadosBusquedaBinding.inflate(inflater, container, false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Resultados de la búsqueda");
+
+
        Bundle bundle = getArguments();
        ClaseDTO filtro = (ClaseDTO) bundle.getSerializable("filtro");
         GestorClases gC = new GestorClases();
