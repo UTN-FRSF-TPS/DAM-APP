@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.databinding.FragmentBuscarClasesBinding;
@@ -55,8 +56,11 @@ public class BuscarClasesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
        binding = FragmentBuscarClasesBinding.inflate(inflater, container, false);
        Button boton = binding.btnSearch;
+       this.actualizarSeekBar(binding);
        boton.setOnClickListener(e ->{
            Bundle bundle = new Bundle();
            ClaseDTO claseDTO = new ClaseDTO();
@@ -81,4 +85,57 @@ public class BuscarClasesFragment extends Fragment {
         return binding.getRoot();
 
     }
+
+    private void actualizarSeekBar(FragmentBuscarClasesBinding binding) {
+        binding.tarifa.setProgress(1000);
+        binding.distancia.setProgress(5);
+        binding.valoracion.setProgress(3);
+
+        binding.tarifa.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Actualizar el texto del TextView con el valor actual de la SeekBar
+                binding.tarifaTextView.setText(String.valueOf(progress) + " $");
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        binding.distancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Actualizar el texto del TextView con el valor actual de la SeekBar
+                binding.distanciaTextView.setText(String.valueOf(progress) + " km.");
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        binding.valoracion.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Actualizar el texto del TextView con el valor actual de la SeekBar
+                binding.valoracionTextView.setText(String.valueOf(progress));
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+    }
+
 }
