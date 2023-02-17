@@ -91,15 +91,16 @@
         android:id="@+id/tarifa"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="1000"
-        android:progress="500"
+        android:max="1500"
+        android:min="500"
+        android:progress="100"
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/tv_price_range"
+        android:id="@+id/tarifaTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="500 - 1000 $"
+        android:text="1000 $"
         android:textSize="16sp"
         android:textAlignment="center"/>
 
@@ -117,15 +118,15 @@
         android:id="@+id/distancia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="10"
+        android:max="10"
+        android:progress="1"
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/tv_distance_range"
+        android:id="@+id/distanciaTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1 - 10 km"
+        android:text="5 km."
         android:textSize="16sp"
         android:textAlignment="center"/>
 
@@ -148,10 +149,10 @@
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/tv_rating_value"
+        android:id="@+id/valoracionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="3.0"
+        android:text="3"
         android:textSize="16sp"
         android:textAlignment="center"/>
 

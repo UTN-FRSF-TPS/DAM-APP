@@ -84,15 +84,16 @@ public class ResultadosBusqueda extends Fragment {
             @Override
             public void onComplete(ArrayList<Clase> clases) {
                 System.out.println("TAM: " + clases.size());
-                if(clases.size() > 0) {
+                if (clases.size() > 0) {
                     recycler.setLayoutManager(new LinearLayoutManager(getContext()));
                     recycler.setAdapter(new ClasesResultadoAdapter(getContext(), clases));
-                }else
+                } else {
                     binding.resultado.setText("No se encontraron clases con esos filtros :( ");
                     binding.resultado.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
                     binding.resultado.setGravity(Gravity.CENTER);
+                }
             }
-        }, null);
+        });
 
         // Inflate the layout for this fragment
         return binding.getRoot();

@@ -29,7 +29,7 @@ public class GestorAlumnos {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                Alumno alumno= documentSnapshot.toObject(Alumno.class);
-               // alumno.setId(documentSnapshot.getId());
+               alumno.setId(documentSnapshot.getId());
                 callback.onComplete(alumno);
             }
         }).addOnFailureListener(new OnFailureListener() {

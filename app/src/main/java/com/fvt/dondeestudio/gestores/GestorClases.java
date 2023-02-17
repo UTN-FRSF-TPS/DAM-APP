@@ -253,14 +253,13 @@ public class GestorClases {
      *
      * @param filtro
      * @param callback
-     * @param ubicacion
      *
      * Devuelve en el callback las clases que cumplen con el filtro de busqueda filtro
      * TODO: REFACTORIZAR EL METODO
      */
 
     //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
-    public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback, LatLng ubicacion) {
+    public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback) {
 
         Query q1 = FirebaseFirestore.getInstance().collection("clase");
         if (filtro.getAsignatura() != null)
@@ -271,7 +270,8 @@ public class GestorClases {
             q1 = q1.whereEqualTo("tipo", filtro.getTipo());
         if (filtro.getTarifaHoraMax() != null)
             q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
-        if (filtro.getValoracionProfesor() != null)
+        final boolean[] arr = {false};
+
         Tasks.whenAllSuccess(q1.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
             @Override
             public void onComplete(@NonNull Task<List<Object>> task) {
@@ -309,8 +309,11 @@ public class GestorClases {
                                                     Clase clase = document.toObject(Clase.class);
                                                     clase.setId(document.getId());
                                                     clases.add(clase);
+
                                                 }
+
                                             }
+                                            arr[0] = true;
                                             callback.onComplete(clases);
                                         }
                                     });
@@ -318,6 +321,9 @@ public class GestorClases {
                             } //version
                         } //recorre documentos
                 } //si fue exitoso
+                if(!arr[0]){
+                    callback.onComplete(clases);
+                }
             } //callback
         });
     }
