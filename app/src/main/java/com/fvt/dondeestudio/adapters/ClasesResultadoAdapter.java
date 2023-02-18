@@ -31,6 +31,7 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
             binding.asignatura2.setText(clase.getAsignatura());
             binding.profesor.setText(clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
             binding.horario.setText(clase.getHorario());
+           //TODO convertir de coordenadas a direccion para mostrar en el card view
             binding.botonReservar.setOnClickListener(l->{
                 GestorReservas gR = new GestorReservas();
                 gR.guardarReserva(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase);

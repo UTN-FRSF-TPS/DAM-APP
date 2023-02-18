@@ -260,25 +260,23 @@ public class GestorClases {
 
     //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
     public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback) {
-
-        Query q1 = FirebaseFirestore.getInstance().collection("clase");
-        if (filtro.getAsignatura() != null)
-            q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
-        if (filtro.getNivel() != null)
-            q1 = q1.whereEqualTo("nivel", filtro.getNivel());
-        if (filtro.getTipo() != null)
-            q1 = q1.whereEqualTo("tipo", filtro.getTipo());
-        if (filtro.getTarifaHoraMax() != null)
-            q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
-        final boolean[] arr = {false};
-
-        Tasks.whenAllSuccess(q1.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<Object>> task) {
-                ArrayList<Clase> clases = new ArrayList<Clase>();
-                if (task.isSuccessful()) {
-                    QuerySnapshot q1Result = (QuerySnapshot) task.getResult().get(0);
-                    for (DocumentSnapshot document : q1Result) {
+            Query q1 = FirebaseFirestore.getInstance().collection("clase");
+            if (filtro.getAsignatura() != null)
+                q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
+            if (filtro.getNivel() != null)
+                q1 = q1.whereEqualTo("nivel", filtro.getNivel());
+            if (filtro.getTipo() != null)
+                q1 = q1.whereEqualTo("tipo", filtro.getTipo());
+            if (filtro.getTarifaHoraMax() != null)
+                q1 = q1.whereLessThanOrEqualTo("tarifaHora", filtro.getTarifaHoraMax());
+            final boolean[] arr = {false};
+            Tasks.whenAllSuccess(q1.get()).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
+                @Override
+                public void onComplete(@NonNull Task<List<Object>> task) {
+                    ArrayList<Clase> clases = new ArrayList<Clase>();
+                    if (task.isSuccessful()) {
+                        QuerySnapshot q1Result = (QuerySnapshot) task.getResult().get(0);
+                        for (DocumentSnapshot document : q1Result) {
                             String horario = (String) document.get("horario");
                             DateTimeFormatter formatter = null;
                             LocalDateTime dateTime = null;
@@ -293,7 +291,7 @@ public class GestorClases {
                                     gP.calcularReputacion(document.get("profesor.id").toString(), new Callback<Double>() {
                                         @Override
                                         public void onComplete(Double reputacion) {
-                                            if(reputacion > filtro.getValoracionProfesor()){
+                                            if (reputacion > filtro.getValoracionProfesor()) {
 
                                                 if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
 
@@ -320,12 +318,13 @@ public class GestorClases {
                                 } //fecha anterior a la actual
                             } //version
                         } //recorre documentos
-                } //si fue exitoso
-                if(!arr[0]){
-                    callback.onComplete(clases);
-                }
-            } //callback
-        });
+                    } //si fue exitoso
+                    if (!arr[0]) {
+                        callback.onComplete(clases);
+                    }
+                } //callback
+            });
+
     }
 
     /**

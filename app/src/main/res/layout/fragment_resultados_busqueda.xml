@@ -19,7 +19,7 @@
         android:id="@+id/resultado"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Resultados de búsqueda:"
+        android:text="Cargando resultados.."
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"

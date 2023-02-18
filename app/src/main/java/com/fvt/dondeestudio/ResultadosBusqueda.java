@@ -89,7 +89,6 @@ public class ResultadosBusqueda extends Fragment {
         gC.filtrarClases(filtro, new Callback<ArrayList<Clase>>() {
             @Override
             public void onComplete(ArrayList<Clase> clases) {
-                System.out.println("TAM: " + clases.size());
                 if (clases.size() > 0) {
                     recycler.setLayoutManager(new LinearLayoutManager(getContext()));
                     recycler.setAdapter(new ClasesResultadoAdapter(getContext(), clases));
