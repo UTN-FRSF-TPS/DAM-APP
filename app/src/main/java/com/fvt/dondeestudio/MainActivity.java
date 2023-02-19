@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
             NavController navController = ((NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView5)).getNavController();
             NavGraph navGraph = navController.getNavInflater().inflate(R.navigation.nav_graph);
-                navGraph.setStartDestination(R.id.buscarUsuario);
+                navGraph.setStartDestination(R.id.fragment_mensajeria);
             navController.setGraph(navGraph);
         }
 

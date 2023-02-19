@@ -3,62 +3,137 @@ package com.fvt.dondeestudio;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link fragment_mensajeria#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.fvt.dondeestudio.adapters.UsuarioAdapter;
+import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
+import com.fvt.dondeestudio.databinding.FragmentMensajeriaBinding;
+import com.fvt.dondeestudio.model.Alumno;
+import com.fvt.dondeestudio.model.Chat;
+import com.fvt.dondeestudio.model.Usuario;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class fragment_mensajeria extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentMensajeriaBinding binding;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerView;
 
-    public fragment_mensajeria() {
-        // Required empty public constructor
-    }
+    private UsuarioAdapter userAdapter;
+    private List<Usuario> mUsers;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_mensajeria.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static fragment_mensajeria newInstance(String param1, String param2) {
-        fragment_mensajeria fragment = new fragment_mensajeria();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FirebaseUser fuser;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+    private List<String> userList;
+    private CollectionReference reference;
+
+    public void pasarAAgregar(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_fragment_mensajeria_to_buscarUsuario);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mensajeria, container, false);
+        binding = FragmentMensajeriaBinding.inflate(inflater, container, false);
+        binding.botonAgregarChat.setOnClickListener(view -> pasarAAgregar(view));
+
+        recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        userList = new ArrayList<>();
+
+        reference = FirebaseFirestore.getInstance().collection("chats");
+
+        reference.addSnapshotListener((value, e) -> {
+            userList.clear();
+            if (e == null) {
+
+                for (QueryDocumentSnapshot doc : value) {
+                    Chat chat = doc.toObject(Chat.class);
+                    if (chat.getSender().equals(fuser.getUid())) {
+                        userList.add(chat.getReceiver());
+                    }
+                    if (chat.getReceiver().equals(fuser.getUid())) {
+                        userList.add(chat.getSender());
+                    }
+                }
+
+                readChats();
+            }
+        });
+        return binding.getRoot();
+    }
+
+    private void readChats() {
+        mUsers = new ArrayList<>();
+
+        CollectionReference referenceAlumno = FirebaseFirestore.getInstance().collection("alumno");
+        CollectionReference referenceProfesor = FirebaseFirestore.getInstance().collection("profesor");
+
+
+        mUsers.clear();
+        referenceAlumno.addSnapshotListener((value, e) -> {
+
+            for (QueryDocumentSnapshot doc : value) {
+                Usuario alumno = doc.toObject(Usuario.class);
+
+                for (String id : userList) {
+                    if (alumno.getId().equals(id)) {
+                        if (mUsers.size() != 0) {
+                            if (!mUsers.contains(alumno))
+                                    mUsers.add(alumno);
+                            }
+                            else {
+                                mUsers.add(alumno);
+                            }
+                        }
+                    }
+                }
+
+                userAdapter = new UsuarioAdapter(getContext(), mUsers);
+                recyclerView.setAdapter(userAdapter);
+
+            });
+
+        referenceProfesor.addSnapshotListener((value, e) -> {
+            System.out.println(userList);
+            for (QueryDocumentSnapshot doc : value) {
+                Usuario profesor = doc.toObject(Usuario.class);
+
+                for (String id : userList) {
+                    if (profesor.getId().equals(id)) {
+                        if (mUsers.size() != 0) {
+                            if (!mUsers.contains(profesor))
+                                mUsers.add(profesor);
+                        }
+                    else {
+                        mUsers.add(profesor);
+                    }
+                    }
+                }
+            }
+
+            userAdapter = new UsuarioAdapter(getContext(), mUsers);
+            recyclerView.setAdapter(userAdapter);
+
+        });
     }
 }
