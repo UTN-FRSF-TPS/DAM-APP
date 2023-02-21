@@ -1,15 +1,20 @@
 package com.fvt.dondeestudio.model;
 
+import android.os.Build;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Clase {
+public class Clase implements Serializable, Comparable<Clase>
+ {
 
     private String id;
     private Profesor profesor;
@@ -23,6 +28,8 @@ public class Clase {
     private String horario;
     private String estadoUsuario;
     private String tipo;
+    private Boolean tieneRetroalimentacion; //Solo validos para card view
+    private Boolean reservada; //Solo validos para card view
 
     public Clase(){};
 
@@ -141,4 +148,35 @@ public class Clase {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-}
+
+    public Boolean getTieneRetroalimentacion() {
+        return tieneRetroalimentacion;
+    }
+
+    public void setTieneRetroalimentacion(Boolean tieneRetroalimentacion) {
+        this.tieneRetroalimentacion = tieneRetroalimentacion;
+    }
+
+    public Boolean getReservada() {
+        return reservada;
+    }
+
+    public void setReservada(Boolean reservada) {
+        this.reservada = reservada;
+    }
+
+     @Override
+     public int compareTo(Clase otra) {
+         DateTimeFormatter formatter = null;
+         LocalDateTime fechaHora = null;
+         LocalDateTime otraFechaHora = null;
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+             formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+             fechaHora = LocalDateTime.parse(this.horario, formatter);
+             otraFechaHora = LocalDateTime.parse(otra.horario, formatter);
+         }
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+             return otraFechaHora.compareTo(fechaHora);
+         return 0;
+     }
+ }

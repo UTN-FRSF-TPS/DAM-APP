@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,8 +134,10 @@ public class GestorClases {
      *
      * Devuelve en el callback true si el usuario idUsuario ya hizo una retroalimentacion en la clase idClase
      * False en caso contrario
+     * AL AGREGAR LA CLASE SE DEBE AGREGAR UN ARRAY VALORACIONES, QUE SEA NULO.
      */
     public void ClaseTieneRetroalimentacionDeUsuario(String idClase,String idUsuario, final Callback<Boolean> callback){
+
         db.collection("clase").document(idClase).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -153,7 +156,6 @@ public class GestorClases {
                         break;
                     }
                 }
-                System.out.println("RETORNO:" + retorno);
                 callback.onComplete(retorno);
 
             }});
@@ -291,6 +293,7 @@ public class GestorClases {
                                     gP.calcularReputacion(document.get("profesor.id").toString(), new Callback<Double>() {
                                         @Override
                                         public void onComplete(Double reputacion) {
+
                                             if (reputacion > filtro.getValoracionProfesor()) {
 
                                                 if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
@@ -332,6 +335,7 @@ public class GestorClases {
      * @param idAlumno
      * @param callback
      * Devuelve en el callback los objetos clases que reservó el alumno
+     *TODO: DEVOLVER TAMBIEN ANTERIORES A LA FECHA, Y SI LA FECHA ES ANTERIOR, PERMITIR AGREGAR RETROALIMENTACION
      *
      */
 
@@ -348,20 +352,17 @@ public class GestorClases {
                             @Override
                             public void onComplete(Clase clase) {
                                 clase.setEstadoUsuario(document.get("estado").toString()); //se setea el estado de la reserva para mostrarlo en el cardview
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                                    LocalDateTime dateTime = LocalDateTime.parse(clase.getHorario(), formatter);
-                                    if(dateTime.isAfter(LocalDateTime.now()))
                                         clases.add(clase);
-                                }
                                 count[0]++;
                                 if (count[0] == task.getResult().size()) { //si ya estan todos los registros llamo a on complete
+                                    Collections.sort(clases);
                                     callback.onComplete(clases);
                                 }
                             }
                         });
                     }
                 } else {
+                    Collections.sort(clases);
                     callback.onComplete(null);
                 }
             }

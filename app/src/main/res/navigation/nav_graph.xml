@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/buscarClasesFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
@@ -39,6 +39,12 @@
         <action
             android:id="@+id/action_loginFragment_to_verificacionFragment"
             app:destination="@id/verificacionFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_buscarClasesFragment"
+            app:destination="@id/buscarClasesFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_agregarClaseFragment"
+            app:destination="@id/agregarClaseFragment" />
     </fragment>
     <fragment
         android:id="@+id/detalleClaseFragment"
@@ -49,7 +55,14 @@
         android:id="@+id/registroFragment"
         android:name="com.fvt.dondeestudio.RegistroFragment"
         android:label="fragment_registro"
-        tools:layout="@layout/fragment_registro" />
+        tools:layout="@layout/fragment_registro" >
+        <action
+            android:id="@+id/action_registroFragment_to_buscarClasesFragment"
+            app:destination="@id/buscarClasesFragment" />
+        <action
+            android:id="@+id/action_registroFragment_to_agregarClaseFragment"
+            app:destination="@id/agregarClaseFragment" />
+    </fragment>
     <fragment
         android:id="@+id/clasesProgramadasFragment"
         android:name="com.fvt.dondeestudio.ClasesProgramadasFragment"
@@ -68,14 +81,14 @@
         android:label="fragment_verificacion"
         tools:layout="@layout/fragment_verificacion" >
         <action
-            android:id="@+id/action_verificacionFragment_to_clasesReservadasFragment"
-            app:destination="@id/clasesReservadasFragment" />
-        <action
-            android:id="@+id/action_verificacionFragment_to_clasesProgramadasFragment"
-            app:destination="@id/clasesProgramadasFragment" />
-        <action
             android:id="@+id/action_verificacionFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
+        <action
+            android:id="@+id/action_verificacionFragment_to_agregarClaseFragment"
+            app:destination="@id/agregarClaseFragment" />
+        <action
+            android:id="@+id/action_verificacionFragment_to_buscarClasesFragment"
+            app:destination="@id/buscarClasesFragment" />
     </fragment>
     <fragment
         android:id="@+id/resultadosBusqueda"
@@ -86,4 +99,19 @@
             android:id="@+id/action_resultadosBusqueda_to_clasesReservadasFragment"
             app:destination="@id/clasesReservadasFragment" />
     </fragment>
+    <action
+        android:id="@+id/action_global_buscarClasesFragment"
+        app:destination="@id/buscarClasesFragment" />
+    <action
+        android:id="@+id/action_global_clasesReservadasFragment"
+        app:destination="@id/clasesReservadasFragment" />
+    <action
+        android:id="@+id/action_global_detalleClaseFragment"
+        app:destination="@id/detalleClaseFragment" />
+    <action
+        android:id="@+id/action_global_clasesProgramadasFragment"
+        app:destination="@id/clasesProgramadasFragment" />
+    <action
+        android:id="@+id/action_global_agregarClaseFragment"
+        app:destination="@id/agregarClaseFragment" />
 </navigation>

@@ -4,9 +4,12 @@ package com.fvt.dondeestudio;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -87,11 +90,15 @@ public class AgregarClaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final Context contexto = this.getContext();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Buscar");
         // Inflate the layout for this fragment
         binding = FragmentAgregarClaseBinding.inflate(inflater, container, false);
         agregarClase = binding.button5;
-
         return binding.getRoot();
 
     }
+
+
+
 }

@@ -7,6 +7,7 @@
     tools:context=".LoginFragment" >
 
     <ImageView
+        android:visibility="invisible"
         android:id="@+id/imageView2"
         android:layout_width="163dp"
         android:layout_height="132dp"
@@ -18,6 +19,7 @@
         android:src="@drawable/logo_app" />
 
     <TextView
+        android:visibility="invisible"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
             >
 
             <TextView
+                android:visibility="invisible"
                 android:gravity="center"
                 android:layout_weight="1"
                 android:id="@+id/textoVerificacion"
@@ -56,6 +59,7 @@
             android:layout_height="match_parent">
             <com.hbb20.CountryCodePicker
                 android:id="@+id/ccp"
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:ccp_defaultNameCode="AR"
@@ -64,6 +68,7 @@
                 app:ccpDialog_fastScroller_bubbleColor="?attr/colorOnPrimary"
                 app:ccp_contentColor="?attr/colorOnBackground"/>
             <EditText
+                android:visibility="invisible"
                 android:id="@+id/numeroText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,10 +82,11 @@
             android:gravity="center">
 
             <Button
-
+                android:visibility="invisible"
                 android:id="@+id/botonLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#BA3636"
                 android:text="Login/Registro"
                 android:theme="@style/Button.LightRed"/>
         </TableRow>

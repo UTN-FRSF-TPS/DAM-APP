@@ -1,9 +1,10 @@
 package com.fvt.dondeestudio.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Profesor {
+public class Profesor implements Serializable {
 
     public Profesor(){};
 

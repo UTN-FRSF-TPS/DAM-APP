@@ -2,6 +2,8 @@ package com.fvt.dondeestudio;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,9 +70,21 @@ public class ClasesReservadasFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentClasesReservadasBinding.inflate(inflater, container, false);
+
+
+        ActionBar barra =  ((AppCompatActivity) getActivity()).getSupportActionBar();
+        barra.show();
+        barra.setTitle("Clases reservadas");
+
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         GestorClases gestor = new GestorClases();

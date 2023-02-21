@@ -1,15 +1,50 @@
 package com.fvt.dondeestudio;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 
+import com.fvt.dondeestudio.DTO.ClaseDTO;
+import com.fvt.dondeestudio.databinding.FragmentDetalleClaseBinding;
+import com.fvt.dondeestudio.gestores.GestorClases;
+import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
+import com.fvt.dondeestudio.model.Clase;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,7 +52,7 @@ import com.fvt.dondeestudio.helpers.NotificacionHelper;
  * create an instance of this fragment.
  */
 public class DetalleClaseFragment extends Fragment {
-
+    FragmentDetalleClaseBinding binding;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -52,17 +87,179 @@ public class DetalleClaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+/*
+  TODO: OBTENER DIRECCION SEGUN COORDENADAS SOLO SI DIRECCION PUESTA POR PROFESOR ES NULA
+ */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        binding = FragmentDetalleClaseBinding.inflate(inflater, container, false);
+        Bundle bundle = getArguments();
+        Clase clase = (Clase) bundle.getSerializable("clase");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Clase de " + clase.getAsignatura());
+        this.actualizarEstado(clase);
+        binding.horario.setText(clase.getHorario());
+        binding.profesor.setText("Profesor: " + clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
+        binding.tarifa.setText(clase.getTarifaHora().toString() + " por hora");
+        DateTimeFormatter formatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            LocalDateTime fechaClase = LocalDateTime.parse(clase.getHorario(), formatter);
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle_clase, container, false);
+
+            if(clase.getEstadoUsuario().equals("pendiente") && fechaClase.isAfter(LocalDateTime.now())){
+            binding.botonCancelarReserva.setVisibility(View.VISIBLE);
+        }
+                //Si la clase termino, si la clase fue confirmada
+
+            GestorClases gC = new GestorClases();
+            gC.ClaseTieneRetroalimentacionDeUsuario(clase.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<Boolean>() {
+                @Override
+                public void onComplete(Boolean agregoR) {
+                    if(fechaClase.isBefore(LocalDateTime.now()) && clase.getEstadoUsuario().equals("confirmada") && !agregoR) {
+                        binding.botonRetroalimentacion.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+
+        }
+
+        if(clase.getTipo().equals("Presencial")) {
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_fragment);
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    LatLng ubicacion = new LatLng(clase.getUbicacion().getLatitude(), clase.getUbicacion().getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(ubicacion);
+                    googleMap.addMarker(markerOptions);
+                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                    new GeocodeAsyncTask().execute(ubicacion);
+                    CameraUpdate ubicacionCamara = CameraUpdateFactory.newLatLngZoom(ubicacion, 17);
+                    googleMap.moveCamera(ubicacionCamara);
+                }
+            });
+        } else {
+            getChildFragmentManager().findFragmentById(R.id.map_fragment).getView().setVisibility(View.GONE);
+            binding.direccion.setText("Clase virtual");
+            binding.locationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_computer_24));
+
+        }
+
+        /* LISTENERS DE BOTONES*/
+        binding.botonRetroalimentacion.setOnClickListener(e ->{
+            this.mostrarDialog(clase.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        });
+
+
+
+
+
+
+        return binding.getRoot();
     }
+
+    private void mostrarDialog(String idClase, String idUsuario){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Califica la clase");
+        builder.setMessage("Selecciona una calificación:");
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.rating_dialog, null);
+        RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+        builder.setView(view);
+
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                GestorClases gC = new GestorClases();
+                System.out.println("Clase id: " + idClase);
+                gC.agregarRetroalimentacion(idClase, idUsuario, Integer.valueOf(Double.valueOf(ratingBar.getRating()).intValue()));
+                System.out.println("Agregada retroalimentacion a clase: " + idClase);
+            }
+        });
+        builder.setNegativeButton("Cancelar", null);
+
+        builder.show();
+    }
+
+
+    private class GeocodeAsyncTask extends AsyncTask<LatLng, Void, List<Address>> {
+        @Override
+        protected List<Address> doInBackground(LatLng... params) {
+            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+            LatLng ubicacion = params[0];
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(ubicacion.latitude, ubicacion.longitude, 1);
+            } catch (IOException e) {
+
+            }
+            return addresses;
+        }
+
+        @Override
+        protected void onPostExecute(List<Address> addresses) {
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                binding.direccion.setText(address.getAddressLine(0));
+            } else {
+                binding.direccion.setText("No existe direccion");
+            }
+        }
+    }
+
+
+    private void actualizarEstado(Clase clase){
+        switch(clase.getEstadoUsuario()) {
+            case "pendiente":
+                binding.estado.setText("Pendiente");
+                binding.estado.setTextColor(Color.BLUE);
+                binding.statusIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.reserva_pendiente));
+                binding.statusIcon.setColorFilter(Color.BLUE);
+                break;
+            case "confirmada":
+                binding.estado.setText("Confirmada");
+                binding.estado.setTextColor(Color.GREEN);
+                binding.statusIcon.setColorFilter(Color.GREEN);
+                binding.statusIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.reserva_confirmada));
+
+                break;
+            case "rechazada":
+                binding.estado.setText("Rechazada");
+                binding.estado.setTextColor(Color.RED);
+                binding.statusIcon.setColorFilter(Color.RED);
+                binding.statusIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.reserva_rechazada));
+                break;
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (this instanceof DetalleClaseFragment) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

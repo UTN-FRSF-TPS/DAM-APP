@@ -16,6 +16,11 @@ import android.widget.Toast;
 
 import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
 import com.fvt.dondeestudio.databinding.FragmentVerificacionBinding;
+import com.fvt.dondeestudio.gestores.GestorProfesores;
+import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
+import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -90,10 +95,23 @@ public class VerificacionFragment extends Fragment {
                             bundle.putParcelable("user", user);
                             Navigation.findNavController(this.getView()).navigate(R.id.action_verificacionFragment_to_registroFragment, bundle);
                         }
-                        else { //Que navegue donde corresponda
+                        else {
+                            GestorProfesores g = new GestorProfesores();
+                            String idLog = FirebaseAuth.getInstance().getUid();
+                            g.obtenerProfesor(idLog, new Callback<Profesor>() {
+                                @Override
+                                public void onComplete(Profesor data) {
+                                    if (data == null) { //es alumno
+                                        AlumnoReservasListener.seguirReserva(idLog, getContext());
+                                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_buscarClasesFragment, null);
+                                    } else { //es profesor
+                                        ProfesorReservasListener.seguirReserva(idLog, getContext());
+                                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_agregarClaseFragment, null);
+                                    }
+                                }
 
+                            });
                         }
-
                         // Pasa a la siguiente actividad
                     } else {
                         // Sign in failed, display a message and update the UI
@@ -199,10 +217,7 @@ public class VerificacionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentVerificacionBinding.inflate(inflater, container, false);
-
         binding.verificar.setOnClickListener(lambda -> verifyNumber());
-
-
         return binding.getRoot();
     }
 }

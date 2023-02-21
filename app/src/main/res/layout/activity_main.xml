@@ -14,7 +14,9 @@
         android:background="@color/white"
         android:titleTextColor="@android:color/black"
         android:elevation="25dp"
-        app:title="" />
+
+
+        />
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,8 +26,8 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView5"
+    <fragment
+        android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
