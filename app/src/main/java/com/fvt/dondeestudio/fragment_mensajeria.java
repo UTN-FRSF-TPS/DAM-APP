@@ -2,6 +2,7 @@ package com.fvt.dondeestudio;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,11 +21,18 @@ import com.fvt.dondeestudio.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class fragment_mensajeria extends Fragment {
 
@@ -38,7 +46,7 @@ public class fragment_mensajeria extends Fragment {
     private FirebaseUser fuser;
 
 
-    private List<String> userList;
+    private Set<String> userList;
     private CollectionReference reference;
 
     public void pasarAAgregar(View view) {
@@ -58,7 +66,7 @@ public class fragment_mensajeria extends Fragment {
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
-        userList = new ArrayList<>();
+        userList = new HashSet<>();
 
         reference = FirebaseFirestore.getInstance().collection("chats");
 
@@ -85,55 +93,29 @@ public class fragment_mensajeria extends Fragment {
     private void readChats() {
         mUsers = new ArrayList<>();
 
-        CollectionReference referenceAlumno = FirebaseFirestore.getInstance().collection("alumno");
-        CollectionReference referenceProfesor = FirebaseFirestore.getInstance().collection("profesor");
-
-
         mUsers.clear();
-        referenceAlumno.addSnapshotListener((value, e) -> {
 
-            for (QueryDocumentSnapshot doc : value) {
-                Usuario alumno = doc.toObject(Usuario.class);
+        for (String id : userList) {
+            DocumentReference referenceAlumno = FirebaseFirestore.getInstance().collection("alumno").document(id);
+            DocumentReference referenceProfesor = FirebaseFirestore.getInstance().collection("profesor").document(id);
 
-                for (String id : userList) {
-                    if (alumno.getId().equals(id)) {
-                        if (mUsers.size() != 0) {
-                            if (!mUsers.contains(alumno))
-                                    mUsers.add(alumno);
-                            }
-                            else {
-                                mUsers.add(alumno);
-                            }
-                        }
-                    }
+            referenceAlumno.addSnapshotListener((value, error) -> {
+                if (error == null) {
+                    Usuario usuario = value.toObject(Usuario.class);
+                    if (usuario != null) mUsers.add(usuario);
+                    userAdapter = new UsuarioAdapter(getContext(), mUsers);
+                    recyclerView.setAdapter(userAdapter);
                 }
-
-                userAdapter = new UsuarioAdapter(getContext(), mUsers);
-                recyclerView.setAdapter(userAdapter);
-
             });
-
-        referenceProfesor.addSnapshotListener((value, e) -> {
-            System.out.println(userList);
-            for (QueryDocumentSnapshot doc : value) {
-                Usuario profesor = doc.toObject(Usuario.class);
-
-                for (String id : userList) {
-                    if (profesor.getId().equals(id)) {
-                        if (mUsers.size() != 0) {
-                            if (!mUsers.contains(profesor))
-                                mUsers.add(profesor);
-                        }
-                    else {
-                        mUsers.add(profesor);
-                    }
-                    }
+            referenceProfesor.addSnapshotListener((value, error) -> {
+                if (error == null) {
+                    Usuario usuario = value.toObject(Usuario.class);
+                    if (usuario != null) mUsers.add(usuario);
+                    userAdapter = new UsuarioAdapter(getContext(), mUsers);
+                    recyclerView.setAdapter(userAdapter);
                 }
-            }
+            });
+        }
 
-            userAdapter = new UsuarioAdapter(getContext(), mUsers);
-            recyclerView.setAdapter(userAdapter);
-
-        });
     }
 }
