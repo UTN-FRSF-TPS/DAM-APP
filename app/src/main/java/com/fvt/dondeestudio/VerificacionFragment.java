@@ -74,6 +74,7 @@ public class VerificacionFragment extends Fragment {
     private void verifyNumber() {
         String smsCode = binding.codigoVerificacion.getText().toString();
 
+        System.out.println(mVerificationId + " " + smsCode);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
         signInWithPhoneAuthCredential(credential);
     }

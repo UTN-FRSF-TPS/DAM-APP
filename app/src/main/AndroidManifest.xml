@@ -22,6 +22,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCp-Ed2txKfdhKI2s4neNfeoL67KGAQU1M" />
 
+        <activity
+            android:name=".MessageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <service android:name=".listeners.ProfesorReservasListener"></service>
 
         <activity
             android:name=".MainActivity"

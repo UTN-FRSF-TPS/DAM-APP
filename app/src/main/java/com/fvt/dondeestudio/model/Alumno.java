@@ -1,13 +1,9 @@
 package com.fvt.dondeestudio.model;
 
-public class Alumno {
+public class Alumno extends Usuario {
 
     public Alumno(){};
 
-    private String id;
-    private String nombre;
-    private String apellido;
-    private String email;
 
     public Alumno(String id, String email, String nombre, String apellido) {
         this.id = id;

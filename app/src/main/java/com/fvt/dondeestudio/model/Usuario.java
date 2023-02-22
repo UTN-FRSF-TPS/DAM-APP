@@ -1,20 +1,30 @@
 package com.fvt.dondeestudio.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+public class Usuario {
 
-public class Profesor extends Usuario implements Serializable {
+    protected String id;
+    protected String nombre;
+    protected String apellido;
+    protected String email;
+    protected String photoUrl;
 
-    public Profesor() {
-        super();
+    public Usuario() {
     }
 
-    public Profesor(String id, String nombre, String apellido, String email) {
-        super(id, nombre, apellido, email);
+    public Usuario(String id, String nombre, String apellido, String email) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
     }
 
-    private Integer valoracion;
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     public String getId() {
         return id;
@@ -47,14 +57,4 @@ public class Profesor extends Usuario implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public Integer getValoracion() {
-        return valoracion;
-    }
-
-    public void setValoracion(Integer valoracion) {
-        this.valoracion = valoracion;
-    }
-
-
 }

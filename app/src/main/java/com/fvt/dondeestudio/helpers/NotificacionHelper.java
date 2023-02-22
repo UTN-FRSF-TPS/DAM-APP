@@ -41,11 +41,11 @@ public class NotificacionHelper {
                 .setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(body));
         if(intentCanc != null) {
-            PendingIntent opcion2Pi = PendingIntent.getBroadcast(context, 0, intentCanc, 0);
+            PendingIntent opcion2Pi = PendingIntent.getBroadcast(context, 0, intentCanc, PendingIntent.FLAG_IMMUTABLE);
             mBuilder.addAction(android.R.drawable.ic_menu_agenda, "Cancelar", opcion2Pi);
         }
         if(intentConf != null) {
-            PendingIntent opcion1Pi = PendingIntent.getBroadcast(context, 0, intentConf, 0);
+            PendingIntent opcion1Pi = PendingIntent.getBroadcast(context, 0, intentConf, PendingIntent.FLAG_IMMUTABLE);
             mBuilder.addAction(android.R.drawable.ic_menu_agenda, "Confirmar", opcion1Pi);
         }
 
