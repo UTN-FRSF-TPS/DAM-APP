@@ -17,14 +17,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/botonMail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:checked="true"
             android:text="Mail" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/botonTelefono"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"

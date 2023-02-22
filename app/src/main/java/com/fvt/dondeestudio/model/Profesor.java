@@ -10,8 +10,8 @@ public class Profesor extends Usuario implements Serializable {
         super();
     }
 
-    public Profesor(String id, String nombre, String apellido, String email) {
-        super(id, nombre, apellido, email);
+    public Profesor(String id, String nombre, String apellido, String email, String telefono) {
+        super(id, nombre, apellido, email, telefono);
     }
 
     private Integer valoracion;

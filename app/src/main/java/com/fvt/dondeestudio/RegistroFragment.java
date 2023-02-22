@@ -43,14 +43,14 @@ public class RegistroFragment extends Fragment {
         user.updateProfile(cambioNombre);
 
         if (binding.spinnerRol.getSelectedItem().equals("Alumno")) {
-            Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido);
+            Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
             GestorAlumnos gestor = new GestorAlumnos();
             gestor.agregarAlumno(alumno);
             AlumnoReservasListener.seguirReserva(user.getUid(), getContext());
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_buscarClasesFragment, null);
         }
         else {
-            Profesor profesor = new Profesor(user.getUid(), email, nombre, apellido);
+            Profesor profesor = new Profesor(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
             GestorProfesores gestor = new GestorProfesores();
             gestor.agregarProfesor(profesor);
             ProfesorReservasListener.seguirReserva(user.getUid(), getContext());

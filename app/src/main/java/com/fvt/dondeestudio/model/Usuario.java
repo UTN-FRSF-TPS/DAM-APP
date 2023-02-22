@@ -7,15 +7,17 @@ public class Usuario {
     protected String apellido;
     protected String email;
     protected String photoUrl;
+    protected String telefono;
 
     public Usuario() {
     }
 
-    public Usuario(String id, String nombre, String apellido, String email) {
+    public Usuario(String id, String nombre, String apellido, String email, String telefono) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
+        this.telefono = telefono;
     }
 
     public String getPhotoUrl() {

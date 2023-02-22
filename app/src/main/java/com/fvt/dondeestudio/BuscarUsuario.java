@@ -37,6 +37,7 @@ public class BuscarUsuario extends Fragment {
     private RecyclerView recyclerView;
 
     private TextView textoEmail;
+    private TextView textoTelefono;
 
     private UsuarioAdapter usuarioAdapter;
     List<Usuario> listaUsuarios;
@@ -52,8 +53,18 @@ public class BuscarUsuario extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         textoEmail = binding.textoEmailBusqueda;
+        textoTelefono = binding.buscaTelefono;
 
         binding.botonBuscar.setOnClickListener(lambda -> getUsers());
+
+        binding.botonTelefono.setOnClickListener(lambda -> {
+            binding.textoEmailBusqueda.setVisibility(View.GONE);
+            binding.buscaTelefono.setVisibility(View.VISIBLE);
+        });
+        binding.botonMail.setOnClickListener(lambda -> {
+            binding.textoEmailBusqueda.setVisibility(View.VISIBLE);
+            binding.buscaTelefono.setVisibility(View.GONE);
+        });
 
         return binding.getRoot();
     }
@@ -67,43 +78,49 @@ public class BuscarUsuario extends Fragment {
         CollectionReference alumnos = db.collection("alumno");
         CollectionReference profesores = db.collection("profesor");
 
-        Query queryAlumnos = alumnos.whereEqualTo("email", textoEmail.getText().toString());
-        Query queryProfesores = profesores.whereEqualTo("email", textoEmail.getText().toString());
-        Task<QuerySnapshot> taskAlumnos = queryAlumnos.get();
-        Task<QuerySnapshot> taskProfesores = queryProfesores.get();
+        if (textoEmail.getVisibility() == View.VISIBLE) {
 
-        Tasks.whenAll(taskAlumnos, taskProfesores)
-                .addOnCompleteListener(task -> {
-                    for (DocumentSnapshot esteDocumento : taskAlumnos.getResult().getDocuments()) {
-                        String id = (String) esteDocumento.get("id");
-                        String nombre = (String) esteDocumento.get("nombre");
-                        String apellido = (String) esteDocumento.get("apellido");
-                        String email = (String) esteDocumento.get("email");
-                        //String photoUrl = (String) esteDocumento.get("photoUrl");
+            Task<QuerySnapshot> taskAlumnos = alumnos.whereEqualTo("email", textoEmail.getText().toString()).get();
+            Task<QuerySnapshot> taskProfesores = profesores.whereEqualTo("email", textoEmail.getText().toString()).get();
 
-                        Usuario esteUsuario = new Usuario(id, nombre, apellido, email);
-                        listaUsuarios.add(esteUsuario);
-                    }
+            Tasks.whenAll(taskAlumnos, taskProfesores)
+                    .addOnCompleteListener(task -> {
+                        for (DocumentSnapshot esteDocumento : taskAlumnos.getResult().getDocuments()) {
+                            Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
+                            listaUsuarios.add(esteUsuario);
+                        }
 
-                    for (DocumentSnapshot esteDocumento : taskProfesores.getResult().getDocuments()) {
-                        String id = (String) esteDocumento.get("id");
-                        String nombre = (String) esteDocumento.get("nombre");
-                        String apellido = (String) esteDocumento.get("apellido");
-                        String email = (String) esteDocumento.get("email");
-                        //String photoUrl = (String) esteDocumento.get("photoUrl");
-
-                        Usuario esteUsuario = new Usuario(id, nombre, apellido, email);
-                        listaUsuarios.add(esteUsuario);
-                    }
-
-                    usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
-                    recyclerView.setAdapter(usuarioAdapter);
-                });
+                        for (DocumentSnapshot esteDocumento : taskProfesores.getResult().getDocuments()) {
+                            Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
+                            listaUsuarios.add(esteUsuario);
+                        }
 
 
+                        usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
+                        recyclerView.setAdapter(usuarioAdapter);
+                    });
 
+        }
+        else {
+            Task<QuerySnapshot> taskAlumnos = alumnos.whereEqualTo("telefono", "+54" + textoTelefono.getText().toString()).get();
+            Task<QuerySnapshot> taskProfesores = profesores.whereEqualTo("telefono", "+54" + textoTelefono.getText().toString()).get();
 
-        System.out.println(listaUsuarios.size());
+            Tasks.whenAll(taskAlumnos, taskProfesores)
+                    .addOnCompleteListener(task -> {
+                        for (DocumentSnapshot esteDocumento : taskAlumnos.getResult().getDocuments()) {
+                            Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
+                            listaUsuarios.add(esteUsuario);
+                        }
+
+                        for (DocumentSnapshot esteDocumento : taskProfesores.getResult().getDocuments()) {
+                            Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
+                            listaUsuarios.add(esteUsuario);
+                        }
+
+                        usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
+                        recyclerView.setAdapter(usuarioAdapter);
+                    });
+        }
 
     }
 }
