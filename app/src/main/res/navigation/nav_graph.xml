@@ -140,4 +140,11 @@
         android:name="com.fvt.dondeestudio.MessageActivity"
         android:label="activity_message"
         tools:layout="@layout/activity_message" /><action android:id="@+id/action_global_fragment_mensajeria" app:destination="@id/fragment_mensajeria"/>
+    <fragment
+        android:id="@+id/reservasPendientesFragment"
+        android:name="com.fvt.dondeestudio.ReservasPendientesFragment"
+        android:label="ReservasPendientesFragment" />
+    <action
+        android:id="@+id/action_global_reservasPendientesFragment"
+        app:destination="@id/reservasPendientesFragment" />
 </navigation>

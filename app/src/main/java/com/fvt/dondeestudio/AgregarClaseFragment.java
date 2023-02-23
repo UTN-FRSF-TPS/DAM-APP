@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -84,6 +85,7 @@ public class AgregarClaseFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -91,7 +93,7 @@ public class AgregarClaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         final Context contexto = this.getContext();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Buscar");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Agregar clase");
         // Inflate the layout for this fragment
         binding = FragmentAgregarClaseBinding.inflate(inflater, container, false);
         agregarClase = binding.button5;
@@ -100,5 +102,14 @@ public class AgregarClaseFragment extends Fragment {
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 
 }

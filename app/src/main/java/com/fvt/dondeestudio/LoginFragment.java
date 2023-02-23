@@ -23,6 +23,7 @@ import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,15 +49,18 @@ public class LoginFragment extends Fragment {
     private void loginOrRegister(View view) {
         TextView numeroText = binding.numeroText;
         CountryCodePicker codigoPais = binding.ccp;
+        if (numeroText.getText().toString().length() > 0) {
 
-        String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
+            String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
 
-        Bundle bundle = new Bundle();
+            Bundle bundle = new Bundle();
 
-        bundle.putString("numeroCompleto", numeroCompleto);
+            bundle.putString("numeroCompleto", numeroCompleto);
 
-        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_verificacionFragment, bundle);
-
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_verificacionFragment, bundle);
+        } else {
+            Toast.makeText(getContext(), "Ingresa un numero de telefono válido", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -72,6 +76,7 @@ public class LoginFragment extends Fragment {
             //esta logueado
             GestorProfesores g = new GestorProfesores();
             String idLog = FirebaseAuth.getInstance().getUid();
+            ChatListener.seguirChat(idLog, getContext());
                 g.obtenerProfesor(idLog, new Callback<Profesor>() {
                     @Override
                     public void onComplete(Profesor data) {

@@ -3,7 +3,6 @@ package com.fvt.dondeestudio;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,12 +15,10 @@ import android.view.ViewGroup;
 
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.adapters.ClasesResultadoAdapter;
-import com.fvt.dondeestudio.adapters.ClasesUsuarioAdapter;
 import com.fvt.dondeestudio.databinding.FragmentResultadosBusquedaBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Clase;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 

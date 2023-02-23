@@ -105,6 +105,7 @@ public class DetalleClaseFragment extends Fragment {
         binding = FragmentDetalleClaseBinding.inflate(inflater, container, false);
         Bundle bundle = getArguments();
         Clase clase = (Clase) bundle.getSerializable("clase");
+        LatLng coordenada = (LatLng) bundle.getParcelable("coordenada");
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Clase de " + clase.getAsignatura());
         this.actualizarEstado(clase);
@@ -140,7 +141,7 @@ public class DetalleClaseFragment extends Fragment {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
-                    LatLng ubicacion = new LatLng(clase.getUbicacion().getLatitude(), clase.getUbicacion().getLongitude());
+                    LatLng ubicacion = coordenada;
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(ubicacion);
                     googleMap.addMarker(markerOptions);
@@ -160,6 +161,13 @@ public class DetalleClaseFragment extends Fragment {
         /* LISTENERS DE BOTONES*/
         binding.botonRetroalimentacion.setOnClickListener(e ->{
             this.mostrarDialog(clase.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        });
+
+        binding.botonEnviarMensajes.setOnClickListener(e -> {
+            String idDestino = clase.getProfesor().getId();
+            Intent intent = new Intent(getActivity(), MessageActivity.class);
+            intent.putExtra("userId", idDestino);
+            getContext().startActivity(intent);
         });
 
 

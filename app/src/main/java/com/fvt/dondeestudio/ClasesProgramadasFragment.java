@@ -14,7 +14,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ClasesProgramadasFragment extends Fragment {
-
+    //TODO: Mostrar clases, con los usuarios inscriptos
+    //TODO: Otra interfaz que diga "Reservas" donde pueda aceptar o rechazar.
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

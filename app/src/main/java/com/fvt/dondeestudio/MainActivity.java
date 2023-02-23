@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
         }
         return true;
     }
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.menu_item_programadas) {
             navController.navigate(R.id.action_global_clasesProgramadasFragment);
+            return true;
+        }
+
+        if (id == R.id.menu_item_pendientes) {
+            navController.navigate(R.id.action_global_reservasPendientesFragment);
             return true;
         }
 

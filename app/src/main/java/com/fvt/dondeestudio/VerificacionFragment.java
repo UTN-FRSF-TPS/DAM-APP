@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class VerificacionFragment extends Fragment {
     private String mVerificationId;
-
+    private String smsCode;
     private FragmentVerificacionBinding binding;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -72,31 +72,34 @@ public class VerificacionFragment extends Fragment {
     }
 
     private void verifyNumber() {
-        String smsCode = binding.codigoVerificacion.getText().toString();
+       smsCode = binding.codigoVerificacion.getText().toString();
 
-        System.out.println(mVerificationId + " " + smsCode);
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
-        signInWithPhoneAuthCredential(credential);
+       if(smsCode.length() > 0) {
+           PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
+           signInWithPhoneAuthCredential(credential);
+       } else {
+           Toast.makeText(getContext(), "El código que ingresaste no es correcto. Ingresalo correctamente", Toast.LENGTH_LONG).show();
+       }
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                    if (task.isSuccessful() && smsCode != null) {
+                      //Se logueo correctamente
                         Log.d(TAG, "signInWithCredential:success");
                         System.out.println("Se logueó");
                         FirebaseUser user = task.getResult().getUser();
 
-                        System.out.println(user.getEmail());
-
                         if (user.getEmail() == null) {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("user", user);
+                            //si no existe usuario voy al registro.
                             Navigation.findNavController(this.getView()).navigate(R.id.action_verificacionFragment_to_registroFragment, bundle);
                         }
                         else {
+                            //si existe, logueo con el rol correspondiente
                             GestorProfesores g = new GestorProfesores();
                             String idLog = FirebaseAuth.getInstance().getUid();
                             g.obtenerProfesor(idLog, new Callback<Profesor>() {
@@ -113,12 +116,9 @@ public class VerificacionFragment extends Fragment {
 
                             });
                         }
-                        // Pasa a la siguiente actividad
                     } else {
-                        // Sign in failed, display a message and update the UI
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            // The verification code entered was invalid
+                            Toast.makeText(getContext(), "El código que ingresaste no es correcto. Ingresalo correctamente", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -128,30 +128,13 @@ public class VerificacionFragment extends Fragment {
     public void onStart() {
         super.onStart();
         String numeroCompleto = getArguments().getString("numeroCompleto");
-
-        System.out.println("el numero recibido es: " + numeroCompleto);
-
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             PhoneAuthProvider.ForceResendingToken mResendToken;
 
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
-                // This callback will be invoked in two situations:
-                // 1 - Instant verification. In some cases the phone number can be instantly
-                //     verified without needing to send or enter a verification code.
-                // 2 - Auto-retrieval. On some devices Google Play services can automatically
-                //     detect the incoming verification SMS and perform verification without
-                //     user action.
-                Log.d(TAG, "onVerificationCompleted:" + credential);
 
 
-                CharSequence text = "funco";
-
-                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
-
-
-                toast.show();
-                //signInWithPhoneAuthCredential(credential);
             }
 
             @Override
@@ -161,23 +144,18 @@ public class VerificacionFragment extends Fragment {
                 Log.w(TAG, "onVerificationFailed", e);
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    // Invalid request
+
+                    Toast.makeText(getContext(), "El formato de número de teléfono es inválido", Toast.LENGTH_LONG).show();
+
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                 }
 
-                // Show a message and update the UI
             }
 
             @Override
             public void onCodeSent(@NonNull String verificationId,
                                    @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
-                Log.d(TAG, "onCodeSent:" + verificationId);
-
-                // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
                 System.out.println(mVerificationId);
@@ -216,7 +194,6 @@ public class VerificacionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentVerificacionBinding.inflate(inflater, container, false);
         binding.verificar.setOnClickListener(lambda -> verifyNumber());
         return binding.getRoot();

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Clase implements Serializable, Comparable<Clase>
@@ -22,7 +23,7 @@ public class Clase implements Serializable, Comparable<Clase>
     private Integer cupo;
     private Integer cupoActual;
     private Nivel nivel;
-    private GeoPoint ubicacion;
+    private transient GeoPoint ubicacion;
     private String asignatura;
     private Integer valoracion;
     private String horario;
@@ -30,6 +31,8 @@ public class Clase implements Serializable, Comparable<Clase>
     private String tipo;
     private Boolean tieneRetroalimentacion; //Solo validos para card view
     private Boolean reservada; //Solo validos para card view
+     @Exclude
+     private ArrayList<HashMap<String, Object>> valoraciones;
 
     public Clase(){};
 

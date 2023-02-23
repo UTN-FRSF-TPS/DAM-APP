@@ -86,9 +86,8 @@
                 android:id="@+id/botonLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#BA3636"
                 android:text="Login/Registro"
-                android:theme="@style/Button.LightRed"/>
+                android:backgroundTint="#f85f6a"></Button>
         </TableRow>
 
     </TableLayout>

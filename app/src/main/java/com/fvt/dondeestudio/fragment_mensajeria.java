@@ -3,6 +3,8 @@ package com.fvt.dondeestudio;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,34 +58,40 @@ public class fragment_mensajeria extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentMensajeriaBinding.inflate(inflater, container, false);
         binding.botonAgregarChat.setOnClickListener(view -> pasarAAgregar(view));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ActionBar barra =  ((AppCompatActivity) getActivity()).getSupportActionBar();
+        barra.show();
+        barra.setTitle("Mensajes");
 
         recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-
         userList = new HashSet<>();
-
         reference = FirebaseFirestore.getInstance().collection("chats");
-
         reference.addSnapshotListener((value, e) -> {
             userList.clear();
+            Integer cont = 0;
             if (e == null) {
-
+//cuando hay un mensaje nuevo
                 for (QueryDocumentSnapshot doc : value) {
                     Chat chat = doc.toObject(Chat.class);
                     if (chat.getSender().equals(fuser.getUid())) {
                         userList.add(chat.getReceiver());
+                        cont++;
                     }
                     if (chat.getReceiver().equals(fuser.getUid())) {
                         userList.add(chat.getSender());
+                        cont++;
                     }
                 }
-
+                if(cont == 0){
+                    binding.resultado.setText("No tenes ningún chat :(");
+                } else {
+                    binding.resultado.setVisibility(View.GONE);
+                }
                 readChats();
             }
         });
@@ -92,7 +100,6 @@ public class fragment_mensajeria extends Fragment {
 
     private void readChats() {
         mUsers = new ArrayList<>();
-
         mUsers.clear();
 
         for (String id : userList) {

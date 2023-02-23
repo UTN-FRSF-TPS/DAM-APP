@@ -12,13 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.databinding.FragmentRegistroBinding;
 import com.fvt.dondeestudio.gestores.GestorAlumnos;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 import com.fvt.dondeestudio.model.Alumno;
+import com.fvt.dondeestudio.model.Chat;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -31,10 +34,10 @@ public class RegistroFragment extends Fragment {
 
         FirebaseUser user = getArguments().getParcelable("user");
 
-        String email = binding.textoEmail.getText().toString();
-        String nombre = binding.textoNombre.getText().toString();
-        String apellido = binding.textoApellido.getText().toString();
-
+        String email = binding.email.getText().toString();
+        String nombre = binding.nombre.getText().toString();
+        String apellido = binding.apellido.getText().toString();
+    if(email.length() != 0 && nombre.length() != 0 && apellido.length() != 0) {
         user.updateEmail(email);
         UserProfileChangeRequest cambioNombre = new UserProfileChangeRequest.Builder()
                 .setDisplayName(nombre + " " + apellido)
@@ -42,21 +45,25 @@ public class RegistroFragment extends Fragment {
 
         user.updateProfile(cambioNombre);
 
-        if (binding.spinnerRol.getSelectedItem().equals("Alumno")) {
+        if (binding.rol.getSelectedItem().equals("Alumno")) {
             Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
             GestorAlumnos gestor = new GestorAlumnos();
             gestor.agregarAlumno(alumno);
             AlumnoReservasListener.seguirReserva(user.getUid(), getContext());
+            ChatListener.seguirChat(user.getUid(), getContext());
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_buscarClasesFragment, null);
-        }
-        else {
+        } else {
             Profesor profesor = new Profesor(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
             GestorProfesores gestor = new GestorProfesores();
             gestor.agregarProfesor(profesor);
             ProfesorReservasListener.seguirReserva(user.getUid(), getContext());
+            ChatListener.seguirChat(user.getUid(), getContext());
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_agregarClaseFragment, null);
 
         }
+    } else {
+        Toast.makeText(getContext(), "No completaste todos los datos. Completalos", Toast.LENGTH_LONG).show();
+    }
 
     }
 
@@ -64,9 +71,8 @@ public class RegistroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentRegistroBinding.inflate(inflater, container, false);
-        binding.botonRegistrar.setOnClickListener(lambda -> registrar());
+        binding.btnRegistro.setOnClickListener(lambda -> registrar());
         return binding.getRoot();
     }
 }
