@@ -119,7 +119,7 @@
         app:destination="@id/agregarClaseFragment" />
     <fragment
         android:id="@+id/fragment_mensajeria"
-        android:name="com.fvt.dondeestudio.fragment_mensajeria"
+        android:name="com.fvt.dondeestudio.MensajeriaFragment"
         android:label="fragment_mensajeria"
         tools:layout="@layout/fragment_mensajeria" >
         <action
@@ -147,4 +147,12 @@
     <action
         android:id="@+id/action_global_reservasPendientesFragment"
         app:destination="@id/reservasPendientesFragment" />
+    <fragment
+        android:id="@+id/detalleClaseProfesorFragment"
+        android:name="com.fvt.dondeestudio.DetalleClaseProfesorFragment"
+        android:label="fragment_detalle_clase_profesor"
+        tools:layout="@layout/fragment_detalle_clase_profesor" />
+    <action
+        android:id="@+id/action_global_detalleClaseProfesorFragment"
+        app:destination="@id/detalleClaseProfesorFragment" />
 </navigation>

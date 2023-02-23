@@ -20,11 +20,10 @@ public class Clase implements Serializable, Comparable<Clase>
     private String id;
     private Profesor profesor;
     private Double tarifaHora;
-    private Integer cupo;
-    private Integer cupoActual;
     private Nivel nivel;
     private transient GeoPoint ubicacion;
     private String asignatura;
+    private Long cupo;
     private Integer valoracion;
     private String horario;
     private String estadoUsuario;
@@ -44,7 +43,7 @@ public class Clase implements Serializable, Comparable<Clase>
         this.estadoUsuario = estadoUsuario;
     }
 
-    public Clase(Profesor profesor, Double tarifaHora, Integer cupo, Nivel nivel, GeoPoint ubicacion, String asignatura, Integer valoracion, String horario) {
+    public Clase(Profesor profesor, Double tarifaHora, Long cupo, Nivel nivel, GeoPoint ubicacion, String asignatura, Integer valoracion, String horario) {
         this.profesor = profesor;
         this.tarifaHora = tarifaHora;
         this.cupo = cupo;
@@ -54,7 +53,6 @@ public class Clase implements Serializable, Comparable<Clase>
         this.valoracion = valoracion;
         ArrayList<Valoracion> valoraciones;
         this.horario = horario;
-        this.cupoActual = 0;
     }
 
     public Clase(String id, Double tarifa, String asignatura){
@@ -88,20 +86,12 @@ public class Clase implements Serializable, Comparable<Clase>
         this.tarifaHora = tarifaHora;
     }
 
-    public Integer getCupo() {
+    public Long getCupo() {
         return cupo;
     }
 
-    public void setCupo(Integer cupo) {
+    public void setCupo(Long cupo) {
         this.cupo = cupo;
-    }
-
-    public Integer getCupoActual() {
-        return cupoActual;
-    }
-
-    public void setCupoActual(Integer cupoActual) {
-        this.cupoActual = cupoActual;
     }
 
     public Nivel getNivel() {

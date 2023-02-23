@@ -94,7 +94,7 @@ public class AgregarClaseFragment extends Fragment {
         final Context contexto = this.getContext();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Agregar clase");
-        // Inflate the layout for this fragment
+
         binding = FragmentAgregarClaseBinding.inflate(inflater, container, false);
         agregarClase = binding.button5;
         return binding.getRoot();

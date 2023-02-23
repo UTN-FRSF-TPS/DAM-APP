@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.Util;
+import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Valoracion;
 import com.google.android.gms.maps.model.LatLng;
@@ -380,7 +381,7 @@ public class GestorClases {
 
     public void claseReservadasProfesor(String idProfesor, final Callback<ArrayList<Clase>> callback) {
 
-        Query q1 = FirebaseFirestore.getInstance().collection("clase").whereEqualTo("idProfesor", idProfesor);
+        Query q1 = FirebaseFirestore.getInstance().collection("clase").whereEqualTo("profesor.id", idProfesor);
         q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -389,12 +390,7 @@ public class GestorClases {
                     for (DocumentSnapshot document : task.getResult()) {
                         Clase clase = document.toObject(Clase.class);
                             clase.setId(document.getId());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                            LocalDateTime dateTime = LocalDateTime.parse(clase.getHorario(), formatter);
-                            if(dateTime.isAfter(LocalDateTime.now()))
                                 clases.add(clase);
-                        }
                     }
                 }
                 callback.onComplete(clases);
@@ -415,6 +411,30 @@ public class GestorClases {
                 }
             });
         }
+
+    public void getAlumnosClase(String idClase, final Callback<ArrayList<Alumno>> callback) {
+
+        Query q1 = FirebaseFirestore.getInstance().collection("reserva").whereEqualTo("idClase", idClase).whereEqualTo("estado", "confirmada");
+        q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                ArrayList<Alumno> alumnos= new ArrayList<Alumno>();
+                if (task.isSuccessful()) {
+                    GestorAlumnos gA = new GestorAlumnos();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        gA.obtenerAlumno(document.getString("idAlumno"), new Callback<com.fvt.dondeestudio.model.Alumno>() {
+                            @Override
+                            public void onComplete(com.fvt.dondeestudio.model.Alumno data) {
+                                alumnos.add(data);
+                            }
+                        });
+                    }
+                }
+                callback.onComplete(alumnos);
+            }
+        });
+    }
+
     }
 
 

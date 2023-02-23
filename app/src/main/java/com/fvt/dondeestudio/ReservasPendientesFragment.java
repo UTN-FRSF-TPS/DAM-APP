@@ -74,6 +74,7 @@ public class ReservasPendientesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         binding = FragmentReservasPendientesBinding.inflate(inflater, container, false);
         RecyclerView recycler = binding.recycler;
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
