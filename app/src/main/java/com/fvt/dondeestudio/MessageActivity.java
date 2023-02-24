@@ -139,12 +139,10 @@ public class MessageActivity extends AppCompatActivity {
 
     private void sendMessage(String sender, String receiver, String message) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         CollectionReference chats = db.collection("chats");
-
+        DocumentReference chatDocRef = chats.document(String.valueOf(System.currentTimeMillis()));
         Chat chat = new Chat(sender, receiver, message);
-
-        chats.add(chat);
+        chatDocRef.set(chat);
 
     }
 

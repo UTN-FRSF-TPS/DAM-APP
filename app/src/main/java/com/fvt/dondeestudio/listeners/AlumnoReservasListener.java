@@ -6,6 +6,7 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -18,6 +19,8 @@ import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Profesor;
+import com.fvt.dondeestudio.receivers.NuevoMensajeReceiver;
+import com.fvt.dondeestudio.receivers.ReservaModificadaReceiver;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -37,6 +40,14 @@ public class AlumnoReservasListener {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collRef = db.collection("reserva");
+
+        Intent reservaModificada = new Intent();
+        reservaModificada.setAction("reservaModificada");
+
+        ReservaModificadaReceiver receiver = new ReservaModificadaReceiver();
+        IntentFilter intentFilter = new IntentFilter("reservaModificada");
+        context.registerReceiver(receiver, intentFilter);
+
         collRef.whereEqualTo("idAlumno", idAlumno)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -66,9 +77,9 @@ public class AlumnoReservasListener {
                                                     String nombre = profesor.getNombre();
                                                     String apellido = profesor.getApellido();
                                                     if (estado.equals("confirmada"))
-                                                    NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " acepto tu reserva a la clase de " + asignatura, null, null);
+                                                    NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " acepto tu reserva a la clase de " + asignatura, reservaModificada);
                                                     if (estado.equals("rechazada"))
-                                                        NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " rechazo tu reserva a la clase de " + asignatura, null, null);
+                                                        NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " rechazo tu reserva a la clase de " + asignatura, reservaModificada);
                                                 }
                                             });
                                         }
@@ -90,7 +101,7 @@ public class AlumnoReservasListener {
                                                 public void onComplete(Profesor profesor) {
                                                     String nombre = profesor.getNombre();
                                                     String apellido = profesor.getApellido();
-                                                        NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " elimino la clase de " + asignatura +  " que habías reservado.", null, null);
+                                                    NotificacionHelper.showNotification(context, "Reserva de Clase", "El profesor " + nombre + " " + apellido + " elimino la clase de " + asignatura +  " que habías reservado.", reservaModificada);
                                                 }
                                             });
                                         }

@@ -236,7 +236,7 @@ public class GestorClases {
 
     public void actualizarClase(String id, double tarifa) {
         Map<String, Object> nuevo = new HashMap<>();
-        nuevo.put("tarifaHoras", tarifa);
+        nuevo.put("tarifaHora", tarifa);
 
         db.collection("clase").document(id).update(nuevo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -316,6 +316,7 @@ public class GestorClases {
 
                                             }
                                             arr[0] = true;
+                                            Collections.sort(clases);
                                             callback.onComplete(clases);
                                         }
                                     });
@@ -324,6 +325,7 @@ public class GestorClases {
                         } //recorre documentos
                     } //si fue exitoso
                     if (!arr[0]) {
+                        Collections.sort(clases);
                         callback.onComplete(clases);
                     }
                 } //callback
@@ -393,6 +395,7 @@ public class GestorClases {
                                 clases.add(clase);
                     }
                 }
+                Collections.sort(clases);
                 callback.onComplete(clases);
             }
         });
@@ -421,21 +424,29 @@ public class GestorClases {
                 ArrayList<Alumno> alumnos= new ArrayList<Alumno>();
                 if (task.isSuccessful()) {
                     GestorAlumnos gA = new GestorAlumnos();
+                    int numAlumnos = task.getResult().size(); // Obtener el número total de alumnos
+                    final int[] numRespuestas = {0}; // Llevar un contador de respuestas recibidas
                     for (DocumentSnapshot document : task.getResult()) {
                         gA.obtenerAlumno(document.getString("idAlumno"), new Callback<com.fvt.dondeestudio.model.Alumno>() {
                             @Override
                             public void onComplete(com.fvt.dondeestudio.model.Alumno data) {
                                 alumnos.add(data);
+                                numRespuestas[0]++;
+                                if (numRespuestas[0] == numAlumnos) {
+                                    callback.onComplete(alumnos); // Llamar a callback.onComplete() una vez que se hayan recibido todas las respuestas
+                                }
                             }
                         });
                     }
+                } else {
+                    callback.onComplete(alumnos); // Llamar a callback.onComplete() en caso de error
                 }
-                callback.onComplete(alumnos);
             }
         });
     }
 
-    }
+
+}
 
 
 

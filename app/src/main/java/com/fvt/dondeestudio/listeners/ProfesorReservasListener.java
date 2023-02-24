@@ -7,14 +7,14 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.fvt.dondeestudio.receivers.CancelarReservaReceiver;
-import com.fvt.dondeestudio.receivers.ConfirmarReservaReceiver;
+import com.fvt.dondeestudio.receivers.NuevaReservaReceiver;
 import com.fvt.dondeestudio.gestores.GestorAlumnos;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Clase;
+import com.fvt.dondeestudio.receivers.ReservaCanceladaReceiver;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -29,7 +29,7 @@ public class ProfesorReservasListener {
      * Permite conocer al profesor idProfesor si un alumno reservo alguna de sus clases (se agrega una reserva) o
      * si cancela una reserva (estado = cancelada)
      * @param idProfesor
-     * TODO Generar la notificacion para el alumno
+     *
      */
 
     public static void seguirReserva(String idProfesor, Context context) {
@@ -41,7 +41,7 @@ public class ProfesorReservasListener {
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            Log.w("a", "Listen failed.", e);
+                            Log.w("a", "Fallo del listener. ", e);
                             return;
                         }
 
@@ -65,19 +65,15 @@ public class ProfesorReservasListener {
                                                         String nombre = alumno.getNombre();
                                                         String apellido = alumno.getApellido();
                                                         System.out.println("El alumno" + nombre + " " + apellido + " solicito unirse a tu clase de " + asignatura);
-                                                        Intent confirm = new Intent();
-                                                        confirm.setAction("confirmarReserva");
-                                                        confirm.putExtra("idReserva", idReserva);
-                                                        Intent cancel = new Intent();
-                                                        cancel.setAction("cancelarReserva");
-                                                        cancel.putExtra("idReserva", idReserva);
-                                                        NotificacionHelper.showNotification(context, "Nueva reserva", "El alumno " + nombre + " " + apellido + " solicito unirse a tu clase de " + asignatura, confirm, cancel);
-                                                        ConfirmarReservaReceiver receiver = new ConfirmarReservaReceiver();
-                                                        IntentFilter intentFilter = new IntentFilter("confirmarReserva");
+
+                                                        Intent nuevaReserva = new Intent();
+                                                        nuevaReserva.setAction("nuevaReserva");
+                                                        NotificacionHelper.showNotification(context, "Nueva reserva", "El alumno " + nombre + " " + apellido + " solicito unirse a tu clase de " + asignatura, nuevaReserva);
+
+                                                        NuevaReservaReceiver receiver = new NuevaReservaReceiver();
+                                                        IntentFilter intentFilter = new IntentFilter("nuevaReserva");
                                                         context.registerReceiver(receiver, intentFilter);
-                                                        CancelarReservaReceiver receiver2 = new CancelarReservaReceiver();
-                                                        IntentFilter intentFilter2 = new IntentFilter("cancelarReserva");
-                                                        context.registerReceiver(receiver2, intentFilter2);
+
                                                     }
                                                 });
                                             }
@@ -100,7 +96,14 @@ public class ProfesorReservasListener {
                                                     public void onComplete(Alumno alumno) {
                                                         String nombre2 = alumno.getNombre();
                                                         String apellido2 = alumno.getApellido();
-                                                        NotificacionHelper.showNotification(context, "Reserva cancelada", "El alumno " + nombre2 + " " + apellido2 + " cancelo la reserva a tu clase de " + asignatura2, null, null);
+                                                        Intent reservaCancelada = new Intent();
+                                                        reservaCancelada.setAction("reservaCancelada");
+                                                        NotificacionHelper.showNotification(context, "Reserva cancelada", "El alumno " + nombre2 + " " + apellido2 + " cancelo la reserva a tu clase de " + asignatura2, reservaCancelada);
+
+                                                        ReservaCanceladaReceiver receiver = new ReservaCanceladaReceiver();
+                                                        IntentFilter intentFilter = new IntentFilter("reservaCancelada");
+                                                        context.registerReceiver(receiver, intentFilter);
+
                                                     }
                                                 });
                                             }

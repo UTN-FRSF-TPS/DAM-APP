@@ -47,16 +47,31 @@
                 android:value="" />
         </activity>
 
-        <receiver android:name=".receivers.ConfirmarReservaReceiver"
+        <receiver android:name=".receivers.NuevaReservaReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="confirmarReserva" />
+                <action android:name="nuevaReserva" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.CancelarReservaReceiver"
+        <receiver android:name=".receivers.ReservaCanceladaReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="cancelarReserva" />
+                <action android:name="reservaCancelada" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NuevoMensajeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="nuevoMensaje" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver android:name=".receivers.ReservaModificadaReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="reservaModificada" />
             </intent-filter>
         </receiver>
     </application>

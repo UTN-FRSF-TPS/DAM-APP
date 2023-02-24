@@ -19,6 +19,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class AlumnoClaseListener {
 
     /**
+     * NO VA MAS PORQUE EL CUPO NO SE LIBERA CUANDO SE RECHAZA, SE AUMENTA CUANDO SE CONFIRMA NOMAS.
+     * QUIZA LA RESERVA PODRIA TENER UN DateTime o timestamp para ordenarlas por tiempo.
      * Permite notificar al alumno cuando se libera un cupo en una clase en la que no habia lugar
      * Se escucha si el estado de alguna reserva de la clase idClase cambia a rechazada o cancelada
      * @param idClase

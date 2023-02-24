@@ -3,8 +3,10 @@ package com.fvt.dondeestudio;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
+
     }
 
     @Override
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
+
 
         }
         return true;

@@ -1,6 +1,7 @@
 package com.fvt.dondeestudio;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.fvt.dondeestudio.adapters.AlumnosAdapter;
 import com.fvt.dondeestudio.databinding.DialogAlumnosBinding;
@@ -102,7 +104,7 @@ public class DetalleClaseProfesorFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(clase.getAsignatura());
 
        binding.horario.setText(clase.getHorario());
-       binding.cupoActual.setText("Cupo disponible: " + clase.getCupo().toString());
+       binding.cupoActual.setText("Cupos disponible: " + clase.getCupo().toString());
        binding.tarifa.setText(clase.getTarifaHora().toString());
 
         GestorClases gC = new GestorClases();
@@ -114,6 +116,10 @@ public class DetalleClaseProfesorFragment extends Fragment {
                 mostrarDialogoAlumnos(getContext(), data);
             }
         });
+    });
+
+    binding.editButton.setOnClickListener(e->{
+        this.DialogEditarTarifa(clase);
     });
 
     binding.botonEliminarClase.setOnClickListener(e->{
@@ -169,14 +175,54 @@ public class DetalleClaseProfesorFragment extends Fragment {
 
         RecyclerView recyclerView = binding.recyclerViewDialog;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        if(alumnosList.size() > 0) {
+            binding.mensaje.setVisibility(View.GONE);
             AlumnosAdapter adapter = new AlumnosAdapter(alumnosList);
             recyclerView.setAdapter(adapter);
+        } else {
+            binding.mensaje.setText("No tenes alumnos inscriptos :(");
+        }
         builder.setView(view);
         builder.setPositiveButton("Volver", null);
         builder.show();
     }
 
+        public void DialogEditarTarifa(Clase clase){
+           EditText mTarifaEditText = new EditText(getContext());
 
+            // Crear el cuadro de diálogo de la tarifa
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Actualizar tarifa");
+            builder.setMessage("Introduce la nueva tarifa:");
+
+            // Agregar el campo de entrada de texto al cuadro de diálogo
+            builder.setView(mTarifaEditText);
+
+            // Agregar el botón Aceptar al cuadro de diálogo
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Obtener el valor introducido en el campo de texto
+                    String nuevaTarifa = mTarifaEditText.getText().toString();
+                    GestorClases gC = new GestorClases();
+                    gC.actualizarClase(clase.getId(), Double.valueOf(nuevaTarifa));
+                    binding.tarifa.setText(nuevaTarifa);
+                }
+            });
+
+            // Agregar el botón Cancelar al cuadro de diálogo
+            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Cerrar el cuadro de diálogo
+                    dialog.cancel();
+                }
+            });
+
+            // Mostrar el cuadro de diálogo
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
 
 
 
@@ -224,6 +270,7 @@ public class DetalleClaseProfesorFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }
