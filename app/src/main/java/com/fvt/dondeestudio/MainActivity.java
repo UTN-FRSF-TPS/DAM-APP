@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.action_global_fragment_mensajeria);
         }
 
+        if (id == R.id.menu_item_perfil) {
+            navController.navigate(R.id.action_global_perfilFragment);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

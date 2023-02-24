@@ -126,7 +126,7 @@ public class MessageActivity extends AppCompatActivity {
 
                         }
                         else {
-                            Glide.with(MessageActivity.this).load(user.getPhotoUrl()).into(profile_image);
+                            Glide.with(MessageActivity.this).load(userAlumno.getPhotoUrl()).into(profile_image);
                         }
                     }
 

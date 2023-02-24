@@ -49,6 +49,7 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.hbb20:ccp:2.6.1'
     implementation 'com.google.firebase:firebase-appcheck-playintegrity'

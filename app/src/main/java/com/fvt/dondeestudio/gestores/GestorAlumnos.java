@@ -29,9 +29,9 @@ public class GestorAlumnos {
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Alumno alumno = documentSnapshot.toObject(Alumno.class);
-                    alumno.setId(documentSnapshot.getId());
-                    callback.onComplete(alumno);
+                        Alumno alumno = documentSnapshot.toObject(Alumno.class);
+                        if (alumno != null) alumno.setId(documentSnapshot.getId());
+                        callback.onComplete(alumno);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

@@ -155,4 +155,9 @@
     <action
         android:id="@+id/action_global_detalleClaseProfesorFragment"
         app:destination="@id/detalleClaseProfesorFragment" />
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.fvt.dondeestudio.PerfilFragment"
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil" /><action android:id="@+id/action_global_perfilFragment" app:destination="@id/perfilFragment"/>
 </navigation>
