@@ -28,7 +28,6 @@ public class GestorReservas {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-/* En teoria ya no se deberia usar, lo dejo por las dudas
     public void getReservasNuevas(String idProfesor, final Callback<ArrayList<ReservaDTO>> callback){
         CollectionReference reservationsRef = db.collection("reserva");
          reservationsRef.whereEqualTo("idProfesor", idProfesor).whereEqualTo("estado", "pendiente")
@@ -46,6 +45,7 @@ public class GestorReservas {
                                 rDTO.setIdProfesor(documento.get("idProfesor").toString());
                                 rDTO.setEstado(documento.get("estado").toString());
                                 rDTO.setIdClase(documento.get("idClase").toString());
+                                rDTO.setId(documento.getId());
                                 lista.add(rDTO);
                            }
                            callback.onComplete(lista);
@@ -55,7 +55,6 @@ public class GestorReservas {
                     }
                 });
     }
-*/
 
     /**
      * @param idAlumno
@@ -88,13 +87,7 @@ public class GestorReservas {
                 }
             });
         } else {
-            /*
-                Si el usuario quiere escuchar la clase debe iniciar
-                AlumnoClaseListener.seguirClase(clase.getId());
-            */
-
-            System.out.println("No existen cupos para esta clase. Puede suscribirse para saber si se libera un cupo");
-            ;
+            System.out.println("No existen cupos para esta clase");
         }
     }
 
@@ -107,8 +100,8 @@ public class GestorReservas {
      *
      *
      * PARA CONFIRMAR RESERVA estado="confirmada", cupo =-1
-     * PARA RECHAZAR RESERVA estado="rechazada", cupo =1
-     * PARA CANCELAR RESERVA estado="cancelada", cupo=1
+     * PARA RECHAZAR RESERVA estado="rechazada", cupo =0
+     * PARA CANCELAR RESERVA estado="cancelada", cupo=0
      */
 
 
@@ -116,23 +109,33 @@ public class GestorReservas {
         Map<String, Object> confirmacion= new HashMap<>();
         confirmacion.put("estado", estado);
         //se debe notificar al alumno.
-        db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("reserva").document(idReserva).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void unused) {
-                db.collection("reserva").document(idReserva).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        GestorClases g = new GestorClases();
-                        String idClase = (String) documentSnapshot.get("idClase");
-                        g.cambiarCupo(idClase, cupo);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getResult().getString("estado").equals("pendiente")){
+                    db.collection("reserva").document(idReserva).update(confirmacion).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            db.collection("reserva").document(idReserva).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    GestorClases g = new GestorClases();
+                                    String idClase = (String) documentSnapshot.get("idClase");
+                                    g.cambiarCupo(idClase, cupo);
 
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println(e.getMessage());
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    });
+                } else {
+                    System.out.println("Ya aceptaste o rechazaste la reserva");
+                }
+
             }
         });
 

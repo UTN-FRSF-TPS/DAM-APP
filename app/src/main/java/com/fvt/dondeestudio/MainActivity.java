@@ -1,22 +1,15 @@
 package com.fvt.dondeestudio;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.fvt.dondeestudio.databinding.ActivityMainBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
@@ -24,7 +17,6 @@ import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+
 
     }
 
@@ -58,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
+
+
         }
         return true;
     }
@@ -85,11 +82,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.menu_item_pendientes) {
+            navController.navigate(R.id.action_global_reservasPendientesFragment);
+            return true;
+        }
+
+        if (id == R.id.menu_item_mensajes) {
+            navController.navigate(R.id.action_global_fragment_mensajeria);
+        }
+
+        if (id == R.id.menu_item_perfil) {
+            navController.navigate(R.id.action_global_perfilFragment);
+        }
+
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 
 }

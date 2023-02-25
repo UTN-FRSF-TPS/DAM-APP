@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 
@@ -21,7 +20,6 @@ import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultadoAdapter.ClaseViewHolder> {

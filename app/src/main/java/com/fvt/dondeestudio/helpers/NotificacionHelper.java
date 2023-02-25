@@ -15,13 +15,13 @@ import com.fvt.dondeestudio.R;
 
 public class NotificacionHelper {
 
-    public static void showNotification(Context context, String title, String body, Intent intentConf, Intent intentCanc) {
+    public static void showNotification(Context context, String title, String body, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         int notificationId = 1;
         String channelId = "channel-01";
         String channelName = "Donde Estudio";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
@@ -34,20 +34,23 @@ public class NotificacionHelper {
         opcion1.putExtra("datox", 9999);
          */
 
+
+       //
+
+
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(body));
-        if(intentCanc != null) {
-            PendingIntent opcion2Pi = PendingIntent.getBroadcast(context, 0, intentCanc, 0);
-            mBuilder.addAction(android.R.drawable.ic_menu_agenda, "Cancelar", opcion2Pi);
+
+        if(intent != null) {
+            PendingIntent Pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+            mBuilder.setContentIntent(Pi);
         }
-        if(intentConf != null) {
-            PendingIntent opcion1Pi = PendingIntent.getBroadcast(context, 0, intentConf, 0);
-            mBuilder.addAction(android.R.drawable.ic_menu_agenda, "Confirmar", opcion1Pi);
-        }
+
 
         notificationManager.notify(notificationId, mBuilder.build());
     }

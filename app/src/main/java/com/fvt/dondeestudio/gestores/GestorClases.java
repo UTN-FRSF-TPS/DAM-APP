@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.Util;
+import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Valoracion;
 import com.google.android.gms.maps.model.LatLng;
@@ -235,7 +236,7 @@ public class GestorClases {
 
     public void actualizarClase(String id, double tarifa) {
         Map<String, Object> nuevo = new HashMap<>();
-        nuevo.put("tarifaHoras", tarifa);
+        nuevo.put("tarifaHora", tarifa);
 
         db.collection("clase").document(id).update(nuevo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -315,6 +316,7 @@ public class GestorClases {
 
                                             }
                                             arr[0] = true;
+                                            Collections.sort(clases);
                                             callback.onComplete(clases);
                                         }
                                     });
@@ -323,6 +325,7 @@ public class GestorClases {
                         } //recorre documentos
                     } //si fue exitoso
                     if (!arr[0]) {
+                        Collections.sort(clases);
                         callback.onComplete(clases);
                     }
                 } //callback
@@ -380,7 +383,7 @@ public class GestorClases {
 
     public void claseReservadasProfesor(String idProfesor, final Callback<ArrayList<Clase>> callback) {
 
-        Query q1 = FirebaseFirestore.getInstance().collection("clase").whereEqualTo("idProfesor", idProfesor);
+        Query q1 = FirebaseFirestore.getInstance().collection("clase").whereEqualTo("profesor.id", idProfesor);
         q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -389,14 +392,10 @@ public class GestorClases {
                     for (DocumentSnapshot document : task.getResult()) {
                         Clase clase = document.toObject(Clase.class);
                             clase.setId(document.getId());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                            LocalDateTime dateTime = LocalDateTime.parse(clase.getHorario(), formatter);
-                            if(dateTime.isAfter(LocalDateTime.now()))
                                 clases.add(clase);
-                        }
                     }
                 }
+                Collections.sort(clases);
                 callback.onComplete(clases);
             }
         });
@@ -415,7 +414,39 @@ public class GestorClases {
                 }
             });
         }
+
+    public void getAlumnosClase(String idClase, final Callback<ArrayList<Alumno>> callback) {
+
+        Query q1 = FirebaseFirestore.getInstance().collection("reserva").whereEqualTo("idClase", idClase).whereEqualTo("estado", "confirmada");
+        q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                ArrayList<Alumno> alumnos= new ArrayList<Alumno>();
+                if (task.isSuccessful()) {
+                    GestorAlumnos gA = new GestorAlumnos();
+                    int numAlumnos = task.getResult().size(); // Obtener el número total de alumnos
+                    final int[] numRespuestas = {0}; // Llevar un contador de respuestas recibidas
+                    for (DocumentSnapshot document : task.getResult()) {
+                        gA.obtenerAlumno(document.getString("idAlumno"), new Callback<com.fvt.dondeestudio.model.Alumno>() {
+                            @Override
+                            public void onComplete(com.fvt.dondeestudio.model.Alumno data) {
+                                alumnos.add(data);
+                                numRespuestas[0]++;
+                                if (numRespuestas[0] == numAlumnos) {
+                                    callback.onComplete(alumnos); // Llamar a callback.onComplete() una vez que se hayan recibido todas las respuestas
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    callback.onComplete(alumnos); // Llamar a callback.onComplete() en caso de error
+                }
+            }
+        });
     }
+
+
+}
 
 
 

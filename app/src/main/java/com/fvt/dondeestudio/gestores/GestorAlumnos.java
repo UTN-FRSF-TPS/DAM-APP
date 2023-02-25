@@ -24,20 +24,22 @@ public class GestorAlumnos {
     }
 
     public void obtenerAlumno(String id, final Callback<Alumno> callback){
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection("alumno").document(id);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-               Alumno alumno= documentSnapshot.toObject(Alumno.class);
-               alumno.setId(documentSnapshot.getId());
-                callback.onComplete(alumno);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                callback.onComplete(null);
-            }
-        });
+        if (id != null) {
+            DocumentReference docRef = FirebaseFirestore.getInstance().collection("alumno").document(id);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Alumno alumno = documentSnapshot.toObject(Alumno.class);
+                        if (alumno != null) alumno.setId(documentSnapshot.getId());
+                        callback.onComplete(alumno);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    callback.onComplete(null);
+                }
+            });
+        }
     }
 
 }

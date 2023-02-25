@@ -4,21 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Profesor implements Serializable {
+public class Profesor extends Usuario implements Serializable {
 
-    public Profesor(){};
-
-    public Profesor(String id, String email, String nombre, String apellido) {
-        this.id = id;
-        this.email = email;
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Profesor() {
+        super();
     }
 
-    private String id;
-    private String nombre;
-    private String apellido;
-    private String email;
+    public Profesor(String id, String nombre, String apellido, String email, String telefono) {
+        super(id, nombre, apellido, email, telefono);
+    }
+
     private Integer valoracion;
 
     public String getId() {

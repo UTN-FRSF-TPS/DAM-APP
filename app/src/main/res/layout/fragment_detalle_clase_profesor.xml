@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Fecha y hora con icono de reloj -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="7dp">
+
+            <ImageView
+                android:id="@+id/horario_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/horario"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/horario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/horario_icon"
+                android:text="dd/mm hh:mm"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="7dp">
+
+            <ImageView
+                android:id="@+id/cupo_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/usuario"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/cupoActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/cupo_icon"
+                android:text="Cupos disponibles: 5"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="7dp">
+
+            <ImageView
+                android:id="@+id/tarifa_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/tarifa"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                app:tint="@color/black" />
+
+            <TextView
+                android:id="@+id/tarifa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="450"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/tarifa_icon"
+                android:layout_centerVertical="true"/>
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/tarifa"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:contentDescription="Editar tarifa"
+                android:src="@drawable/editar"/>
+
+
+        </RelativeLayout>
+
+        <!-- Dirección de la clase con icono de ubicación -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="7dp">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:id="@+id/location_icon"
+                android:layout_height="wrap_content"
+                android:src="@drawable/location"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/direccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/location_icon"
+                android:text="Direccion de la clase"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <!-- Mapa de Google -->
+        <fragment
+            android:id="@+id/map_fragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+
+        <!-- Botón para enviar mensajes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:padding="15dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/botonVerInscriptos"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Ver Alumnos"
+            android:backgroundTint="#f85f6a"
+            android:textColor="@android:color/white"
+            android:layout_margin="16dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/botonEliminarClase"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Eliminar clase"
+            android:backgroundTint="#f85f6a"
+            android:textColor="@android:color/white"
+            android:layout_margin="16dp"/>
+    </LinearLayout>
+    </LinearLayout>
+</ScrollView>

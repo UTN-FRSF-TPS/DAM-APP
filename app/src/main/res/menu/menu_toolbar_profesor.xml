@@ -11,9 +11,23 @@
         android:title="Mis clases"
         app:showAsAction="always"
         android:icon="@drawable/reservas"/>
+
+    <item
+        android:id="@+id/menu_item_pendientes"
+        android:title="Reservas pendientes"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_pending_24"/>
+
     <item
         android:id="@+id/menu_item_mensajes"
         android:title="Mensajes"
         app:showAsAction="always"
         android:icon="@drawable/ic_baseline_inbox_24"/>
+    <item
+        android:id="@+id/menu_item_perfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="Perfil"
+        app:showAsAction="always" />
 </menu>

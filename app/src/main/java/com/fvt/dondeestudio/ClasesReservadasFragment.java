@@ -5,10 +5,16 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -93,9 +99,17 @@ public class ClasesReservadasFragment extends Fragment {
         gestor.claseReservadasAlumno(idAlumno, new Callback<ArrayList<Clase>>() {
             @Override
             public void onComplete(ArrayList<Clase> clases) {
-                recyclerView.setAdapter(new ClasesUsuarioAdapter(getContext(), clases));
+                if(clases.size() > 0) {
+                    recyclerView.setAdapter(new ClasesUsuarioAdapter(getContext(), clases));
+                } else {
+                    binding.mensaje.setText("Actualmente no tenés clases reservadas :(");
+                    binding.mensaje.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+                    binding.mensaje.setGravity(Gravity.CENTER);
+                }
             }
         });
         return binding.getRoot();
     }
+
+
 }

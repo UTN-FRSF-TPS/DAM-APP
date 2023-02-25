@@ -23,6 +23,7 @@ import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,45 +41,26 @@ public class LoginFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public LoginFragment() {
         // Required empty public constructor
     }
-//TODO AGREGAR OTRO FRAGMENTO ANTES DEL LOGIN
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
 
 
     private void loginOrRegister(View view) {
         TextView numeroText = binding.numeroText;
         CountryCodePicker codigoPais = binding.ccp;
+        if (numeroText.getText().toString().length() > 0) {
 
-        String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
+            String numeroCompleto = "+" + codigoPais.getSelectedCountryCode() + numeroText.getText().toString();
 
-        Bundle bundle = new Bundle();
+            Bundle bundle = new Bundle();
 
-        bundle.putString("numeroCompleto", numeroCompleto);
+            bundle.putString("numeroCompleto", numeroCompleto);
 
-        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_verificacionFragment, bundle);
-
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_verificacionFragment, bundle);
+        } else {
+            Toast.makeText(getContext(), "Ingresa un numero de telefono válido", Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -94,6 +76,7 @@ public class LoginFragment extends Fragment {
             //esta logueado
             GestorProfesores g = new GestorProfesores();
             String idLog = FirebaseAuth.getInstance().getUid();
+            ChatListener.seguirChat(idLog, getContext());
                 g.obtenerProfesor(idLog, new Callback<Profesor>() {
                     @Override
                     public void onComplete(Profesor data) {
@@ -118,6 +101,7 @@ public class LoginFragment extends Fragment {
             binding.textView.setVisibility(View.VISIBLE);
             binding.botonLogin.setOnClickListener(view -> loginOrRegister(view));
         }
+        binding.botonLogin.setOnClickListener(view -> loginOrRegister(view));
         return binding.getRoot();
     }
 

@@ -4,32 +4,33 @@ import com.google.firebase.firestore.DocumentReference;
 
 public class ReservaDTO {
 
-    private DocumentReference idAlumno;
-    private DocumentReference idProfesor;
-    private DocumentReference idClase;
+    private String idAlumno;
+    private String idProfesor;
+    private String idClase;
+    private String id;
     private String estado;
 
-    public DocumentReference getIdAlumno() {
+    public String getIdAlumno() {
         return idAlumno;
     }
 
-    public void setIdAlumno(DocumentReference idAlumno) {
+    public void setIdAlumno(String idAlumno) {
         this.idAlumno = idAlumno;
     }
 
-    public DocumentReference getIdProfesor() {
+    public String getIdProfesor() {
         return idProfesor;
     }
 
-    public void setIdProfesor(DocumentReference idProfesor) {
+    public void setIdProfesor(String idProfesor) {
         this.idProfesor = idProfesor;
     }
 
-    public DocumentReference getIdClase() {
+    public String getIdClase() {
         return idClase;
     }
 
-    public void setIdClase(DocumentReference idClase) {
+    public void setIdClase(String idClase) {
         this.idClase = idClase;
     }
 
@@ -39,5 +40,13 @@ public class ReservaDTO {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

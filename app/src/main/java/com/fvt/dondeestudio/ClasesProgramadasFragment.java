@@ -2,11 +2,23 @@ package com.fvt.dondeestudio;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.fvt.dondeestudio.adapters.ClasesProgramadasAdapter;
+import com.fvt.dondeestudio.databinding.FragmentClasesProgramadasBinding;
+import com.fvt.dondeestudio.gestores.GestorClases;
+import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.model.Clase;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,12 +26,13 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ClasesProgramadasFragment extends Fragment {
-
+    //TODO: Mostrar clases, con los usuarios inscriptos
+    //TODO: Otra interfaz que diga "Reservas" donde pueda aceptar o rechazar.
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private FragmentClasesProgramadasBinding binding;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -55,10 +68,33 @@ public class ClasesProgramadasFragment extends Fragment {
         }
     }
 
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_clases_programadas, container, false);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Clases programadas");
+
+        binding = FragmentClasesProgramadasBinding.inflate(inflater, container, false);
+        RecyclerView recycler = binding.recyclerView;
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        GestorClases gC = new GestorClases();
+        gC.claseReservadasProfesor(FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<ArrayList<Clase>>() {
+            @Override
+            public void onComplete(ArrayList<Clase> clases) {
+                if(clases.size() > 0){
+                    recycler.setAdapter(new ClasesProgramadasAdapter(getContext(), clases));
+                } else {
+                    binding.mensaje.setText("No tenes ninguna clase programada :(");
+                }
+            }
+        });
+
+        return binding.getRoot();
     }
 }

@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_clasesReservadasFragment_to_buscarClasesFragment"
             app:destination="@id/buscarClasesFragment" />
+        <action
+            android:id="@+id/action_clasesReservadasFragment_self"
+            app:destination="@id/clasesReservadasFragment" />
     </fragment>
     <fragment
         android:id="@+id/buscarClasesFragment"
@@ -131,4 +134,47 @@
     <action
         android:id="@+id/action_global_agregarClaseFragment"
         app:destination="@id/agregarClaseFragment" />
+    <fragment
+        android:id="@+id/fragment_mensajeria"
+        android:name="com.fvt.dondeestudio.MensajeriaFragment"
+        android:label="fragment_mensajeria"
+        tools:layout="@layout/fragment_mensajeria" >
+        <action
+            android:id="@+id/action_fragment_mensajeria_to_buscarUsuario"
+            app:destination="@id/buscarUsuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/buscarUsuario"
+        android:name="com.fvt.dondeestudio.BuscarUsuario"
+        android:label="fragment_buscar_usuario"
+        tools:layout="@layout/fragment_buscar_usuario" >
+        <action
+            android:id="@+id/action_buscarUsuario_to_messageActivity"
+            app:destination="@id/messageActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/messageActivity"
+        android:name="com.fvt.dondeestudio.MessageActivity"
+        android:label="activity_message"
+        tools:layout="@layout/activity_message" /><action android:id="@+id/action_global_fragment_mensajeria" app:destination="@id/fragment_mensajeria"/>
+    <fragment
+        android:id="@+id/reservasPendientesFragment"
+        android:name="com.fvt.dondeestudio.ReservasPendientesFragment"
+        android:label="ReservasPendientesFragment" />
+    <action
+        android:id="@+id/action_global_reservasPendientesFragment"
+        app:destination="@id/reservasPendientesFragment" />
+    <fragment
+        android:id="@+id/detalleClaseProfesorFragment"
+        android:name="com.fvt.dondeestudio.DetalleClaseProfesorFragment"
+        android:label="fragment_detalle_clase_profesor"
+        tools:layout="@layout/fragment_detalle_clase_profesor" />
+    <action
+        android:id="@+id/action_global_detalleClaseProfesorFragment"
+        app:destination="@id/detalleClaseProfesorFragment" />
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.fvt.dondeestudio.PerfilFragment"
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil" /><action android:id="@+id/action_global_perfilFragment" app:destination="@id/perfilFragment"/>
 </navigation>

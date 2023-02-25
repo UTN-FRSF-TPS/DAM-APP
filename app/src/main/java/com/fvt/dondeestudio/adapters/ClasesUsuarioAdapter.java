@@ -20,6 +20,7 @@ import com.fvt.dondeestudio.DetalleClaseFragment;
 import com.fvt.dondeestudio.R;
 import com.fvt.dondeestudio.databinding.ItemClaseReservaBinding;
 import com.fvt.dondeestudio.model.Clase;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -88,6 +89,8 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
 
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("clase", clase);
+                    if(clase.getUbicacion() != null)
+                     bundle.putParcelable("coordenada", new LatLng(clase.getUbicacion().getLatitude(), clase.getUbicacion().getLongitude()));
                     Navigation.findNavController(mBinding.getRoot()).navigate(R.id.action_global_detalleClaseFragment, bundle);
                 }
             });
