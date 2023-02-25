@@ -5,6 +5,7 @@
     <!-- to toggle the open close button of the navigation drawer -->
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="materia">Materia</string>
     <string-array name="rol">
         <item>Alumno</item>
         <item>Profesor</item>

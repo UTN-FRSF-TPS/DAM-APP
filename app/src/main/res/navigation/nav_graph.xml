@@ -9,7 +9,24 @@
         android:id="@+id/agregarClaseFragment"
         android:name="com.fvt.dondeestudio.AgregarClaseFragment"
         android:label="fragment_agregar_clase"
-        tools:layout="@layout/fragment_agregar_clase" />
+        tools:layout="@layout/fragment_agregar_clase" >
+        <action
+            android:id="@+id/action_agregarClaseFragment_self"
+            app:destination="@id/agregarClaseFragment" />
+        <action
+            android:id="@+id/action_agregarClaseFragment_to_seleccionarUbicacionFragment"
+            app:destination="@id/seleccionarUbicacionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/seleccionarUbicacionFragment"
+        android:name="com.fvt.dondeestudio.SeleccionarUbicacionFragment"
+        android:label="fragment_seleccionar_ubicacion"
+        tools:layout="@layout/fragment_seleccionar_ubicacion">
+        <action
+            android:id="@+id/action_seleccionarUbicacionFragment_to_agregarClaseFragment"
+            app:destination="@id/agregarClaseFragment" />
+    </fragment>
     <fragment
         android:id="@+id/clasesReservadasFragment"
         android:name="com.fvt.dondeestudio.ClasesReservadasFragment"

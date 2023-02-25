@@ -14,21 +14,25 @@
             android:id="@+id/textView13"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Materia" />
+            android:text="@string/materia" />
 
-        <Spinner
-            android:id="@+id/spinner2"
+        <EditText
+            android:id="@+id/etMateria"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
 
         <TextView
             android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tarifa por hora" />
+            android:text="Tarifa por hora"
+            android:inputType="numberDecimal"/>
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/etTarifa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -42,7 +46,7 @@
             android:text="Capacidad de alumnos" />
 
         <SeekBar
-            android:id="@+id/seekBar"
+            android:id="@+id/slicerCantAlum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -53,7 +57,7 @@
             android:text="Fecha" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            android:id="@+id/etFecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -76,7 +80,7 @@
                     android:text="Hora inicio" />
 
                 <EditText
-                    android:id="@+id/editTextTime2"
+                    android:id="@+id/etHoraInicio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -95,7 +99,7 @@
                     android:text="Hora fin" />
 
                 <EditText
-                    android:id="@+id/editTextTime"
+                    android:id="@+id/etHoraFin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -110,12 +114,18 @@
             android:text="Nivel"/>
 
         <Spinner
-            android:id="@+id/spinner3"
+            android:id="@+id/spinnerNivel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <CheckBox
+            android:id="@+id/checkBoxPresencial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clase Presencial" />
+
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/btnAgregarClase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Agregar clase" />

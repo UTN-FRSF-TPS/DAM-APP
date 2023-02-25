@@ -55,7 +55,7 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
                     }
                 }
             });
-           //TODO convertir de coordenadas a direccion para mostrar en el card view
+           //TODO: convertir de coordenadas a direccion para mostrar en el card view
             binding.botonReservar.setOnClickListener(new View.OnClickListener() {
                   @Override
                  public void onClick(View v) {
