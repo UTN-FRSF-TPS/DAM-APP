@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Matemáticas"
+            android:text=""
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -37,10 +37,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="02/05 - 15:20"
+                android:text=""
                 android:textSize="16sp"/>
 
             <ImageView
+                android:id="@+id/localizacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/location"></ImageView>
@@ -51,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="UTN-FRSF"
+                android:text=""
                 android:textSize="16sp"
                 android:gravity="center_vertical"/>
 
@@ -72,7 +73,7 @@
             android:id="@+id/profesor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profesor: Leo Messi"
+            android:text=""
             android:gravity="center_vertical"
             android:textSize="16sp"></TextView>
 

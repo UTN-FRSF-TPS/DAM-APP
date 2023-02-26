@@ -14,7 +14,7 @@
             android:id="@+id/action_agregarClaseFragment_self"
             app:destination="@id/agregarClaseFragment" />
         <action
-            android:id="@+id/action_agregarClaseFragment_to_seleccionarUbicacionFragment"
+            android:id="@+id/action_agregarClaseFragment_to_seleccionarUbicacionFragment2"
             app:destination="@id/seleccionarUbicacionFragment" />
     </fragment>
 

@@ -1,6 +1,8 @@
 package com.fvt.dondeestudio.gestores;
 
+import android.content.Context;
 import android.icu.text.BidiClassifier;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -60,7 +62,7 @@ public class GestorReservas {
      * @param idAlumno
      * @param clase    Crea una reserva a una clase si hay cupos disponibles con estado="pendiente"
      */
-    public void guardarReserva(String idAlumno, Clase clase) {
+    public void guardarReserva(String idAlumno, Clase clase, Callback<Integer> resultado) {
         Map<String, Object> map = new HashMap<>();
         map.put("idAlumno", idAlumno);
         map.put("idClase", clase.getId());
@@ -76,18 +78,19 @@ public class GestorReservas {
                         db.collection("reserva").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             public void onSuccess(DocumentReference documentReference) {
                                 GestorClases g = new GestorClases();
+                                resultado.onComplete(1); //Reserva OK
 
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             public void onFailure(@NonNull Exception e) {
-                                System.out.println("Ocurrio un error al registrar la clase");
+                                resultado.onComplete(2); //Error de Firebase
                             }
                         });
                     }
                 }
             });
         } else {
-            System.out.println("No existen cupos para esta clase");
+           resultado.onComplete(3); //La clase no tiene mas cupos
         }
     }
 
@@ -105,7 +108,7 @@ public class GestorReservas {
      */
 
 
-    public void cambiarEstadoReserva(String idReserva, String estado, Integer cupo){
+    public void cambiarEstadoReserva(String idReserva, String estado, Integer cupo, Callback<Integer> resultado){
         Map<String, Object> confirmacion= new HashMap<>();
         confirmacion.put("estado", estado);
         //se debe notificar al alumno.
@@ -122,18 +125,18 @@ public class GestorReservas {
                                     GestorClases g = new GestorClases();
                                     String idClase = (String) documentSnapshot.get("idClase");
                                     g.cambiarCupo(idClase, cupo);
-
+                                    resultado.onComplete(1);
                                 }
                             });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            System.out.println(e.getMessage());
+                            resultado.onComplete(2);
                         }
                     });
                 } else {
-                    System.out.println("Ya aceptaste o rechazaste la reserva");
+                    resultado.onComplete(3);
                 }
 
             }

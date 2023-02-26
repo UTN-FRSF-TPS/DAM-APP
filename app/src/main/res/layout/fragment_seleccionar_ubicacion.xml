@@ -1,38 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:navGraph="@navigation/nav_graph"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SeleccionarUbicacionFragment">
+    android:layout_height="match_parent">
 
 
-    <LinearLayout
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_above="@+id/opciones_layout"/>
 
-        <TextView
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/opciones_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/buscar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/direccion"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="Selecciona la ubicación de la clase"
-            android:textSize="20dp"
-            android:layout_weight="0"/>
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+            android:layout_weight="1"
+            android:hint="Ej: UTN Santa Fe"/>
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/botones_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btnAgregarUbicacion"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:text="Agregar Ubicacion"
-            android:layout_weight="0"/>
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/botonBuscar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#f85f6a"
+                android:text="Localizar"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/botonConfirmar"
+                android:layout_width="0dp"
+                android:backgroundTint="#f85f6a"
+                android:layout_height="wrap_content"
+                android:text="Confirmar"
+                android:enabled="false"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
-
-</FrameLayout>
+</RelativeLayout>

@@ -78,7 +78,7 @@ public class ReservasPendientesFragment extends Fragment {
         binding = FragmentReservasPendientesBinding.inflate(inflater, container, false);
         RecyclerView recycler = binding.recycler;
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Reservas pendientes");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Reservas");
         GestorReservas gR = new GestorReservas();
         System.out.println("MI ID: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));

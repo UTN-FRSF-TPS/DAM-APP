@@ -24,12 +24,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 
+import com.bumptech.glide.Glide;
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.databinding.FragmentDetalleClaseBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
+import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
 import com.fvt.dondeestudio.model.Clase;
+import com.fvt.dondeestudio.model.Profesor;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -110,7 +113,26 @@ public class DetalleClaseFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Clase de " + clase.getAsignatura());
         this.actualizarEstado(clase);
         binding.horario.setText(clase.getHorario());
+
+
+        //Cargar foto de perfil del profesor
+        GestorProfesores gP = new GestorProfesores();
+        gP.obtenerProfesor(clase.getProfesor().getId(), new Callback<Profesor>() {
+            @Override
+            public void onComplete(Profesor retorno) {
+                if (retorno.getPhotoUrl() == null) {
+                    binding.fotoPerfil.setImageResource(R.drawable.ic_baseline_person_24);
+                }
+                else {
+                    Glide.with(getActivity()).load(retorno.getPhotoUrl()).into(binding.fotoPerfil);
+                }
+            }
+        });
+
+        //Nombre del profesor
         binding.profesor.setText("Profesor: " + clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
+
+        //Tarifa de la clase
         binding.tarifa.setText(clase.getTarifaHora().toString() + " por hora");
         DateTimeFormatter formatter = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -137,6 +159,7 @@ public class DetalleClaseFragment extends Fragment {
         }
 
         if(clase.getTipo().equals("Presencial")) {
+            binding.direccion.setText(clase.getDireccion());
             SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_fragment);
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -146,7 +169,6 @@ public class DetalleClaseFragment extends Fragment {
                     markerOptions.position(ubicacion);
                     googleMap.addMarker(markerOptions);
                     Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                    new GeocodeAsyncTask().execute(ubicacion);
                     CameraUpdate ubicacionCamara = CameraUpdateFactory.newLatLngZoom(ubicacion, 17);
                     googleMap.moveCamera(ubicacionCamara);
                 }
@@ -169,10 +191,6 @@ public class DetalleClaseFragment extends Fragment {
             intent.putExtra("userId", idDestino);
             getContext().startActivity(intent);
         });
-
-
-
-
 
 
         return binding.getRoot();
@@ -200,31 +218,6 @@ public class DetalleClaseFragment extends Fragment {
         builder.show();
     }
 
-
-    private class GeocodeAsyncTask extends AsyncTask<LatLng, Void, List<Address>> {
-        @Override
-        protected List<Address> doInBackground(LatLng... params) {
-            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            LatLng ubicacion = params[0];
-            List<Address> addresses = null;
-            try {
-                addresses = geocoder.getFromLocation(ubicacion.latitude, ubicacion.longitude, 1);
-            } catch (IOException e) {
-
-            }
-            return addresses;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                binding.direccion.setText(address.getAddressLine(0));
-            } else {
-                binding.direccion.setText("No existe direccion");
-            }
-        }
-    }
 
 
     private void actualizarEstado(Clase clase){

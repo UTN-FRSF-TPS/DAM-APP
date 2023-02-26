@@ -51,6 +51,7 @@
             android:layout_marginTop="16dp">
 
             <ImageView
+                android:id="@+id/tipoClase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/location"/>
@@ -59,7 +60,6 @@
                 android:id="@+id/localizacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="UTN-FRSF"
                 android:textSize="16sp"/>
 
             <View

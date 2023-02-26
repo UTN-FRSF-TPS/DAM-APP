@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -65,26 +66,59 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
             });
 
             aceptar.setOnClickListener(e-> {
-                gR.cambiarEstadoReserva(reserva.getId(), "confirmada", -1);
-                new Handler().postDelayed(new Runnable() {
+                gR.cambiarEstadoReserva(reserva.getId(), "confirmada", -1, new Callback<Integer>() {
                     @Override
-                    public void run() {
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);                    }
-                }, 1000);
+                    public void onComplete(Integer resultado) {
+                        switch (resultado) {
+                            case 1: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Reserva aceptada correctamente.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 2: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 3: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                        }
+                        }
 
+
+                });
             });
             cancelar.setOnClickListener(e -> {
-                gR.cambiarEstadoReserva(reserva.getId(), "rechazada", 0);
-                new Handler().postDelayed(new Runnable() {
+                gR.cambiarEstadoReserva(reserva.getId(), "rechazada", 0, new Callback<Integer>() {
                     @Override
-                    public void run() {
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);                    }
-                }, 1000);
+                    public void onComplete(Integer resultado) {
+                        switch (resultado) {
+                            case 1: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Reserva rechazada correctamente.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 2: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 3: {
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+
+                        }
+                    }
+                });
             });
 
         }
     }
-
         public ReservaAdapter(Context context, ArrayList<ReservaDTO> reservas) {
             mInflater = LayoutInflater.from(context);
             mReservas = reservas;

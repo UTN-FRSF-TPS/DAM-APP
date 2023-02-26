@@ -59,14 +59,12 @@ public class RegistroFragment extends Fragment {
             ProfesorReservasListener.seguirReserva(user.getUid(), getContext());
             ChatListener.seguirChat(user.getUid(), getContext());
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_agregarClaseFragment, null);
-
         }
     } else {
         Toast.makeText(getContext(), "No completaste todos los datos. Completalos", Toast.LENGTH_LONG).show();
     }
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

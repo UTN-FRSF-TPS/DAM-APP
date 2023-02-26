@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.adapters.AlumnosAdapter;
 import com.fvt.dondeestudio.databinding.DialogAlumnosBinding;
@@ -123,7 +125,27 @@ public class DetalleClaseProfesorFragment extends Fragment {
     });
 
     binding.botonEliminarClase.setOnClickListener(e->{
-        gC.eliminarClase(clase.getId());
+        gC.eliminarClase(clase.getId(), new Callback<Integer>() {
+            @Override
+            public void onComplete(Integer resultado) {
+                switch(resultado){
+                    case 1:{
+                        Toast.makeText(getContext(), "Clase borrada correctamente.", Toast.LENGTH_LONG);
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
+                        break;
+                    }
+                    case 2:{
+                        Toast.makeText(getContext(), "Ocurrio un error al intentar borrar la clase.", Toast.LENGTH_LONG);
+                        break;
+                    }
+                    case 3:{
+                        Toast.makeText(getContext(), "No se pudo encontrar la clase a borrar.", Toast.LENGTH_LONG);
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
+                        break;
+                    }
+                }
+            }
+        });
     });
 
 

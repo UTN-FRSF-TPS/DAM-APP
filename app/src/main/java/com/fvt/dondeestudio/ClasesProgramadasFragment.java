@@ -78,7 +78,7 @@ public class ClasesProgramadasFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Clases programadas");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Mis clases");
 
         binding = FragmentClasesProgramadasBinding.inflate(inflater, container, false);
         RecyclerView recycler = binding.recyclerView;

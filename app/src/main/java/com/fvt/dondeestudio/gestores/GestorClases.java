@@ -43,9 +43,17 @@ public class GestorClases {
      * Agrega la clase a la coleccion de clases. La clase debe tener el objeto profesor incluido
      * @param clase
      */
-    public void agregarClase(Clase clase) {
+    public void agregarClase(Clase clase, Callback<Boolean> insertado) {
 
-        db.collection("clase").add(clase);
+        db.collection("clase").add(clase).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if(task.isSuccessful())
+                    insertado.onComplete(true);
+                else
+                    insertado.onComplete(false);
+            }
+        });
     }
 
     /**
@@ -54,7 +62,7 @@ public class GestorClases {
      * @param id
      */
 
-    public void eliminarClase(String id) {
+    public void eliminarClase(String id, Callback<Integer> resultado) {
 
         db.collection("clase").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -68,13 +76,13 @@ public class GestorClases {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Log.d("a", "Eliminado? ok");
+                                                    resultado.onComplete(1);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Log.w("a", "Error borrando documento", e);
+                                                    resultado.onComplete(2);;
                                                 }
                                             });
                                 }
@@ -83,7 +91,7 @@ public class GestorClases {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w("a", "Error getting documents.", e);
+                                resultado.onComplete(3);
                             }
                         });
             }
@@ -395,7 +403,8 @@ public class GestorClases {
                                 clases.add(clase);
                     }
                 }
-                Collections.sort(clases);
+                if(clases.size() > 1)
+                    Collections.sort(clases);
                 callback.onComplete(clases);
             }
         });

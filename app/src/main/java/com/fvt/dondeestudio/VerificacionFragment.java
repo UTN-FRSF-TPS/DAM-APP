@@ -19,6 +19,7 @@ import com.fvt.dondeestudio.databinding.FragmentVerificacionBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.firebase.FirebaseException;
@@ -102,6 +103,7 @@ public class VerificacionFragment extends Fragment {
                             //si existe, logueo con el rol correspondiente
                             GestorProfesores g = new GestorProfesores();
                             String idLog = FirebaseAuth.getInstance().getUid();
+                            ChatListener.seguirChat(idLog, getContext());
                             g.obtenerProfesor(idLog, new Callback<Profesor>() {
                                 @Override
                                 public void onComplete(Profesor data) {

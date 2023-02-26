@@ -80,8 +80,12 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
                     mBinding.iconoEstado.setColorFilter(Color.DKGRAY);
                     mBinding.iconoEstado.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.finalizada));
                 }
-
-
+            if(clase.getTipo().equals("Presencial")) {
+                mBinding.localizacion.setText(clase.getDireccion());
+            } else {
+                mBinding.localizacion.setText("Clase virtual");
+                mBinding.tipoClase.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.ic_baseline_computer_24));
+            }
             mBinding.horario.setText(clase.getHorario());
             mBinding.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,6 +97,9 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
                      bundle.putParcelable("coordenada", new LatLng(clase.getUbicacion().getLatitude(), clase.getUbicacion().getLongitude()));
                     Navigation.findNavController(mBinding.getRoot()).navigate(R.id.action_global_detalleClaseFragment, bundle);
                 }
+
+
+
             });
 
         }

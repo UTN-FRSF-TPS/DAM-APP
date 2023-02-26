@@ -58,6 +58,7 @@ public class ClasesProgramadasAdapter extends RecyclerView.Adapter<ClasesProgram
                 LocalDateTime fechaClase = LocalDateTime.parse(clase.getHorario(), formatter);
                 if (fechaClase.isBefore(LocalDateTime.now())){
                     botonVerMas.setEnabled(false);
+                    botonVerMas.setBackgroundColor(Color.parseColor("#CCCCCC"));
                     botonVerMas.setText("CLASE FINALIZADA");
                 }
             }

@@ -3,12 +3,14 @@ package com.fvt.dondeestudio.adapters;
 import static android.view.View.VISIBLE;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
@@ -38,6 +40,14 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
             binding.asignatura2.setText(clase.getAsignatura());
             binding.profesor.setText(clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
             binding.horario.setText(clase.getHorario());
+
+            if(clase.getTipo().equals("Presencial")) {
+                binding.direccion.setText(clase.getDireccion());
+            } else {
+                binding.direccion.setText("Clase virtual");
+                binding.localizacion.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.ic_baseline_computer_24));
+            }
+
             GestorReservas gR = new GestorReservas();
             gR.usuarioReservoClase(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase.getId(), new Callback<Boolean>() {
                 @Override
@@ -45,6 +55,7 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
                     if(data) {
                         binding.botonReservar.setEnabled(false);
                         binding.botonReservar.setVisibility(VISIBLE);
+                        binding.botonReservar.setBackgroundColor(Color.parseColor("#CCCCCC"));
                         binding.botonReservar.setText("YA RESERVADA");
                     }  else {
                         binding.botonReservar.setEnabled(true);
@@ -57,16 +68,28 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
             binding.botonReservar.setOnClickListener(new View.OnClickListener() {
                   @Override
                  public void onClick(View v) {
-                     gR.guardarReserva(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase);
-                     Toast.makeText(v.getContext(), "Reserva realizada correctamente.", Toast.LENGTH_LONG).show();
-                     binding.botonReservar.setEnabled(false);
-                     binding.botonReservar.setText("Reservada");
-                      new Handler().postDelayed(new Runnable() {
-                          @Override
-                          public void run() {
-                              Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesReservadasFragment);
-                          }
-                      }, 1000);
+                     gR.guardarReserva(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase, new Callback<Integer>() {
+                         @Override
+                         public void onComplete(Integer resultado) {
+                             switch (resultado) {
+                                 case 1: {
+                                     Toast.makeText(v.getContext(), "Reserva realizada correctamente.", Toast.LENGTH_LONG).show();
+                                     binding.botonReservar.setEnabled(false);
+                                     binding.botonReservar.setText("Reservada");
+                                     Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesReservadasFragment);
+                                 }
+                                 break;
+                                 case 2: {
+                                     Toast.makeText(v.getContext(), "Ocurrio un error. Intenta mas tarde.", Toast.LENGTH_LONG).show();
+                                 }
+                                 break;
+                                 case 3: {
+                                     Toast.makeText(v.getContext(), "Lamentablemente esta clase no tiene mas cupos :(", Toast.LENGTH_LONG).show();
+                                 }
+                             }
+                         }
+                     });
+
                  }
              });
         }

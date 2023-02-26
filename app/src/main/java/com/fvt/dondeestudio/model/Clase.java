@@ -17,18 +17,21 @@ import java.util.List;
 public class Clase implements Serializable, Comparable<Clase>
  {
 
-    private String id;
-    private Profesor profesor;
-    private Double tarifaHora;
-    private Nivel nivel;
-    private transient GeoPoint ubicacion;
-    private String asignatura;
-    private Long cupo;
-    private Integer valoracion;
-    private String horario;
-    private String estadoUsuario;
-    private String tipo;
+    private String id; //esta
+    private Profesor profesor; //esta
+    private Double tarifaHora; //esta
+    private Nivel nivel; //esta
+    private transient GeoPoint ubicacion; //esta
+    private String asignatura; //esta
+    private Long cupo; //esta
+    private Double valoracion; //esta
+    private String horario; //esta
+    private String estadoUsuario; //esta
+     private String direccion;
+    private String tipo; //esta
+     @Exclude
     private Boolean tieneRetroalimentacion; //Solo validos para card view
+     @Exclude
     private Boolean reservada; //Solo validos para card view
      @Exclude
      private ArrayList<HashMap<String, Object>> valoraciones;
@@ -43,17 +46,19 @@ public class Clase implements Serializable, Comparable<Clase>
         this.estadoUsuario = estadoUsuario;
     }
 
-    public Clase(Profesor profesor, Double tarifaHora, Long cupo, Nivel nivel, GeoPoint ubicacion, String asignatura, Integer valoracion, String horario) {
-        this.profesor = profesor;
-        this.tarifaHora = tarifaHora;
-        this.cupo = cupo;
-        this.nivel = nivel;
-        this.ubicacion = ubicacion;
-        this.asignatura = asignatura;
-        this.valoracion = valoracion;
-        ArrayList<Valoracion> valoraciones;
-        this.horario = horario;
+    public Clase(String tipo, Profesor profesor, Double tarifaHora, Long cupo, Nivel nivel, String asignatura, Double valoracion, String horario) {
+        this.profesor = profesor; //esta
+        this.tarifaHora = tarifaHora; //esta
+        this.cupo = cupo; //esta
+        this.nivel = nivel; //esta
+        this.ubicacion = ubicacion; //esta
+        this.asignatura = asignatura; //esta
+        this.valoracion = valoracion; //esta
+        this.tipo = tipo;
+        this.valoraciones = new ArrayList<HashMap<String, Object>>();
+        this.horario = horario; //Esta
     }
+
 
     public Clase(String id, Double tarifa, String asignatura){
         this.id = id;
@@ -118,11 +123,11 @@ public class Clase implements Serializable, Comparable<Clase>
         this.asignatura = asignatura;
     }
 
-    public Integer getValoracion() {
+    public Double getValoracion() {
         return valoracion;
     }
 
-    public void setValoracion(Integer valoracion) {
+    public void setValoracion(Double valoracion) {
         this.valoracion = valoracion;
     }
 
@@ -157,6 +162,14 @@ public class Clase implements Serializable, Comparable<Clase>
     public void setReservada(Boolean reservada) {
         this.reservada = reservada;
     }
+
+     public String getDireccion() {
+         return direccion;
+     }
+
+     public void setDireccion(String direccion) {
+         this.direccion = direccion;
+     }
 
      @Override
      public int compareTo(Clase otra) {
