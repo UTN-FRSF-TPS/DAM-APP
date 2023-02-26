@@ -29,7 +29,7 @@ import java.util.Map;
 public class GestorReservas {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+/* TODO VER NOTIFICACIONES DE RESERVA*/
     public void getReservasNuevas(String idProfesor, final Callback<ArrayList<ReservaDTO>> callback){
         CollectionReference reservationsRef = db.collection("reserva");
          reservationsRef.whereEqualTo("idProfesor", idProfesor).whereEqualTo("estado", "pendiente")

@@ -94,10 +94,6 @@ public class MessageActivity extends AppCompatActivity {
         });
 
 
-        System.out.println("recibiendo " + userId);
-
-        System.out.println("id " + userId);
-
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseFirestore.getInstance().collection("profesor").document(userId);;
 
@@ -123,7 +119,6 @@ public class MessageActivity extends AppCompatActivity {
                         username.setText(userAlumno.getNombre() + " " + userAlumno.getApellido());
                         if (userAlumno.getPhotoUrl() == null) {
                             profile_image.setImageResource(R.drawable.ic_baseline_person_24);
-
                         }
                         else {
                             Glide.with(MessageActivity.this).load(userAlumno.getPhotoUrl()).into(profile_image);
@@ -155,9 +150,11 @@ public class MessageActivity extends AppCompatActivity {
 
                 for (QueryDocumentSnapshot doc : value) {
                     Chat chat = doc.toObject(Chat.class);
-                    System.out.println(chat);
                     if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
                         chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                        if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid) && !chat.getLeido()){
+                            chatReference.document(doc.getId()).update("leido", true);
+                        }
                         mchat.add(chat);
                     }
 

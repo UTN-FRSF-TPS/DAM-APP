@@ -9,11 +9,13 @@ public class Chat {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.leido = false;
     }
 
     private String sender;
     private String receiver;
     private String message;
+    private boolean leido;
 
     public String getSender() {
         return sender;
@@ -37,6 +39,14 @@ public class Chat {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean getLeido() {
+        return leido;
+    }
+
+    public void setLeido(boolean leido) {
+        this.leido = leido;
     }
 
     @Override

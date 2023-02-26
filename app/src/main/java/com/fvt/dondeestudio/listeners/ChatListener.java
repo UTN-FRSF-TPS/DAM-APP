@@ -28,7 +28,7 @@ public class ChatListener {
     public static void seguirChat(String idUsuario, Context context) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collRef = db.collection("chats");
-        collRef.whereEqualTo("receiver", idUsuario)
+        collRef.whereEqualTo("receiver", idUsuario).whereEqualTo("leido", false)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
@@ -46,13 +46,13 @@ public class ChatListener {
                                                 Intent nuevoMensaje = new Intent();
                                                 nuevoMensaje.setAction("nuevoMensaje");
                                                 nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
-
+                                                if(!(context instanceof MessageActivity)){
+                                                    NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
                                                 IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
                                                 context.registerReceiver(receiver, intentFilter);
-
                                                 NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
-                                            } else {
+                                          }
+                                              } else {
                                                 Task<DocumentSnapshot> profesorTask = db.collection("profesor").document(idSender).get();
                                                 profesorTask.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                     @Override
@@ -62,11 +62,12 @@ public class ChatListener {
                                                             Intent nuevoMensaje = new Intent();
                                                             nuevoMensaje.setAction("nuevoMensaje");
                                                             nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                            NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
-
-                                                            NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
-                                                            IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
-                                                            context.registerReceiver(receiver, intentFilter);
+                                                            if(!(context instanceof MessageActivity)){
+                                                                NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
+                                                                NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
+                                                                IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
+                                                                context.registerReceiver(receiver, intentFilter);
+                                                            }
                                                         }
                                                     }
                                                 });
