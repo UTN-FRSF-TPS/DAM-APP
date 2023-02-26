@@ -93,12 +93,15 @@ public class LoginFragment extends Fragment {
                 });
 
         } else {
+
             binding.botonLogin.setVisibility(View.VISIBLE);
             binding.ccp.setVisibility(View.VISIBLE);
             binding.numeroText.setVisibility(View.VISIBLE);
             binding.textoVerificacion.setVisibility(View.VISIBLE);
             binding.imageView2.setVisibility(View.VISIBLE);
-            binding.textView.setVisibility(View.VISIBLE);
+            binding.scroll.setVisibility(View.VISIBLE);
+            binding.linear.setVisibility(View.VISIBLE);
+            binding.cardView.setVisibility(View.VISIBLE);
             binding.botonLogin.setOnClickListener(view -> loginOrRegister(view));
         }
         binding.botonLogin.setOnClickListener(view -> loginOrRegister(view));

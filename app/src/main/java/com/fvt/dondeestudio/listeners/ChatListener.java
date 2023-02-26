@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.fvt.dondeestudio.MessageActivity;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.receivers.NuevaReservaReceiver;
 import com.fvt.dondeestudio.receivers.NuevoMensajeReceiver;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,7 +47,7 @@ public class ChatListener {
                                                 Intent nuevoMensaje = new Intent();
                                                 nuevoMensaje.setAction("nuevoMensaje");
                                                 nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                if(!(context instanceof MessageActivity)){
+                                                if(!Util.getActividadActual(context).equals(MessageActivity.class)){
                                                     NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
                                                 IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
                                                 context.registerReceiver(receiver, intentFilter);
@@ -62,7 +63,7 @@ public class ChatListener {
                                                             Intent nuevoMensaje = new Intent();
                                                             nuevoMensaje.setAction("nuevoMensaje");
                                                             nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                            if(!(context instanceof MessageActivity)){
+                                                            if(!Util.getActividadActual(context).equals(MessageActivity.class)){
                                                                 NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
                                                                 NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
                                                                 IntentFilter intentFilter = new IntentFilter("nuevoMensaje");

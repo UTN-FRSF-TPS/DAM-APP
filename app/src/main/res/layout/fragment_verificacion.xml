@@ -1,11 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
+<LinearLayout
+
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VerificacionFragment">
+    android:background="#ECEFF1"
+    android:padding="16dp"
+    tools:ignore="ExtraText"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="30dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="35dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
     <TextView
         android:id="@+id/textView2"
@@ -13,11 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
+        android:textSize="18dp"
+        android:layout_gravity="center"
         android:text="Verificá tu número de teléfono"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/textView4"
@@ -25,34 +43,28 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
+        android:layout_gravity="center"
         android:layout_marginEnd="5dp"
-        android:text="Te enviamos un SMS con un código para verificar tu número de teléfono. Por favor, ingresalo para proseguir con el login/registro."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        android:text="Te enviamos un SMS con un código para verificar tu número de teléfono. Por favor, ingresalo para proseguir con el login/registro." />
 
     <EditText
         android:id="@+id/codigoVerificacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="Código"
-        android:inputType="numberSigned"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        android:inputType="numberSigned" />
 
     <Button
         android:id="@+id/verificar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_gravity="center"
         android:text="Verificar"
-        android:backgroundTint="#f85f6a"
-        android:background="#f85f6a"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/codigoVerificacion" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:backgroundTint="#f85f6a" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

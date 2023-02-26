@@ -33,12 +33,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link VerificacionFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
+
 public class VerificacionFragment extends Fragment {
     private String mVerificationId;
     private String smsCode;
@@ -89,8 +84,6 @@ public class VerificacionFragment extends Fragment {
                 .addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful() && smsCode != null) {
                       //Se logueo correctamente
-                        Log.d(TAG, "signInWithCredential:success");
-                        System.out.println("Se logueó");
                         FirebaseUser user = task.getResult().getUser();
 
                         if (user.getEmail() == null) {
@@ -110,9 +103,11 @@ public class VerificacionFragment extends Fragment {
                                     if (data == null) { //es alumno
                                         AlumnoReservasListener.seguirReserva(idLog, getContext());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_buscarClasesFragment, null);
+                                        Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     } else { //es profesor
                                         ProfesorReservasListener.seguirReserva(idLog, getContext());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_agregarClaseFragment, null);
+                                        Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     }
                                 }
 
@@ -141,16 +136,13 @@ public class VerificacionFragment extends Fragment {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                // This callback is invoked in an invalid request for verification is made,
-                // for instance if the the phone number format is not valid.
-                Log.w(TAG, "onVerificationFailed", e);
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
 
                     Toast.makeText(getContext(), "El formato de número de teléfono es inválido", Toast.LENGTH_LONG).show();
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
-                    // The SMS quota for the project has been exceeded
+                    Toast.makeText(getContext(), "Se alcanzo el límite de envio de mensajes", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -168,7 +160,6 @@ public class VerificacionFragment extends Fragment {
 
         System.out.println("aca llegaste");
         Log.d("test", "passed");
-        //Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registroFragment);
         System.out.println(numeroCompleto);
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
@@ -181,7 +172,6 @@ public class VerificacionFragment extends Fragment {
     }
 
     public VerificacionFragment() {
-        // Required empty public constructor
     }
 
     @Override

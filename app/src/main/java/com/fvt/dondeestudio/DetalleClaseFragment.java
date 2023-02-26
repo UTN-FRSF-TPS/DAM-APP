@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fvt.dondeestudio.DTO.ClaseDTO;
@@ -138,8 +139,6 @@ public class DetalleClaseFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             LocalDateTime fechaClase = LocalDateTime.parse(clase.getHorario(), formatter);
-
-
             if(clase.getEstadoUsuario().equals("pendiente") && fechaClase.isAfter(LocalDateTime.now())){
             binding.botonCancelarReserva.setVisibility(View.VISIBLE);
         }
@@ -209,8 +208,26 @@ public class DetalleClaseFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 GestorClases gC = new GestorClases();
                 System.out.println("Clase id: " + idClase);
-                gC.agregarRetroalimentacion(idClase, idUsuario, Integer.valueOf(Double.valueOf(ratingBar.getRating()).intValue()));
-                System.out.println("Agregada retroalimentacion a clase: " + idClase);
+                gC.agregarRetroalimentacion(idClase, idUsuario, Integer.valueOf(Double.valueOf(ratingBar.getRating()).intValue()), new Callback<Integer>() {
+                    @Override
+                    public void onComplete(Integer resultado) {
+                        switch (resultado){
+                            case 1:{
+                                binding.botonRetroalimentacion.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Retroalimentacion agregada correctamente", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 2:{
+                                Toast.makeText(getContext(), "No se pudo agregar la retroalimentacion. Intente mas tarde.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                            case 3: {
+                                Toast.makeText(getContext(), "Ya ha agregado una retroalimentación a esta clase.", Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                        }
+                    }
+                });
             }
         });
         builder.setNegativeButton("Cancelar", null);

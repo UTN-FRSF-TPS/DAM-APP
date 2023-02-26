@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:navGraph="@navigation/nav_graph"
+    android:background="#ECEFF1"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
@@ -10,9 +11,25 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ECEFF1"
         android:padding="16dp"
         tools:ignore="ExtraText">
 
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="35dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
         <!-- Filtro por nombre de la clase -->
         <TextView
@@ -130,6 +147,7 @@
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
-
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </ScrollView>

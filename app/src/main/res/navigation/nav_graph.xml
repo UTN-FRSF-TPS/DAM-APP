@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashFragment2">
 
     <fragment
         android:id="@+id/agregarClaseFragment"
@@ -176,5 +176,15 @@
         android:id="@+id/perfilFragment"
         android:name="com.fvt.dondeestudio.PerfilFragment"
         android:label="fragment_perfil"
-        tools:layout="@layout/fragment_perfil" /><action android:id="@+id/action_global_perfilFragment" app:destination="@id/perfilFragment"/>
+        tools:layout="@layout/fragment_perfil" />
+    <action android:id="@+id/action_global_perfilFragment" app:destination="@id/perfilFragment"/>
+    <fragment
+        android:id="@+id/splashFragment2"
+        android:name="com.fvt.dondeestudio.SplashFragment"
+        tools:layout="@layout/fragment_splash"
+        android:label="fragment_splash" />
+    <action
+        android:id="@+id/action_global_loginFragment2"
+        app:destination="@id/loginFragment" />
+
 </navigation>

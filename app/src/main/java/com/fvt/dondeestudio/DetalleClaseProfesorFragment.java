@@ -130,16 +130,16 @@ public class DetalleClaseProfesorFragment extends Fragment {
             public void onComplete(Integer resultado) {
                 switch(resultado){
                     case 1:{
-                        Toast.makeText(getContext(), "Clase borrada correctamente.", Toast.LENGTH_LONG);
+                        Toast.makeText(getContext(), "Clase borrada correctamente.", Toast.LENGTH_LONG).show();
                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
                         break;
                     }
                     case 2:{
-                        Toast.makeText(getContext(), "Ocurrio un error al intentar borrar la clase.", Toast.LENGTH_LONG);
+                        Toast.makeText(getContext(), "Ocurrio un error al intentar borrar la clase.", Toast.LENGTH_LONG).show();
                         break;
                     }
                     case 3:{
-                        Toast.makeText(getContext(), "No se pudo encontrar la clase a borrar.", Toast.LENGTH_LONG);
+                        Toast.makeText(getContext(), "No se pudo encontrar la clase a borrar.", Toast.LENGTH_LONG).show();
                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
                         break;
                     }
@@ -227,8 +227,17 @@ public class DetalleClaseProfesorFragment extends Fragment {
                     // Obtener el valor introducido en el campo de texto
                     String nuevaTarifa = mTarifaEditText.getText().toString();
                     GestorClases gC = new GestorClases();
-                    gC.actualizarClase(clase.getId(), Double.valueOf(nuevaTarifa));
-                    binding.tarifa.setText(nuevaTarifa);
+                    gC.actualizarClase(clase.getId(), Double.valueOf(nuevaTarifa), new Callback<Boolean>() {
+                        @Override
+                        public void onComplete(Boolean resultado) {
+                            if(resultado) {
+                                binding.tarifa.setText(nuevaTarifa);
+                                Toast.makeText(getContext(), "Tarifa cambiada correctamente", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), "Ha ocurrido un error al cambiar la tarifa.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             });
 

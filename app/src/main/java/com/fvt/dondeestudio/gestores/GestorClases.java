@@ -109,7 +109,7 @@ public class GestorClases {
      * Cuando se agrega la retroalimentacion se actualiza el valor de la clase en base al valor ingresado
      */
 
-    public void agregarRetroalimentacion(String idClase, String idUsuario, Integer calif){
+    public void agregarRetroalimentacion(String idClase, String idUsuario, Integer calif, Callback<Integer> resultado){
         Valoracion valoracion = new Valoracion(calif.longValue(), idUsuario);
         DocumentReference docRef = db.collection("clase").document(idClase);
         this.ClaseTieneRetroalimentacionDeUsuario(idClase, idUsuario, new Callback<Boolean>() {
@@ -123,12 +123,21 @@ public class GestorClases {
                                     Integer tam = (Integer) data.get("tam");
                                     Long suma = (Long) data.get("suma");
                                     Double prom = Double.valueOf(suma)/Double.valueOf(tam);
-                                    docRef.update("valoracion", prom);
+                                    docRef.update("valoracion", prom).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            resultado.onComplete(1);
+                                        }    else {
+                                            resultado.onComplete(2);
+                                        }
+                                        }
+                                    });
                                 }
 
                             });
                         }else
-                            System.out.println("Ya hizo una valoracion");
+                           resultado.onComplete(3);
                     }
                 });
 
@@ -242,19 +251,19 @@ public class GestorClases {
      * Permite cambiiar la tarifa de la clase.
      */
 
-    public void actualizarClase(String id, double tarifa) {
+    public void actualizarClase(String id, double tarifa, Callback<Boolean> resultado) {
         Map<String, Object> nuevo = new HashMap<>();
         nuevo.put("tarifaHora", tarifa);
 
         db.collection("clase").document(id).update(nuevo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                System.out.println("Actualizada correctamente");
+                resultado.onComplete(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                System.out.println(e.getMessage());
+              resultado.onComplete(false);
             }
         });
 
@@ -359,22 +368,26 @@ public class GestorClases {
                 if (task.isSuccessful()) {
                     final int[] count = {0};
                     for (DocumentSnapshot document : task.getResult()) {
-                        getClase(document.get("idClase").toString(), new Callback<Clase>() {
-                            @Override
-                            public void onComplete(Clase clase) {
-                                clase.setEstadoUsuario(document.get("estado").toString()); //se setea el estado de la reserva para mostrarlo en el cardview
-                                        clases.add(clase);
-                                count[0]++;
-                                if (count[0] == task.getResult().size()) { //si ya estan todos los registros llamo a on complete
-                                    Collections.sort(clases);
-                                    callback.onComplete(clases);
+                        if(task.getResult().size() != 0) {
+                            getClase(document.get("idClase").toString(), new Callback<Clase>() {
+                                @Override
+                                public void onComplete(Clase clase) {
+                                    clase.setEstadoUsuario(document.get("estado").toString()); //se setea el estado de la reserva para mostrarlo en el cardview
+                                    clases.add(clase);
+                                    count[0]++;
+                                    if (count[0] == task.getResult().size()) { //si ya estan todos los registros llamo a on complete
+                                        Collections.sort(clases);
+                                        callback.onComplete(clases);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            callback.onComplete(clases);
+                        }
                     }
                 } else {
                     Collections.sort(clases);
-                    callback.onComplete(null);
+                    callback.onComplete(clases);
                 }
             }
         });

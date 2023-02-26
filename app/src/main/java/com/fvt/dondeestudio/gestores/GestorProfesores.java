@@ -5,8 +5,10 @@ import androidx.annotation.NonNull;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Profesor;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -15,8 +17,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class GestorProfesores {
 
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-    public Boolean agregarProfesor(Profesor profesor) {
-        mFirestore.collection("profesor").document(profesor.getId()).set(profesor);
+    public Boolean agregarProfesor(Profesor profesor, Callback<Boolean> resultado) {
+        mFirestore.collection("profesor").document(profesor.getId()).set(profesor).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    resultado.onComplete(true);
+                } else {
+                    resultado.onComplete(false);
+                }
+            }
+        });
         return null;
     }
 

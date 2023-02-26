@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
-
-
+        getSupportActionBar().hide();
     }
 
     @Override
@@ -51,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-
-
-
-
+        } else {
+            navController.navigate(R.id.action_global_loginFragment2);
         }
         return true;
     }
@@ -97,5 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
 }
+
