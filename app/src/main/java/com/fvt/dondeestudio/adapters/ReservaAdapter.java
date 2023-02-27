@@ -1,6 +1,7 @@
 package com.fvt.dondeestudio.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.fvt.dondeestudio.gestores.GestorAlumnos;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.gestores.GestorReservas;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Clase;
 
@@ -66,55 +68,65 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
             });
 
             aceptar.setOnClickListener(e-> {
-                gR.cambiarEstadoReserva(reserva.getId(), "confirmada", -1, new Callback<Integer>() {
-                    @Override
-                    public void onComplete(Integer resultado) {
-                        switch (resultado) {
-                            case 1: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Reserva aceptada correctamente.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 2: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 3: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
-                                break;
+                if(Util.conectado(itemView.getContext())) {
+                    gR.cambiarEstadoReserva(reserva.getId(), "confirmada", -1, new Callback<Integer>() {
+                        @Override
+                        public void onComplete(Integer resultado) {
+                            switch (resultado) {
+                                case 1: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Reserva aceptada correctamente.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 2: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 3: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
                             }
                         }
-                        }
-
-
-                });
+                    });
+                } else {
+                    Toast noConexion = Toast.makeText(itemView.getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                    noConexion.getView().setBackgroundColor(Color.RED);
+                    noConexion.show();
+                }
             });
             cancelar.setOnClickListener(e -> {
-                gR.cambiarEstadoReserva(reserva.getId(), "rechazada", 0, new Callback<Integer>() {
-                    @Override
-                    public void onComplete(Integer resultado) {
-                        switch (resultado) {
-                            case 1: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Reserva rechazada correctamente.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 2: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 3: {
-                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
-                                Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
+                if(Util.conectado(itemView.getContext())) {
+                    gR.cambiarEstadoReserva(reserva.getId(), "rechazada", 0, new Callback<Integer>() {
+                        @Override
+                        public void onComplete(Integer resultado) {
+                            switch (resultado) {
+                                case 1: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Reserva rechazada correctamente.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 2: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Ocurrio un error. Intentalo mas tarde.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 3: {
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_reservasPendientesFragment);
+                                    Toast.makeText(itemView.getContext(), "Ya aceptaste o rechazaste esta reserva.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
 
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast noConexion = Toast.makeText(itemView.getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                    noConexion.getView().setBackgroundColor(Color.RED);
+                    noConexion.show();
+                }
             });
 
         }

@@ -2,6 +2,7 @@ package com.fvt.dondeestudio;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -29,6 +30,7 @@ import com.fvt.dondeestudio.databinding.DialogAlumnosBinding;
 import com.fvt.dondeestudio.databinding.FragmentDetalleClaseProfesorBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.android.gms.maps.CameraUpdate;
@@ -112,12 +114,18 @@ public class DetalleClaseProfesorFragment extends Fragment {
         GestorClases gC = new GestorClases();
 
     binding.botonVerInscriptos.setOnClickListener(e->{
-        gC.getAlumnosClase(clase.getId(), new Callback<ArrayList<Alumno>>() {
-            @Override
-            public void onComplete(ArrayList<Alumno> data) {
-                mostrarDialogoAlumnos(getContext(), data);
-            }
-        });
+        if(Util.conectado(getContext())) {
+            gC.getAlumnosClase(clase.getId(), new Callback<ArrayList<Alumno>>() {
+                @Override
+                public void onComplete(ArrayList<Alumno> data) {
+                    mostrarDialogoAlumnos(getContext(), data);
+                }
+            });
+        } else {
+            Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+            noConexion.getView().setBackgroundColor(Color.RED);
+            noConexion.show();
+        }
     });
 
     binding.editButton.setOnClickListener(e->{
@@ -125,38 +133,34 @@ public class DetalleClaseProfesorFragment extends Fragment {
     });
 
     binding.botonEliminarClase.setOnClickListener(e->{
-        gC.eliminarClase(clase.getId(), new Callback<Integer>() {
-            @Override
-            public void onComplete(Integer resultado) {
-                switch(resultado){
-                    case 1:{
-                        Toast.makeText(getContext(), "Clase borrada correctamente.", Toast.LENGTH_LONG).show();
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
-                        break;
-                    }
-                    case 2:{
-                        Toast.makeText(getContext(), "Ocurrio un error al intentar borrar la clase.", Toast.LENGTH_LONG).show();
-                        break;
-                    }
-                    case 3:{
-                        Toast.makeText(getContext(), "No se pudo encontrar la clase a borrar.", Toast.LENGTH_LONG).show();
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
-                        break;
+        if(Util.conectado(getContext())) {
+            gC.eliminarClase(clase.getId(), new Callback<Integer>() {
+                @Override
+                public void onComplete(Integer resultado) {
+                    switch (resultado) {
+                        case 1: {
+                            Toast.makeText(getContext(), "Clase borrada correctamente.", Toast.LENGTH_LONG).show();
+                            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
+                            break;
+                        }
+                        case 2: {
+                            Toast.makeText(getContext(), "Ocurrio un error al intentar borrar la clase.", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+                        case 3: {
+                            Toast.makeText(getContext(), "No se pudo encontrar la clase a borrar.", Toast.LENGTH_LONG).show();
+                            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment);
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+            noConexion.getView().setBackgroundColor(Color.RED);
+            noConexion.show();
+        }
     });
-
-
-
-
-
-
-
-
-
-
 
 
         if(clase.getTipo().equals("Presencial")) {
@@ -225,18 +229,24 @@ public class DetalleClaseProfesorFragment extends Fragment {
                 public void onClick(DialogInterface dialog, int which) {
                     // Obtener el valor introducido en el campo de texto
                     String nuevaTarifa = mTarifaEditText.getText().toString();
-                    GestorClases gC = new GestorClases();
-                    gC.actualizarClase(clase.getId(), Double.valueOf(nuevaTarifa), new Callback<Boolean>() {
-                        @Override
-                        public void onComplete(Boolean resultado) {
-                            if(resultado) {
-                                binding.tarifa.setText(nuevaTarifa);
-                                Toast.makeText(getContext(), "Tarifa cambiada correctamente", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getContext(), "Ha ocurrido un error al cambiar la tarifa.", Toast.LENGTH_LONG).show();
+                    if (Util.conectado(getContext())) {
+                        GestorClases gC = new GestorClases();
+                        gC.actualizarClase(clase.getId(), Double.valueOf(nuevaTarifa), new Callback<Boolean>() {
+                            @Override
+                            public void onComplete(Boolean resultado) {
+                                if (resultado) {
+                                    binding.tarifa.setText(nuevaTarifa);
+                                    Toast.makeText(getContext(), "Tarifa cambiada correctamente", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getContext(), "Ha ocurrido un error al cambiar la tarifa.", Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                        noConexion.getView().setBackgroundColor(Color.RED);
+                        noConexion.show();
+                    }
                 }
             });
 

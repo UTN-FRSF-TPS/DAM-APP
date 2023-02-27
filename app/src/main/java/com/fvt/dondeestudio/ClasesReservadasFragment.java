@@ -22,6 +22,7 @@ import com.fvt.dondeestudio.adapters.ClasesUsuarioAdapter;
 import com.fvt.dondeestudio.databinding.FragmentClasesReservadasBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -94,20 +95,24 @@ public class ClasesReservadasFragment extends Fragment {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         GestorClases gestor = new GestorClases();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        String idAlumno = firebaseAuth.getCurrentUser().getUid();
-        gestor.claseReservadasAlumno(idAlumno, new Callback<ArrayList<Clase>>() {
-            @Override
-            public void onComplete(ArrayList<Clase> clases) {
-                if(clases.size() > 0) {
-                    recyclerView.setAdapter(new ClasesUsuarioAdapter(getContext(), clases));
-                } else {
-                    binding.mensaje.setText("Actualmente no tenés clases reservadas :(");
-                    binding.mensaje.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-                    binding.mensaje.setGravity(Gravity.CENTER);
+        if(Util.conectado(getContext())) {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            String idAlumno = firebaseAuth.getCurrentUser().getUid();
+            gestor.claseReservadasAlumno(idAlumno, new Callback<ArrayList<Clase>>() {
+                @Override
+                public void onComplete(ArrayList<Clase> clases) {
+                    if (clases.size() > 0) {
+                        recyclerView.setAdapter(new ClasesUsuarioAdapter(getContext(), clases));
+                    } else {
+                        binding.mensaje.setText("Actualmente no tenés clases reservadas :(");
+                        binding.mensaje.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+                        binding.mensaje.setGravity(Gravity.CENTER);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            binding.mensaje.setText("No se pudieron cargar las clases reservadas. Verifica la conexion a internet");
+        }
         return binding.getRoot();
     }
 

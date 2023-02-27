@@ -4,6 +4,7 @@ package com.fvt.dondeestudio;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.UbicacionUtil;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Nivel;
 import com.fvt.dondeestudio.model.Profesor;
@@ -100,8 +102,16 @@ public class AgregarClaseFragment extends Fragment {
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        binding.btnAgregarClase.setOnClickListener(lambda -> {
+           if(Util.conectado(getContext())) {
+               agregar(fechaHora[0]);
+           } else {
+               Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+               noConexion.getView().setBackgroundColor(Color.RED);
+               noConexion.show();
+           }
 
-        binding.btnAgregarClase.setOnClickListener(lambda -> agregar(fechaHora[0]));
+        });
         return binding.getRoot();
 
 
@@ -156,7 +166,8 @@ public class AgregarClaseFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_toolbar_profesor, menu);
+
     }
 
     @Override

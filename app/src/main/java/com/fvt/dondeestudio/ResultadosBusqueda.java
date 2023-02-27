@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +13,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.adapters.ClasesResultadoAdapter;
 import com.fvt.dondeestudio.databinding.FragmentResultadosBusquedaBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 
 import java.util.ArrayList;
@@ -83,20 +86,25 @@ public class ResultadosBusqueda extends Fragment {
        ClaseDTO filtro = (ClaseDTO) bundle.getSerializable("filtro");
         GestorClases gC = new GestorClases();
         RecyclerView recycler = binding.recyclerView;
-        gC.filtrarClases(filtro, new Callback<ArrayList<Clase>>() {
-            @Override
-            public void onComplete(ArrayList<Clase> clases) {
-                if (clases.size() > 0) {
-                    recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recycler.setAdapter(new ClasesResultadoAdapter(getContext(), clases));
-                } else {
-                    binding.resultado.setText("No se encontraron clases con esos filtros :( ");
-                    binding.resultado.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-                    binding.resultado.setGravity(Gravity.CENTER);
+        if(Util.conectado(getContext())) {
+            gC.filtrarClases(filtro, new Callback<ArrayList<Clase>>() {
+                @Override
+                public void onComplete(ArrayList<Clase> clases) {
+                    if (clases.size() > 0) {
+                        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+                        recycler.setAdapter(new ClasesResultadoAdapter(getContext(), clases));
+                    } else {
+                        binding.resultado.setText("No se encontraron clases con esos filtros :( ");
+                        binding.resultado.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+                        binding.resultado.setGravity(Gravity.CENTER);
+                    }
                 }
-            }
-        });
-
+            });
+        } else {
+            Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+            noConexion.getView().setBackgroundColor(Color.RED);
+            noConexion.show();
+        }
         // Inflate the layout for this fragment
         return binding.getRoot();
     }

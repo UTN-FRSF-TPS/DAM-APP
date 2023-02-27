@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.DTO.ClaseDTO;
 import com.fvt.dondeestudio.databinding.FragmentBuscarClasesBinding;
 import com.fvt.dondeestudio.helpers.UbicacionUtil;
+import com.fvt.dondeestudio.helpers.Util;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -76,26 +79,33 @@ public class BuscarClasesFragment extends Fragment {
        Button boton = binding.btnSearch;
        this.actualizarSeekBar(binding);
        boton.setOnClickListener(e ->{
-           Bundle bundle = new Bundle();
-           ClaseDTO claseDTO = new ClaseDTO();
-           if(!binding.asignatura.getText().toString().equals(""))
-            claseDTO.setAsignatura(binding.asignatura.getText().toString());
-           claseDTO.setNivel(binding.nivel.getSelectedItem().toString());
-           claseDTO.setTarifaHoraMax(Double.valueOf(binding.tarifa.getProgress()));
-           claseDTO.setRadioMaxMetros(Double.valueOf(binding.distancia.getProgress()));
-           claseDTO.setValoracionProfesor(binding.valoracion.getProgress());
-           claseDTO.setTipo(binding.tipo.getSelectedItem().toString());
-           if(claseDTO.getTipo().equals("Presencial")){
-               UbicacionUtil.obtenerUbicacionActual(this.getActivity(), new UbicacionUtil.LocationResultCallback() {
-                   @Override
-                   public void onLocationResult(LatLng location) {
-                       claseDTO.setUbicacion(location);
-                   }
-               });
+           if(Util.conectado(getContext())) {
+               Bundle bundle = new Bundle();
+               ClaseDTO claseDTO = new ClaseDTO();
+               if (!binding.asignatura.getText().toString().equals(""))
+                   claseDTO.setAsignatura(binding.asignatura.getText().toString());
+               claseDTO.setNivel(binding.nivel.getSelectedItem().toString());
+               claseDTO.setTarifaHoraMax(Double.valueOf(binding.tarifa.getProgress()));
+               claseDTO.setRadioMaxMetros(Double.valueOf(binding.distancia.getProgress()));
+               claseDTO.setValoracionProfesor(binding.valoracion.getProgress());
+               claseDTO.setTipo(binding.tipo.getSelectedItem().toString());
+               if (claseDTO.getTipo().equals("Presencial")) {
+                   UbicacionUtil.obtenerUbicacionActual(this.getActivity(), new UbicacionUtil.LocationResultCallback() {
+                       @Override
+                       public void onLocationResult(LatLng location) {
+                           claseDTO.setUbicacion(location);
+                       }
+                   });
+               }
+               bundle.putSerializable("filtro", claseDTO);
+               Navigation.findNavController(binding.getRoot()).navigate(R.id.action_buscarClasesFragment_to_resultadosBusqueda, bundle);
+           } else {
+               Toast toast = Toast.makeText(getContext(), "No se pudo buscar la clase. Verifica tu conexion a internet", Toast.LENGTH_LONG);
+               toast.getView().setBackgroundColor(Color.RED);
+               toast.show();
            }
-           bundle.putSerializable("filtro", claseDTO);
-           Navigation.findNavController(binding.getRoot()).navigate(R.id.action_buscarClasesFragment_to_resultadosBusqueda, bundle);
-        });
+           });
+
         return binding.getRoot();
 
     }

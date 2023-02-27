@@ -5,8 +5,11 @@ import static android.content.Context.LOCATION_SERVICE;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -47,6 +50,39 @@ public class Util {
             }
         }
         return "default";
+    }
+    /*
+    * rol = 1 -> alumno
+    * rol = 2 -> profesor
+    * */
+    public static void guardarRol(Integer rol, Context context, String userId){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("usuario", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if(rol == 1)
+            editor.putString("rol", "Alumno");
+        else
+            editor.putString("rol", "Profesor");
+        editor.putString("userId", userId);
+        editor.apply();
+    }
+
+    public static String getUserId(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("usuario", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("userId", "nulo");
+    }
+
+    public static boolean conectado(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+
+    public static String getRol(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("usuario", Context.MODE_PRIVATE);
+       return sharedPreferences.getString("rol", "nulo");
     }
 }
 

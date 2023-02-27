@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.adapters.ClasesProgramadasAdapter;
 import com.fvt.dondeestudio.databinding.FragmentClasesProgramadasBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -84,16 +87,20 @@ public class ClasesProgramadasFragment extends Fragment {
         RecyclerView recycler = binding.recyclerView;
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         GestorClases gC = new GestorClases();
-        gC.claseReservadasProfesor(FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<ArrayList<Clase>>() {
-            @Override
-            public void onComplete(ArrayList<Clase> clases) {
-                if(clases.size() > 0){
-                    recycler.setAdapter(new ClasesProgramadasAdapter(getContext(), clases));
-                } else {
-                    binding.mensaje.setText("No tenes ninguna clase programada :(");
+        if(Util.conectado(getContext())) {
+            gC.claseReservadasProfesor(FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<ArrayList<Clase>>() {
+                @Override
+                public void onComplete(ArrayList<Clase> clases) {
+                    if (clases.size() > 0) {
+                        recycler.setAdapter(new ClasesProgramadasAdapter(getContext(), clases));
+                    } else {
+                        binding.mensaje.setText("No tenes ninguna clase programada :(");
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            binding.mensaje.setText("En este momento no tenes conexion :(");
+        }
 
         return binding.getRoot();
     }

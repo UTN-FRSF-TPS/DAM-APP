@@ -69,31 +69,8 @@ public class SplashFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
        binding = FragmentSplashBinding.inflate(inflater, container, false);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null && user.getEmail() != null) {
-            //esta logueado
-            GestorProfesores g = new GestorProfesores();
-            String idLog = FirebaseAuth.getInstance().getUid();
-            ChatListener.seguirChat(idLog, getContext());
-            g.obtenerProfesor(idLog, new Callback<Profesor>() {
-                @Override
-                public void onComplete(Profesor data) {
-                    if (data == null) { //es alumno
-                        AlumnoReservasListener.seguirReserva(idLog, getContext());
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean("login", true);
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_buscarClasesFragment, bundle);
-                    } else { //es profesor
-                        ProfesorReservasListener.seguirReserva(idLog, getContext());
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_agregarClaseFragment, null);
-                    }
-                }
-            });
-
-        }
-
        return binding.getRoot();
     }
 

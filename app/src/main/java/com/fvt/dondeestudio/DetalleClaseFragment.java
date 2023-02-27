@@ -32,6 +32,7 @@ import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.NotificacionHelper;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.android.gms.maps.CameraUpdate;
@@ -117,18 +118,21 @@ public class DetalleClaseFragment extends Fragment {
 
 
         //Cargar foto de perfil del profesor
-        GestorProfesores gP = new GestorProfesores();
-        gP.obtenerProfesor(clase.getProfesor().getId(), new Callback<Profesor>() {
-            @Override
-            public void onComplete(Profesor retorno) {
-                if (retorno.getPhotoUrl() == null) {
-                    binding.fotoPerfil.setImageResource(R.drawable.ic_baseline_person_24);
+        if(Util.conectado(getContext())) {
+            GestorProfesores gP = new GestorProfesores();
+            gP.obtenerProfesor(clase.getProfesor().getId(), new Callback<Profesor>() {
+                @Override
+                public void onComplete(Profesor retorno) {
+                    if (retorno.getPhotoUrl() == null) {
+                        binding.fotoPerfil.setImageResource(R.drawable.ic_baseline_person_24);
+                    } else {
+                        Glide.with(getActivity()).load(retorno.getPhotoUrl()).into(binding.fotoPerfil);
+                    }
                 }
-                else {
-                    Glide.with(getActivity()).load(retorno.getPhotoUrl()).into(binding.fotoPerfil);
-                }
-            }
-        });
+            });
+        } else {
+            binding.fotoPerfil.setImageResource(R.drawable.ic_baseline_person_24);
+        }
 
         //Nombre del profesor
         binding.profesor.setText("Profesor: " + clase.getProfesor().getNombre() + " " + clase.getProfesor().getApellido());
@@ -206,28 +210,34 @@ public class DetalleClaseFragment extends Fragment {
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                GestorClases gC = new GestorClases();
-                System.out.println("Clase id: " + idClase);
-                gC.agregarRetroalimentacion(idClase, idUsuario, Integer.valueOf(Double.valueOf(ratingBar.getRating()).intValue()), new Callback<Integer>() {
-                    @Override
-                    public void onComplete(Integer resultado) {
-                        switch (resultado){
-                            case 1:{
-                                binding.botonRetroalimentacion.setVisibility(View.GONE);
-                                Toast.makeText(getContext(), "Retroalimentacion agregada correctamente", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 2:{
-                                Toast.makeText(getContext(), "No se pudo agregar la retroalimentacion. Intente mas tarde.", Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                            case 3: {
-                                Toast.makeText(getContext(), "Ya ha agregado una retroalimentación a esta clase.", Toast.LENGTH_LONG).show();
-                                break;
+                if(Util.conectado(getContext())) {
+                    GestorClases gC = new GestorClases();
+                    System.out.println("Clase id: " + idClase);
+                    gC.agregarRetroalimentacion(idClase, idUsuario, Integer.valueOf(Double.valueOf(ratingBar.getRating()).intValue()), new Callback<Integer>() {
+                        @Override
+                        public void onComplete(Integer resultado) {
+                            switch (resultado) {
+                                case 1: {
+                                    binding.botonRetroalimentacion.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Retroalimentacion agregada correctamente", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 2: {
+                                    Toast.makeText(getContext(), "No se pudo agregar la retroalimentacion. Intente mas tarde.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                                case 3: {
+                                    Toast.makeText(getContext(), "Ya ha agregado una retroalimentación a esta clase.", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                    noConexion.getView().setBackgroundColor(Color.RED);
+                    noConexion.show();
+                }
             }
         });
         builder.setNegativeButton("Cancelar", null);

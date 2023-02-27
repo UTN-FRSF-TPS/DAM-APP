@@ -2,6 +2,7 @@ package com.fvt.dondeestudio;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.fvt.dondeestudio.databinding.FragmentRegistroBinding;
 import com.fvt.dondeestudio.gestores.GestorAlumnos;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
 import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
@@ -34,13 +36,13 @@ public class RegistroFragment extends Fragment {
 
 
     private void registrar() {
+if(Util.conectado(getContext())) {
+    FirebaseUser user = getArguments().getParcelable("user");
 
-        FirebaseUser user = getArguments().getParcelable("user");
-
-        String email = binding.email.getText().toString();
-        String nombre = binding.nombre.getText().toString();
-        String apellido = binding.apellido.getText().toString();
-    if(email.length() != 0 && nombre.length() != 0 && apellido.length() != 0) {
+    String email = binding.email.getText().toString();
+    String nombre = binding.nombre.getText().toString();
+    String apellido = binding.apellido.getText().toString();
+    if (email.length() != 0 && nombre.length() != 0 && apellido.length() != 0) {
         user.updateEmail(email);
         UserProfileChangeRequest cambioNombre = new UserProfileChangeRequest.Builder()
                 .setDisplayName(nombre + " " + apellido)
@@ -57,6 +59,7 @@ public class RegistroFragment extends Fragment {
                     if (resultado) {
                         AlumnoReservasListener.seguirReserva(user.getUid(), getContext());
                         ChatListener.seguirChat(user.getUid(), getContext());
+                        Util.guardarRol(1, getContext(), user.getUid());
                         Toast.makeText(getContext(), "Te registraste correctamente!", Toast.LENGTH_LONG).show();
                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_buscarClasesFragment, null);
                     } else {
@@ -71,22 +74,26 @@ public class RegistroFragment extends Fragment {
             gestor.agregarProfesor(profesor, new Callback<Boolean>() {
                 @Override
                 public void onComplete(Boolean retorno) {
-                    if(retorno) {
-                        ProfesorReservasListener.seguirReserva(user.getUid(), getContext());
-
+                    if (retorno) {
                         Toast.makeText(getContext(), "Te registraste correctamente!", Toast.LENGTH_LONG).show();
+                        ProfesorReservasListener.seguirReserva(user.getUid(), getContext());
+                        Util.guardarRol(2, getContext(), user.getUid());
                         ChatListener.seguirChat(user.getUid(), getContext());
                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_agregarClaseFragment, null);
                     } else {
                         Toast.makeText(getContext(), "Ocurrio un error al registrarte. Intenta mas tarde.", Toast.LENGTH_LONG).show();
                     }
-                    }
+                }
             });
         }
     } else {
         Toast.makeText(getContext(), "No completaste todos los datos. Completalos", Toast.LENGTH_LONG).show();
     }
-
+} else {
+    Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+    noConexion.getView().setBackgroundColor(Color.RED);
+    noConexion.show();
+}
     }
 
     @Override

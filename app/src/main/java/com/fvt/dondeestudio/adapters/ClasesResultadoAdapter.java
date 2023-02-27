@@ -19,6 +19,7 @@ import com.fvt.dondeestudio.R;
 import com.fvt.dondeestudio.databinding.ItemClaseBusquedaBinding;
 import com.fvt.dondeestudio.gestores.GestorReservas;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -47,49 +48,53 @@ public class ClasesResultadoAdapter extends RecyclerView.Adapter<ClasesResultado
                 binding.direccion.setText("Clase virtual");
                 binding.localizacion.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.ic_baseline_computer_24));
             }
-
-            GestorReservas gR = new GestorReservas();
-            gR.usuarioReservoClase(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase.getId(), new Callback<Boolean>() {
-                @Override
-                public void onComplete(Boolean data) {
-                    if(data) {
-                        binding.botonReservar.setEnabled(false);
-                        binding.botonReservar.setVisibility(VISIBLE);
-                        binding.botonReservar.setBackgroundColor(Color.parseColor("#CCCCCC"));
-                        binding.botonReservar.setText("YA RESERVADA");
-                    }  else {
-                        binding.botonReservar.setEnabled(true);
-                        binding.botonReservar.setVisibility(VISIBLE);
-                        binding.botonReservar.setText("RESERVAR");
+                GestorReservas gR = new GestorReservas();
+                gR.usuarioReservoClase(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase.getId(), new Callback<Boolean>() {
+                    @Override
+                    public void onComplete(Boolean data) {
+                        if (data) {
+                            binding.botonReservar.setEnabled(false);
+                            binding.botonReservar.setVisibility(VISIBLE);
+                            binding.botonReservar.setBackgroundColor(Color.parseColor("#CCCCCC"));
+                            binding.botonReservar.setText("YA RESERVADA");
+                        } else {
+                            binding.botonReservar.setEnabled(true);
+                            binding.botonReservar.setVisibility(VISIBLE);
+                            binding.botonReservar.setText("RESERVAR");
+                        }
                     }
-                }
-            });
+                });
            //TODO: convertir de coordenadas a direccion para mostrar en el card view
             binding.botonReservar.setOnClickListener(new View.OnClickListener() {
                   @Override
                  public void onClick(View v) {
-                     gR.guardarReserva(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase, new Callback<Integer>() {
-                         @Override
-                         public void onComplete(Integer resultado) {
-                             switch (resultado) {
-                                 case 1: {
-                                     Toast.makeText(v.getContext(), "Reserva realizada correctamente.", Toast.LENGTH_LONG).show();
-                                     binding.botonReservar.setEnabled(false);
-                                     binding.botonReservar.setText("Reservada");
-                                     Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesReservadasFragment);
-                                 }
-                                 break;
-                                 case 2: {
-                                     Toast.makeText(v.getContext(), "Ocurrio un error. Intenta mas tarde.", Toast.LENGTH_LONG).show();
-                                 }
-                                 break;
-                                 case 3: {
-                                     Toast.makeText(v.getContext(), "Lamentablemente esta clase no tiene mas cupos :(", Toast.LENGTH_LONG).show();
-                                 }
-                             }
-                         }
-                     });
-
+                      if(Util.conectado(itemView.getContext())) {
+                          gR.guardarReserva(FirebaseAuth.getInstance().getCurrentUser().getUid(), clase, new Callback<Integer>() {
+                              @Override
+                              public void onComplete(Integer resultado) {
+                                  switch (resultado) {
+                                      case 1: {
+                                          Toast.makeText(v.getContext(), "Reserva realizada correctamente.", Toast.LENGTH_LONG).show();
+                                          binding.botonReservar.setEnabled(false);
+                                          binding.botonReservar.setText("Reservada");
+                                          Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesReservadasFragment);
+                                      }
+                                      break;
+                                      case 2: {
+                                          Toast.makeText(v.getContext(), "Ocurrio un error. Intenta mas tarde.", Toast.LENGTH_LONG).show();
+                                      }
+                                      break;
+                                      case 3: {
+                                          Toast.makeText(v.getContext(), "Lamentablemente esta clase no tiene mas cupos :(", Toast.LENGTH_LONG).show();
+                                      }
+                                  }
+                              }
+                          });
+                      } else {
+                          Toast noConexion = Toast.makeText(itemView.getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                          noConexion.getView().setBackgroundColor(Color.RED);
+                          noConexion.show();
+                      }
                  }
              });
         }

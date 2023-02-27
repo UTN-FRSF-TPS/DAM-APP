@@ -2,6 +2,7 @@ package com.fvt.dondeestudio;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
 import com.fvt.dondeestudio.databinding.FragmentVerificacionBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
 import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
@@ -102,10 +104,12 @@ public class VerificacionFragment extends Fragment {
                                 public void onComplete(Profesor data) {
                                     if (data == null) { //es alumno
                                         AlumnoReservasListener.seguirReserva(idLog, getContext());
+                                        Util.guardarRol(1, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_buscarClasesFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     } else { //es profesor
                                         ProfesorReservasListener.seguirReserva(idLog, getContext());
+                                        Util.guardarRol(2, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_agregarClaseFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     }
@@ -187,7 +191,14 @@ public class VerificacionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentVerificacionBinding.inflate(inflater, container, false);
-        binding.verificar.setOnClickListener(lambda -> verifyNumber());
+        binding.verificar.setOnClickListener(lambda ->{
+            if(Util.conectado(getContext())) {
+                verifyNumber();
+            } else {
+                Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                noConexion.getView().setBackgroundColor(Color.RED);
+                noConexion.show();
+            }});
         return binding.getRoot();
     }
 }

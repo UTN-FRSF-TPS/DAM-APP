@@ -49,6 +49,14 @@ public class Profesor extends Usuario implements Serializable {
         this.email = email;
     }
 
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public double getValoracion() {
         return valoracion;
     }

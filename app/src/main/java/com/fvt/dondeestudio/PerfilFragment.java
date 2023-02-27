@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.fvt.dondeestudio.databinding.FragmentPerfilBinding;
 import com.fvt.dondeestudio.gestores.GestorAlumnos;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Profesor;
 import com.google.android.gms.tasks.Continuation;
@@ -64,7 +66,13 @@ public class PerfilFragment extends Fragment {
 
 
         binding.cambiarImagen.setOnClickListener(view -> {
-            openImage();
+            if(Util.conectado(getContext())) {
+                openImage();
+            } else {
+                Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                noConexion.getView().setBackgroundColor(Color.RED);
+                noConexion.show();
+            }
         });
 
         return binding.getRoot();

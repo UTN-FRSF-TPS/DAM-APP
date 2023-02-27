@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +14,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fvt.dondeestudio.DTO.ReservaDTO;
 import com.fvt.dondeestudio.adapters.ReservaAdapter;
 import com.fvt.dondeestudio.databinding.FragmentReservasPendientesBinding;
 import com.fvt.dondeestudio.gestores.GestorReservas;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -80,21 +83,26 @@ public class ReservasPendientesFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Reservas");
         GestorReservas gR = new GestorReservas();
-        System.out.println("MI ID: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        gR.getReservasNuevas(FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<ArrayList<ReservaDTO>>() {
-                    @Override
-                    public void onComplete(ArrayList<ReservaDTO> reservas) {
-                        if(reservas.size() > 0){
-                            binding.mensaje.setVisibility(View.GONE);
-                            recycler.setAdapter(new ReservaAdapter(getContext(), reservas));
-                        } else {
-                            binding.mensaje.setText("No se encontraron reservas pendientes.");
-                            binding.mensaje.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-                            binding.mensaje.setGravity(Gravity.CENTER);
-                        }
+        if(Util.conectado(getContext())) {
+            gR.getReservasNuevas(FirebaseAuth.getInstance().getCurrentUser().getUid(), new Callback<ArrayList<ReservaDTO>>() {
+                @Override
+                public void onComplete(ArrayList<ReservaDTO> reservas) {
+                    if (reservas.size() > 0) {
+                        binding.mensaje.setVisibility(View.GONE);
+                        recycler.setAdapter(new ReservaAdapter(getContext(), reservas));
+                    } else {
+                        binding.mensaje.setText("No se encontraron reservas pendientes.");
+                        binding.mensaje.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+                        binding.mensaje.setGravity(Gravity.CENTER);
                     }
-                });
+                }
+            });
+        } else {
+            Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+            noConexion.getView().setBackgroundColor(Color.RED);
+            noConexion.show();
+        }
         return binding.getRoot();
     }
 }

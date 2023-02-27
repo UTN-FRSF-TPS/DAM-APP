@@ -1,5 +1,6 @@
 package com.fvt.dondeestudio;
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import androidx.navigation.Navigation;
 import com.fvt.dondeestudio.databinding.FragmentSeleccionarUbicacionBinding;
 import com.fvt.dondeestudio.gestores.GestorClases;
 import com.fvt.dondeestudio.helpers.Callback;
+import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Clase;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,29 +64,41 @@ public class SeleccionarUbicacionFragment extends Fragment implements OnMapReady
         botonBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String dir = direccion.getText().toString();
-                new GeocodeAsyncTask().execute(dir);
+                if(Util.conectado(getContext())) {
+                    String dir = direccion.getText().toString();
+                    new GeocodeAsyncTask().execute(dir);
+                } else {
+                    Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                    noConexion.getView().setBackgroundColor(Color.RED);
+                    noConexion.show();
+                }
             }
         });
 
         botonConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              Clase clase = (Clase) getArguments().getSerializable("clase");
-              clase.setUbicacion(new GeoPoint(ubicacionClase.latitude, ubicacionClase.longitude));
-              clase.setDireccion(direccionClase);
-                GestorClases gC = new GestorClases();
-                gC.agregarClase(clase, new Callback<Boolean>() {
-                    @Override
-                    public void onComplete(Boolean retorno) {
-                        if(retorno) {
-                            Toast.makeText(getContext(), "La clase se ha agregado correctamente!", Toast.LENGTH_LONG);
-                            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment, null);
-                        } else {
-                            Toast.makeText(getContext(), "La clase no se pudo agregar. Intentalo mas tarde", Toast.LENGTH_LONG);
+                Clase clase = (Clase) getArguments().getSerializable("clase");
+                clase.setUbicacion(new GeoPoint(ubicacionClase.latitude, ubicacionClase.longitude));
+                clase.setDireccion(direccionClase);
+                if (Util.conectado(getContext())) {
+                    GestorClases gC = new GestorClases();
+                    gC.agregarClase(clase, new Callback<Boolean>() {
+                        @Override
+                        public void onComplete(Boolean retorno) {
+                            if (retorno) {
+                                Toast.makeText(getContext(), "La clase se ha agregado correctamente!", Toast.LENGTH_LONG);
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment, null);
+                            } else {
+                                Toast.makeText(getContext(), "La clase no se pudo agregar. Intentalo mas tarde", Toast.LENGTH_LONG);
+                            }
                         }
-                        }
-                });
+                    });
+                } else {
+                    Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
+                    noConexion.getView().setBackgroundColor(Color.RED);
+                    noConexion.show();
+                }
             }
         });
 
