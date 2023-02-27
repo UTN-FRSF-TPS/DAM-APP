@@ -68,8 +68,6 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Configurar la Toolbar de la actividad
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null && user.getEmail() != null) {

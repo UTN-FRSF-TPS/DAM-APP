@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fvt.dondeestudio.DetalleClaseFragment;
 import com.fvt.dondeestudio.R;
 import com.fvt.dondeestudio.databinding.ItemClaseReservaBinding;
@@ -87,6 +88,15 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
                 mBinding.tipoClase.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.ic_baseline_computer_24));
             }
             mBinding.horario.setText(clase.getHorario());
+                if (clase.getProfesor().getPhotoUrl() == null) {
+                    mBinding.usuarioImagen.setImageResource(R.drawable.ic_baseline_person_24);
+                }
+                else {
+                    Glide.with(itemView.getContext()).load(clase.getProfesor().getPhotoUrl()).into(mBinding.usuarioImagen);
+                }
+
+
+
             mBinding.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

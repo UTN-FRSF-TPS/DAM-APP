@@ -168,8 +168,7 @@ public class DetalleClaseProfesorFragment extends Fragment {
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(ubicacion);
                     googleMap.addMarker(markerOptions);
-                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                    new DetalleClaseProfesorFragment.GeocodeAsyncTask().execute(ubicacion);
+                    binding.direccion.setText(clase.getDireccion());
                     CameraUpdate ubicacionCamara = CameraUpdateFactory.newLatLngZoom(ubicacion, 17);
                     googleMap.moveCamera(ubicacionCamara);
                 }
@@ -257,31 +256,6 @@ public class DetalleClaseProfesorFragment extends Fragment {
 
 
 
-
-    private class GeocodeAsyncTask extends AsyncTask<LatLng, Void, List<Address>> {
-        @Override
-        protected List<Address> doInBackground(LatLng... params) {
-            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            LatLng ubicacion = params[0];
-            List<Address> addresses = null;
-            try {
-                addresses = geocoder.getFromLocation(ubicacion.latitude, ubicacion.longitude, 1);
-            } catch (IOException e) {
-
-            }
-            return addresses;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                binding.direccion.setText(address.getAddressLine(0));
-            } else {
-                binding.direccion.setText("No existe direccion");
-            }
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

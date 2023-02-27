@@ -66,13 +66,14 @@ public class RegistroFragment extends Fragment {
             });
 
         } else {
-            Profesor profesor = new Profesor(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
+            Profesor profesor = new Profesor(user.getUid(), nombre, apellido, email, user.getPhoneNumber());
             GestorProfesores gestor = new GestorProfesores();
             gestor.agregarProfesor(profesor, new Callback<Boolean>() {
                 @Override
                 public void onComplete(Boolean retorno) {
                     if(retorno) {
                         ProfesorReservasListener.seguirReserva(user.getUid(), getContext());
+
                         Toast.makeText(getContext(), "Te registraste correctamente!", Toast.LENGTH_LONG).show();
                         ChatListener.seguirChat(user.getUid(), getContext());
                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_registroFragment_to_agregarClaseFragment, null);

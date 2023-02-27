@@ -71,14 +71,14 @@
         android:layout_height="wrap_content"
         android:padding="7dp">
 
+
         <ImageView
             android:id="@+id/tarifa_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/tarifa"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            app:tint="@color/black" />
+            android:layout_centerVertical="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -95,31 +95,33 @@
 
         <!-- Dirección de la clase con icono de ubicación -->
         <RelativeLayout
+            android:id="@+id/direccion_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="7dp">
 
-
             <ImageView
-                android:layout_width="wrap_content"
                 android:id="@+id/location_icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/location"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"/>
+                android:layout_alignTop="@id/direccion"
+                android:layout_centerVertical="true" />
 
             <TextView
                 android:id="@+id/direccion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:text=""
+                android:textSize="18sp"
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@id/location_icon"
-                android:text="Direccion de la clase"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:layout_centerVertical="true"/>
 
         </RelativeLayout>
+
 
         <!-- Mapa de Google -->
         <fragment

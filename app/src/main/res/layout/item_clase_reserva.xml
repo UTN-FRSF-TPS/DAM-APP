@@ -73,20 +73,12 @@
                 app:cardCornerRadius="15dp"
                 app:cardBackgroundColor="@color/white">
 
-                <androidx.cardview.widget.CardView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:cardCornerRadius="100dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:id="@+id/usuarioImagen"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/usuario_default"
-                        android:scaleType="centerCrop"/>
-
-                </androidx.cardview.widget.CardView>
+                    android:id="@+id/usuarioImagen"
+                    android:src="@drawable/ic_baseline_person_24"
+                    />
 
             </androidx.cardview.widget.CardView>
 

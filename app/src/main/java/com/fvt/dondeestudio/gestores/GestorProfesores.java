@@ -55,7 +55,11 @@ public class GestorProfesores {
                     tam++;
                 }
                 Double prom = Double.valueOf(suma) / Double.valueOf(tam);
-                callback.onComplete(prom);
+                if(prom == 0.0){
+                    callback.onComplete(3.0);
+                } else {
+                    callback.onComplete(prom);
+                }
             }
         });
     }

@@ -12,9 +12,10 @@ public class Profesor extends Usuario implements Serializable {
 
     public Profesor(String id, String nombre, String apellido, String email, String telefono) {
         super(id, nombre, apellido, email, telefono);
+        this.valoracion = 3.0;
     }
 
-    private Integer valoracion;
+    private double valoracion;
 
     public String getId() {
         return id;
@@ -48,11 +49,11 @@ public class Profesor extends Usuario implements Serializable {
         this.email = email;
     }
 
-    public Integer getValoracion() {
+    public double getValoracion() {
         return valoracion;
     }
 
-    public void setValoracion(Integer valoracion) {
+    public void setValoracion(double valoracion) {
         this.valoracion = valoracion;
     }
 

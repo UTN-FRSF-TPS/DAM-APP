@@ -2,6 +2,7 @@ package com.fvt.dondeestudio.gestores;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -162,20 +163,23 @@ public class GestorClases {
                 ArrayList<HashMap<String, Object>> valoracionesFB = (ArrayList<HashMap<String, Object>>) documentSnapshot.get("valoraciones");
                 ArrayList<Valoracion> valoraciones = new ArrayList<>();
                 Boolean retorno= false;
-                for (HashMap<String, Object> valoracionFB : valoracionesFB) {
-                    Long puntaje = (Long) valoracionFB.get("puntaje");
-                    String usuarioId = (String) valoracionFB.get("usuarioId");
-                    Valoracion valoracion = new Valoracion(puntaje, usuarioId);
-                    valoraciones.add(valoracion);
-                }
-                for(Valoracion valoracion2 : valoraciones){
-                    if(valoracion2.getUsuarioId().equals(idUsuario)) {
-                        retorno = true;
-                        break;
+                if(valoracionesFB != null) {
+                    for (HashMap<String, Object> valoracionFB : valoracionesFB) {
+                        Long puntaje = (Long) valoracionFB.get("puntaje");
+                        String usuarioId = (String) valoracionFB.get("usuarioId");
+                        Valoracion valoracion = new Valoracion(puntaje, usuarioId);
+                        valoraciones.add(valoracion);
                     }
+                    for (Valoracion valoracion2 : valoraciones) {
+                        if (valoracion2.getUsuarioId().equals(idUsuario)) {
+                            retorno = true;
+                            break;
+                        }
+                    }
+                    callback.onComplete(retorno);
+                } else {
+                    callback.onComplete(false);
                 }
-                callback.onComplete(retorno);
-
             }});
 
 
@@ -280,7 +284,11 @@ public class GestorClases {
 
     //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
     public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback) {
-            Query q1 = FirebaseFirestore.getInstance().collection("clase");
+            System.out.println("Asignatura" + filtro.getAsignatura())  ;
+        System.out.println("Nivel" + filtro.getNivel())  ;
+        System.out.println("Tipo" + filtro.getTipo())  ;
+        System.out.println("Tarifa" + filtro.getTarifaHoraMax());
+        Query q1 = FirebaseFirestore.getInstance().collection("clase");
             if (filtro.getAsignatura() != null)
                 q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
             if (filtro.getNivel() != null)
@@ -296,32 +304,35 @@ public class GestorClases {
                     ArrayList<Clase> clases = new ArrayList<Clase>();
                     if (task.isSuccessful()) {
                         QuerySnapshot q1Result = (QuerySnapshot) task.getResult().get(0);
+                        System.out.println("TAM: " + q1Result.size());
                         for (DocumentSnapshot document : q1Result) {
                             String horario = (String) document.get("horario");
                             DateTimeFormatter formatter = null;
                             LocalDateTime dateTime = null;
-
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                                 dateTime = LocalDateTime.parse(horario, formatter);
                                 if (dateTime.isAfter(LocalDateTime.now())) {
-
+                                    System.out.println("Pasa fecha");
                                     //Controlar aca que la valoracion del filtro sea mayor a la valoracion del profesor
                                     GestorProfesores gP = new GestorProfesores();
+                                    System.out.println("UBI" + filtro.getUbicacion());
                                     gP.calcularReputacion(document.get("profesor.id").toString(), new Callback<Double>() {
+
                                         @Override
                                         public void onComplete(Double reputacion) {
-
-                                            if (reputacion > filtro.getValoracionProfesor()) {
-
+                                            System.out.println("Reputacion minima:" + filtro.getValoracionProfesor());
+                                            System.out.println("Reputacion profesor: " + reputacion);
+                                            if (reputacion >= filtro.getValoracionProfesor()) {
+                                                System.out.println("Pasa reputacion");
                                                 if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
-
                                                     GeoPoint ubi = document.getGeoPoint("ubicacion");
                                                     if (Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())) < filtro.getRadioMaxMetros()) {
-
+                                                        System.out.println("UBI" + filtro.getUbicacion());
                                                         Clase clase = document.toObject(Clase.class); //si es menor la distancia lo agrego.
                                                         clase.setId(document.getId());
                                                         clases.add(clase);
+                                                        System.out.println("LLEGA ACA?");
                                                         System.out.println("ID " + clases.get(0).getId());
                                                     }
                                                 } else { //si no es presencial lo agrego directamente
