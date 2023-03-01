@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GestorClases {
@@ -282,15 +283,12 @@ public class GestorClases {
      * TODO: REFACTORIZAR EL METODO
      */
 
-    //si FiltroDTO tiene radioMax null, ubicacion se puede pasar como nulo.
-    public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback) {
+        public void filtrarClases(ClaseDTO filtro, final Callback<ArrayList<Clase>> callback) {
             System.out.println("Asignatura" + filtro.getAsignatura())  ;
-        System.out.println("Nivel" + filtro.getNivel())  ;
-        System.out.println("Tipo" + filtro.getTipo())  ;
-        System.out.println("Tarifa" + filtro.getTarifaHoraMax());
-        Query q1 = FirebaseFirestore.getInstance().collection("clase");
-            if (filtro.getAsignatura() != null)
-                q1 = q1.whereEqualTo("asignatura", filtro.getAsignatura());
+            System.out.println("Nivel" + filtro.getNivel())  ;
+            System.out.println("Tipo" + filtro.getTipo())  ;
+            System.out.println("Tarifa" + filtro.getTarifaHoraMax());
+            Query q1 = FirebaseFirestore.getInstance().collection("clase");
             if (filtro.getNivel() != null)
                 q1 = q1.whereEqualTo("nivel", filtro.getNivel());
             if (filtro.getTipo() != null)
@@ -316,9 +314,7 @@ public class GestorClases {
                                     System.out.println("Pasa fecha");
                                     //Controlar aca que la valoracion del filtro sea mayor a la valoracion del profesor
                                     GestorProfesores gP = new GestorProfesores();
-                                    System.out.println("UBI" + filtro.getUbicacion());
                                     gP.calcularReputacion(document.get("profesor.id").toString(), new Callback<Double>() {
-
                                         @Override
                                         public void onComplete(Double reputacion) {
                                             System.out.println("Reputacion minima:" + filtro.getValoracionProfesor());
@@ -327,18 +323,24 @@ public class GestorClases {
                                                 System.out.println("Pasa reputacion");
                                                 if (filtro.getRadioMaxMetros() != null && filtro.getTipo().equals("Presencial")) {
                                                     GeoPoint ubi = document.getGeoPoint("ubicacion");
+                                                   // System.out.println("UBI YO" + filtro.getUbicacion());
+                                                    // System.out.println("UBI CLASE" + document.getGeoPoint(("ubicacion")));
+                                                    // System.out.println("DISTANCIA ES DE: " + Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())));
                                                     if (Util.calcularDistancia(filtro.getUbicacion(), new LatLng(ubi.getLatitude(), ubi.getLongitude())) < filtro.getRadioMaxMetros()) {
                                                         System.out.println("UBI" + filtro.getUbicacion());
+                                                        System.out.println("Llega aca?");
                                                         Clase clase = document.toObject(Clase.class); //si es menor la distancia lo agrego.
                                                         clase.setId(document.getId());
-                                                        clases.add(clase);
-                                                        System.out.println("LLEGA ACA?");
-                                                        System.out.println("ID " + clases.get(0).getId());
-                                                    }
+                                                        if(clase != null && (filtro.getAsignatura() == null || like(clase.getAsignatura().toLowerCase(Locale.ROOT), filtro.getAsignatura().toLowerCase(Locale.ROOT))))
+                                                            clases.add(clase);
+                                                        }
                                                 } else { //si no es presencial lo agrego directamente
+
+
                                                     Clase clase = document.toObject(Clase.class);
                                                     clase.setId(document.getId());
-                                                    clases.add(clase);
+                                                    if(filtro.getAsignatura() == null || like(clase.getAsignatura().toLowerCase(Locale.ROOT), filtro.getAsignatura().toLowerCase(Locale.ROOT)))
+                                                         clases.add(clase);
 
                                                 }
 
@@ -359,7 +361,22 @@ public class GestorClases {
                 } //callback
             });
 
-    }
+        }
+
+
+        public boolean like(String asignatura, String asignaturaFiltro){
+
+        return asignatura.startsWith(asignaturaFiltro)
+                || asignatura.endsWith(asignaturaFiltro)
+                || asignatura.contains(asignaturaFiltro)
+                || asignaturaFiltro.startsWith(asignatura)
+                || asignaturaFiltro.endsWith(asignatura)
+                || asignaturaFiltro.contains(asignatura);
+       }
+
+
+
+
 
     /**
      *

@@ -3,10 +3,12 @@ package com.fvt.dondeestudio;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.fvt.dondeestudio.adapters.UsuarioAdapter;
 import com.fvt.dondeestudio.databinding.FragmentBuscarUsuarioBinding;
+import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.model.Usuario;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuscarUsuarioFragment extends Fragment {
-
     FragmentBuscarUsuarioBinding binding;
 
     private RecyclerView recyclerView;
@@ -46,15 +48,22 @@ public class BuscarUsuarioFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentBuscarUsuarioBinding.inflate(inflater, container, false);
         recyclerView = binding.recyclerUsuarios;
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         textoEmail = binding.textoEmailBusqueda;
         textoTelefono = binding.buscaTelefono;
+        CountingIdlingResource mIdlingRes = ((MainActivity) getActivity()).getIdlingResourceInTest();
 
         binding.botonBuscar.setOnClickListener(lambda ->{
               if(Util.conectado(getContext())) {
-                  getUsers();
+                  mIdlingRes.increment();
+                  getUsers(new Callback<List<Usuario>>() {
+                      @Override
+                      public void onComplete(List<Usuario> data) {
+                          usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
+                          recyclerView.setAdapter(usuarioAdapter);
+                          mIdlingRes.decrement();
+                      }
+                  });
               } else{
                   Toast noConexion = Toast.makeText(getContext(), "En este momento no tenés internet. Por favor, cuando tengas conexión continua.", Toast.LENGTH_LONG);
                   noConexion.getView().setBackgroundColor(Color.RED);
@@ -74,10 +83,9 @@ public class BuscarUsuarioFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void getUsers() {
+    public void getUsers(Callback<List<Usuario>> resultados) {
         listaUsuarios = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         CollectionReference alumnos = db.collection("alumno");
@@ -97,9 +105,8 @@ public class BuscarUsuarioFragment extends Fragment {
                             Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
                             listaUsuarios.add(esteUsuario);
                         }
+                        resultados.onComplete(listaUsuarios);
 
-                        usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
-                        recyclerView.setAdapter(usuarioAdapter);
                     });
 
         }
@@ -118,11 +125,11 @@ public class BuscarUsuarioFragment extends Fragment {
                             Usuario esteUsuario = esteDocumento.toObject(Usuario.class);
                             listaUsuarios.add(esteUsuario);
                         }
-
-                        usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
-                        recyclerView.setAdapter(usuarioAdapter);
+                        resultados.onComplete(listaUsuarios);
                     });
         }
 
     }
+
+
 }

@@ -3,30 +3,27 @@ package com.fvt.dondeestudio;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fvt.dondeestudio.databinding.ActivityMainBinding;
-import com.fvt.dondeestudio.gestores.GestorProfesores;
-import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
-import com.fvt.dondeestudio.model.Profesor;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity {
+    CountingIdlingResource mIdlingRes = new CountingIdlingResource("name");
     ActivityMainBinding binding;
     NavController navController;
-
+    // The Idling Resource which will be null in production.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,30 +32,47 @@ public class MainActivity extends AppCompatActivity {
         navController = navHostFragment.getNavController();
         setContentView(binding.getRoot());
         Toolbar toolbar = binding.toolbar;
+        Context context = navHostFragment.getContext();
         setSupportActionBar(toolbar);
         getSupportActionBar().hide();
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                switch(Util.getRol(getApplicationContext())){
-                    case "Profesor":
-                        navController.navigate(R.id.action_global_agregarClaseFragment);
-                        ProfesorReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), getApplicationContext());
-                        break;
-                    case "Alumno":
-                        navController.navigate(R.id.action_global_buscarClasesFragment);
-                        AlumnoReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), getApplicationContext());
-                        break;
-                    case "nulo":
-                        navController.navigate(R.id.action_global_loginFragment2);
-                        break;
-                }
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("fragment") != null) {
+            Integer fr = (Integer) intent.getExtras().get("fragment");
+            switch (fr) {
+                case 1:
+                case 2:
+                    navController.navigate(R.id.action_global_reservasPendientesFragment);
+                    break;
+                case 3:
+                    navController.navigate(R.id.action_global_clasesReservadasFragment);
+                    break;
             }
-        }, 2000); //mostrar splash por 2 segundos
+        } else {
 
 
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    switch (Util.getRol(getApplicationContext())) {
+                        case "Profesor":
+                            navController.navigate(R.id.action_global_agregarClaseFragment);
+                            ProfesorReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), context);
+
+                            break;
+                        case "Alumno":
+                            navController.navigate(R.id.action_global_buscarClasesFragment);
+                            AlumnoReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), context);
+                            break;
+                        case "nulo":
+                            navController.navigate(R.id.action_global_loginFragment2);
+                            break;
+                    }
+                }
+            }, 2000); //mostrar splash por 2 segundos
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,5 +132,14 @@ public class MainActivity extends AppCompatActivity {
     public void hideActionBar() {
         getSupportActionBar().hide();
     }
+
+    public CountingIdlingResource getIdlingResourceInTest() {
+        return mIdlingRes;
+    }
+
+    public void navigateToClasesReservadas(){
+        navController.navigate(R.id.action_global_clasesReservadasFragment);
+    }
+
 }
 
