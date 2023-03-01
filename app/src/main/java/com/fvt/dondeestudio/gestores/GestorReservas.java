@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 
 import com.fvt.dondeestudio.DTO.ReservaDTO;
 import com.fvt.dondeestudio.helpers.Callback;
-import com.fvt.dondeestudio.listeners.AlumnoClaseListener;
 import com.fvt.dondeestudio.model.Clase;
 import com.fvt.dondeestudio.model.Reserva;
 import com.google.android.gms.tasks.OnCompleteListener;

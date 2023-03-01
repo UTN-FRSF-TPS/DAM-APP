@@ -75,6 +75,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         binding.botonLogin.setOnClickListener(view -> loginOrRegister(view));
         return binding.getRoot();

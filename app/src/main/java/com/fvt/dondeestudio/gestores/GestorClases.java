@@ -393,7 +393,7 @@ public class GestorClases {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 final ArrayList<Clase> clases = new ArrayList<Clase>();
-                if (task.isSuccessful()) {
+                if (task.isSuccessful() && task.getResult().size() > 0) {
                     final int[] count = {0};
                     for (DocumentSnapshot document : task.getResult()) {
                         if(task.getResult().size() != 0) {

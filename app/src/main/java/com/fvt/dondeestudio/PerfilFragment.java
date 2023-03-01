@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,12 @@ public class PerfilFragment extends Fragment {
                 noConexion.getView().setBackgroundColor(Color.RED);
                 noConexion.show();
             }
+        });
+
+        binding.cerrarSesion.setOnClickListener(e->{
+            FirebaseAuth.getInstance().signOut();
+            Util.logout(getContext());
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_loginFragment2);
         });
 
         return binding.getRoot();

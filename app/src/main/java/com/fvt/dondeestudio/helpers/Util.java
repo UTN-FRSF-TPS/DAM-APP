@@ -85,6 +85,14 @@ public class Util {
        return sharedPreferences.getString("rol", "nulo");
     }
 
+    public static void logout(Context context){
+        SharedPreferences prefs = context.getSharedPreferences("usuario", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("rol");
+        editor.remove("userId");
+        editor.apply(); // o editor.commit();
+    }
+
     public static boolean isAppInForeground(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
