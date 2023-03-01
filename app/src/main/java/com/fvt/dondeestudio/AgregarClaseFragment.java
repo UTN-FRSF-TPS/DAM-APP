@@ -37,6 +37,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -115,8 +116,6 @@ public class AgregarClaseFragment extends Fragment {
         return binding.getRoot();
 
 
-
-
     }
 
     private void agregar(String fechaHora) {
@@ -124,29 +123,34 @@ public class AgregarClaseFragment extends Fragment {
         String tipo = binding.tipo.getSelectedItem().toString();
         if(asignatura.length() > 0 && binding.cupoMax.getText().toString().length() > 0 && binding.tarifaHora.getText().toString().length() > 0 && fechaHora != null) {
 
-            Integer cupo = Integer.valueOf(binding.cupoMax.getText().toString());
-            Nivel nivel = Nivel.valueOf(binding.spinnerNivel.getSelectedItem().toString());
-            Double tarifaPorHora = Double.parseDouble(binding.tarifaHora.getText().toString());
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                LocalDateTime fechaClase = LocalDateTime.parse(fechaHora, formatter);
+                if (fechaClase.isAfter(LocalDateTime.now())) {
 
-            GestorProfesores gestorProfesores = new GestorProfesores();
-            String idLog = FirebaseAuth.getInstance().getUid();
-            gestorProfesores.obtenerProfesor(idLog, new Callback<Profesor>() {
-                @Override
-                public void onComplete(Profesor prof) {
+                    Integer cupo = Integer.valueOf(binding.cupoMax.getText().toString());
+                    Nivel nivel = Nivel.valueOf(binding.spinnerNivel.getSelectedItem().toString());
+                    Double tarifaPorHora = Double.parseDouble(binding.tarifaHora.getText().toString());
 
-                    Clase clase = new Clase(tipo, prof, tarifaPorHora, cupo.longValue(), nivel, asignatura, 0.00, fechaHora);
+                    GestorProfesores gestorProfesores = new GestorProfesores();
+                    String idLog = FirebaseAuth.getInstance().getUid();
+                    gestorProfesores.obtenerProfesor(idLog, new Callback<Profesor>() {
+                        @Override
+                        public void onComplete(Profesor prof) {
 
-                    if (binding.tipo.getSelectedItem().toString().equals("Presencial")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("clase", clase);
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_agregarClaseFragment_to_seleccionarUbicacionFragment2, bundle);
-                    } else {
-                        //profesor, tarifahora, cupo, nivel, ubicacion, asignatura, valoracion, horario
-                        GestorClases gestor = new GestorClases();
-                        gestor.agregarClase(clase, new Callback<Boolean>() {
+                            Clase clase = new Clase(tipo, prof, tarifaPorHora, cupo.longValue(), nivel, asignatura, 0.00, fechaHora);
+
+                            if (binding.tipo.getSelectedItem().toString().equals("Presencial")) {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("clase", clase);
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_agregarClaseFragment_to_seleccionarUbicacionFragment2, bundle);
+                            } else {
+                                //profesor, tarifahora, cupo, nivel, ubicacion, asignatura, valoracion, horario
+                                GestorClases gestor = new GestorClases();
+                                gestor.agregarClase(clase, new Callback<Boolean>() {
                                     @Override
                                     public void onComplete(Boolean retorno) {
-                                        if(retorno){
+                                        if (retorno) {
                                             Toast.makeText(getContext(), "La clase se ha agregado correctamente!", Toast.LENGTH_LONG);
                                             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_global_clasesProgramadasFragment, null);
                                         } else {
@@ -154,24 +158,16 @@ public class AgregarClaseFragment extends Fragment {
                                         }
                                     }
                                 });
-                    }
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(getContext(), "La fecha de la clase debe ser posterior a la actual.", Toast.LENGTH_LONG).show();
                 }
-            });
-
+            }
         } else {
             Toast.makeText(getContext(), "No completaste todos los campos necesarios.", Toast.LENGTH_LONG).show();
         }
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
 }

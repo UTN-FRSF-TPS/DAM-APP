@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.test.espresso.idling.CountingIdlingResource;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,10 +19,9 @@ import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 
 
 public class MainActivity extends AppCompatActivity {
-    CountingIdlingResource mIdlingRes = new CountingIdlingResource("name");
     ActivityMainBinding binding;
     NavController navController;
-    // The Idling Resource which will be null in production.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Context context = navHostFragment.getContext();
         setSupportActionBar(toolbar);
         getSupportActionBar().hide();
-        Handler handler = new Handler();
+
+        //Si recibo un intent con con un extra fragment es pq viene del broadcast receiver
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().get("fragment") != null) {
             Integer fr = (Integer) intent.getExtras().get("fragment");
@@ -49,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         } else {
-
-
+            //sino es porque abre normalmente la ubicacion
+            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -58,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
                         case "Profesor":
                             navController.navigate(R.id.action_global_agregarClaseFragment);
                             ProfesorReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), context);
-
                             break;
                         case "Alumno":
                             navController.navigate(R.id.action_global_buscarClasesFragment);
@@ -74,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //segun el rol se infla cada menu
            switch(Util.getRol(getApplicationContext())){
                case "Profesor":
                   getMenuInflater().inflate(R.menu.menu_toolbar_profesor, menu);
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
            }
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,17 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void hideActionBar() {
-        getSupportActionBar().hide();
-    }
 
-    public CountingIdlingResource getIdlingResourceInTest() {
-        return mIdlingRes;
-    }
-
-    public void navigateToClasesReservadas(){
-        navController.navigate(R.id.action_global_clasesReservadasFragment);
-    }
 
 }
 

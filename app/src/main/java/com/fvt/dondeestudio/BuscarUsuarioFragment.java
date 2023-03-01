@@ -51,17 +51,13 @@ public class BuscarUsuarioFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         textoEmail = binding.textoEmailBusqueda;
         textoTelefono = binding.buscaTelefono;
-        CountingIdlingResource mIdlingRes = ((MainActivity) getActivity()).getIdlingResourceInTest();
-
         binding.botonBuscar.setOnClickListener(lambda ->{
               if(Util.conectado(getContext())) {
-                  mIdlingRes.increment();
                   getUsers(new Callback<List<Usuario>>() {
                       @Override
                       public void onComplete(List<Usuario> data) {
                           usuarioAdapter = new UsuarioAdapter(getContext(), listaUsuarios);
                           recyclerView.setAdapter(usuarioAdapter);
-                          mIdlingRes.decrement();
                       }
                   });
               } else{
