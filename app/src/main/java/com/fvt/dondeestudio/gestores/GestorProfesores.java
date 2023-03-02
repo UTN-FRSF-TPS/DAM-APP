@@ -32,16 +32,18 @@ public class GestorProfesores {
     }
 
     public void obtenerProfesor(String id, final Callback<Profesor> callback){
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection("profesor").document(id);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Profesor profesor= documentSnapshot.toObject(Profesor.class);
-                if(profesor != null)
-                    profesor.setId(documentSnapshot.getId());
-                callback.onComplete(profesor);
-            }
-        });
+        if (id != null) {
+            DocumentReference docRef = FirebaseFirestore.getInstance().collection("profesor").document(id);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Profesor profesor = documentSnapshot.toObject(Profesor.class);
+                    if (profesor != null)
+                        profesor.setId(documentSnapshot.getId());
+                    callback.onComplete(profesor);
+                }
+            });
+        }
     }
 
     public void calcularReputacion(String id, final Callback<Double> callback){

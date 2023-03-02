@@ -55,17 +55,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
-    <EditText
-        android:id="@+id/buscaTelefono"
+    <TableRow
+        android:id="@+id/tablaTelefono"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:ems="10"
-        android:inputType="phone"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:ccpDialog_backgroundColor="?attr/colorOnPrimary"
+            app:ccpDialog_fastScroller_bubbleColor="?attr/colorOnPrimary"
+            app:ccpDialog_textColor="?attr/colorOnBackground"
+            app:ccp_contentColor="?attr/colorOnBackground"
+            app:ccp_defaultNameCode="AR" />
+
+        <EditText
+            android:id="@+id/buscaTelefono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="phone"
+            android:visibility="visible" />
+    </TableRow>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerUsuarios"

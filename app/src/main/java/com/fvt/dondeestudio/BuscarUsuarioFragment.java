@@ -12,6 +12,8 @@ import android.support.test.espresso.idling.CountingIdlingResource;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +40,9 @@ public class BuscarUsuarioFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private TextView textoEmail;
+    private TableRow tablaTelefono;
     private TextView textoTelefono;
-
+    private CountryCodePicker ccp;
     private UsuarioAdapter usuarioAdapter;
     List<Usuario> listaUsuarios;
 
@@ -51,6 +55,8 @@ public class BuscarUsuarioFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         textoEmail = binding.textoEmailBusqueda;
         textoTelefono = binding.buscaTelefono;
+        tablaTelefono = binding.tablaTelefono;
+        ccp = binding.ccp;
         binding.botonBuscar.setOnClickListener(lambda ->{
               if(Util.conectado(getContext())) {
                   getUsers(new Callback<List<Usuario>>() {
@@ -69,11 +75,11 @@ public class BuscarUsuarioFragment extends Fragment {
 
         binding.botonTelefono.setOnClickListener(lambda -> {
             binding.textoEmailBusqueda.setVisibility(View.GONE);
-            binding.buscaTelefono.setVisibility(View.VISIBLE);
+            binding.tablaTelefono.setVisibility(View.VISIBLE);
         });
         binding.botonMail.setOnClickListener(lambda -> {
             binding.textoEmailBusqueda.setVisibility(View.VISIBLE);
-            binding.buscaTelefono.setVisibility(View.GONE);
+            binding.tablaTelefono.setVisibility(View.GONE);
         });
 
         return binding.getRoot();
@@ -107,8 +113,10 @@ public class BuscarUsuarioFragment extends Fragment {
 
         }
         else {
-            Task<QuerySnapshot> taskAlumnos = alumnos.whereEqualTo("telefono", "+54" + textoTelefono.getText().toString()).get();
-            Task<QuerySnapshot> taskProfesores = profesores.whereEqualTo("telefono", "+54" + textoTelefono.getText().toString()).get();
+            Task<QuerySnapshot> taskAlumnos = alumnos.whereEqualTo("telefono", "+" + ccp.getSelectedCountryCode() + textoTelefono.getText().toString()).get();
+            Task<QuerySnapshot> taskProfesores = profesores.whereEqualTo("telefono", "+" + ccp.getSelectedCountryCode() + textoTelefono.getText().toString()).get();
+
+            System.out.println("buscando " + "+" + ccp.getSelectedCountryCode() + textoTelefono.getText().toString());
 
             Tasks.whenAll(taskAlumnos, taskProfesores)
                     .addOnCompleteListener(task -> {

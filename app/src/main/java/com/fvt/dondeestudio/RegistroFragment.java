@@ -43,12 +43,6 @@ if(Util.conectado(getContext())) {
     String nombre = binding.nombre.getText().toString();
     String apellido = binding.apellido.getText().toString();
     if (email.length() != 0 && nombre.length() != 0 && apellido.length() != 0) {
-        user.updateEmail(email);
-        UserProfileChangeRequest cambioNombre = new UserProfileChangeRequest.Builder()
-                .setDisplayName(nombre + " " + apellido)
-                .build();
-
-        user.updateProfile(cambioNombre);
 
         if (binding.rol.getSelectedItem().equals("Alumno")) {
             Alumno alumno = new Alumno(user.getUid(), email, nombre, apellido, user.getPhoneNumber());
