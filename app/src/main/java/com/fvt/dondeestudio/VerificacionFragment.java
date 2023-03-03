@@ -18,12 +18,15 @@ import android.widget.Toast;
 import com.fvt.dondeestudio.databinding.FragmentLoginBinding;
 import com.fvt.dondeestudio.databinding.FragmentVerificacionBinding;
 import com.fvt.dondeestudio.gestores.GestorProfesores;
+import com.fvt.dondeestudio.gestores.GestorUsuarios;
 import com.fvt.dondeestudio.helpers.Callback;
 import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
 import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
+import com.fvt.dondeestudio.model.Alumno;
 import com.fvt.dondeestudio.model.Profesor;
+import com.fvt.dondeestudio.model.Usuario;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,35 +91,35 @@ public class VerificacionFragment extends Fragment {
                       //Se logueo correctamente
                         FirebaseUser user = task.getResult().getUser();
 
-                        if (user.getEmail() == null) {
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("user", user);
-                            //si no existe usuario voy al registro.
-                            Navigation.findNavController(this.getView()).navigate(R.id.action_verificacionFragment_to_registroFragment, bundle);
-                        }
-                        else {
-                            //si existe, logueo con el rol correspondiente
-                            GestorProfesores g = new GestorProfesores();
-                            String idLog = FirebaseAuth.getInstance().getUid();
-                            ChatListener.seguirChat(idLog, getContext());
-                            g.obtenerProfesor(idLog, new Callback<Profesor>() {
-                                @Override
-                                public void onComplete(Profesor data) {
-                                    if (data == null) { //es alumno
+                        GestorUsuarios gestorUsuarios = new GestorUsuarios();
+
+                        String idLog = FirebaseAuth.getInstance().getUid();
+
+                        gestorUsuarios.encuentraUsuario(idLog, new Callback<Usuario>() {
+                            @Override
+                            public void onComplete(Usuario data) {
+                                if (data != null) {
+                                    ChatListener.seguirChat(idLog, getContext());
+                                    if (data instanceof Alumno) {
                                         AlumnoReservasListener.seguirReserva(idLog, getContext());
                                         Util.guardarRol(1, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_buscarClasesFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
-                                    } else { //es profesor
+                                    } else {
                                         ProfesorReservasListener.seguirReserva(idLog, getContext());
                                         Util.guardarRol(2, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_agregarClaseFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     }
                                 }
-
-                            });
-                        }
+                                else {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("user", user);
+                                    //si no existe usuario voy al registro.
+                                    Navigation.findNavController(getView()).navigate(R.id.action_verificacionFragment_to_registroFragment, bundle);
+                                }
+                            }
+                        });
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             Toast.makeText(getContext(), "El código que ingresaste no es correcto. Ingresalo correctamente", Toast.LENGTH_LONG).show();
