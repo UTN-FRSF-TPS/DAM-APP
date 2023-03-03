@@ -34,6 +34,9 @@ public class ChatListener {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException e) {
+                        NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
+                        IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
+                        context.registerReceiver(receiver, intentFilter);
                         for (DocumentChange dc : querySnapshot.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
@@ -46,13 +49,9 @@ public class ChatListener {
                                                 String nombre = documentSnapshot.getString("nombre") + " " + documentSnapshot.getString("apellido");
                                                 Intent nuevoMensaje = new Intent();
                                                 nuevoMensaje.setAction("nuevoMensaje");
-                                                nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                if(!Util.getActividadActual(context).equals(MessageActivity.class)){
-                                                    NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
-                                                IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
-                                                context.registerReceiver(receiver, intentFilter);
+                                                nuevoMensaje.putExtra("chatId", documentSnapshot.getId());
+                                                System.out.println("ID A DONDE VA EL MSJ: " + documentSnapshot.getId());
                                                 NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
-                                          }
                                               } else {
                                                 Task<DocumentSnapshot> profesorTask = db.collection("profesor").document(idSender).get();
                                                 profesorTask.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -62,13 +61,9 @@ public class ChatListener {
                                                             String nombre = documentSnapshot.getString("nombre") + " " + documentSnapshot.getString("apellido");
                                                             Intent nuevoMensaje = new Intent();
                                                             nuevoMensaje.setAction("nuevoMensaje");
-                                                            nuevoMensaje.putExtra("userId", documentSnapshot.getId());
-                                                            if(!Util.getActividadActual(context).equals(MessageActivity.class)){
+                                                            System.out.println("EL MENSAJE VA A IR A" + documentSnapshot.getId());
+                                                            nuevoMensaje.putExtra("chatId", documentSnapshot.getId());
                                                                 NotificacionHelper.showNotification(context, "Nuevo mensaje", "Tenes un nuevo mensaje de " + nombre, nuevoMensaje);
-                                                                NuevoMensajeReceiver receiver = new NuevoMensajeReceiver();
-                                                                IntentFilter intentFilter = new IntentFilter("nuevoMensaje");
-                                                                context.registerReceiver(receiver, intentFilter);
-                                                            }
                                                         }
                                                     }
                                                 });

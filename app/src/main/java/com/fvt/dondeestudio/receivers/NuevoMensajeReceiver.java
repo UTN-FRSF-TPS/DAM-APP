@@ -5,17 +5,29 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.fvt.dondeestudio.MainActivity;
 import com.fvt.dondeestudio.MessageActivity;
+import com.fvt.dondeestudio.R;
+import com.fvt.dondeestudio.helpers.Util;
 
 public class NuevoMensajeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String userId = intent.getStringExtra("userId");
-        Intent activityIntent = new Intent(context, MessageActivity.class);
-        activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activityIntent.putExtra("userId", userId);
-
-        context.startActivity(activityIntent);
+        if(!Util.isAppInForeground(context)){
+            Intent activityIntent = new Intent(context, MainActivity.class);
+            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activityIntent.putExtra("fragment", 4);
+            context.startActivity(activityIntent);
+        } else {
+            NavController navController = Navigation.findNavController(
+                    ((FragmentActivity) context).findViewById(R.id.nav_host_fragment)
+            );
+            navController.navigate(R.id.action_global_fragment_mensajeria);
+        }
     }
 }

@@ -86,7 +86,7 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String userId = intent.getStringExtra("userId");
-
+        System.out.println("CONVERSACION CON: " + userId);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         btn_send.setOnClickListener(view -> {
             String message = text_send.getText().toString();

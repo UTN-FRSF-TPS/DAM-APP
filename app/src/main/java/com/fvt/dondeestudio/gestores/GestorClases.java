@@ -28,10 +28,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -310,12 +313,12 @@ public class GestorClases {
                         System.out.println("TAM: " + q1Result.size());
                         for (DocumentSnapshot document : q1Result) {
                             String horario = (String) document.get("horario");
-                            DateTimeFormatter formatter = null;
-                            LocalDateTime dateTime = null;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                                dateTime = LocalDateTime.parse(horario, formatter);
-                                if (dateTime.isAfter(LocalDateTime.now())) {
+                            SimpleDateFormat formatter = null;
+                            Date date = null;
+                            try {
+                                formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                date = formatter.parse(horario);
+                                if (date.after(new Date())) {
                                     System.out.println("Pasa fecha");
                                     //Controlar aca que la valoracion del filtro sea mayor a la valoracion del profesor
                                     GestorProfesores gP = new GestorProfesores();
@@ -356,6 +359,8 @@ public class GestorClases {
                                         }
                                     });
                                 } //fecha anterior a la actual
+                            } catch (ParseException e){
+                                System.out.println("Error");
                             } //version
                         } //recorre documentos
                     } //si fue exitoso

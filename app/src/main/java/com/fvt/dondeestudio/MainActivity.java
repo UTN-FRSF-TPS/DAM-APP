@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     navController.navigate(R.id.action_global_clasesReservadasFragment);
                     break;
+                case 4:
+                    navController.navigate(R.id.action_global_fragment_mensajeria);
+                    break;
             }
         } else {
             //sino es porque abre normalmente la ubicacion
