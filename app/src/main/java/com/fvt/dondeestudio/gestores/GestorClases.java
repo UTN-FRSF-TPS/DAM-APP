@@ -73,20 +73,25 @@ public class GestorClases {
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    documentSnapshot.getReference().delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    resultado.onComplete(1);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    resultado.onComplete(2);;
-                                                }
-                                            });
+                                if (queryDocumentSnapshots.size() > 0) {
+                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        documentSnapshot.getReference().delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        resultado.onComplete(1);
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        resultado.onComplete(2);
+                                                        ;
+                                                    }
+                                                });
+                                    }
+                                } else {
+                                    resultado.onComplete(1);
                                 }
                             }
                         })
