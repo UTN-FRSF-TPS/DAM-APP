@@ -12,7 +12,7 @@ public class ClaseDTO implements Serializable {
     private String asignatura;
     private Integer valoracionProfesor;
     private String tipo;
-    private LatLng ubicacion;
+    private transient LatLng ubicacion;
 
 
 public ClaseDTO(){

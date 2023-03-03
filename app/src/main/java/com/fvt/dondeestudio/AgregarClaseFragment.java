@@ -123,10 +123,6 @@ public class AgregarClaseFragment extends Fragment {
         String tipo = binding.tipo.getSelectedItem().toString();
         if(asignatura.length() > 0 && binding.cupoMax.getText().toString().length() > 0 && binding.tarifaHora.getText().toString().length() > 0 && fechaHora != null) {
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                LocalDateTime fechaClase = LocalDateTime.parse(fechaHora, formatter);
-                if (fechaClase.isAfter(LocalDateTime.now())) {
 
                     Integer cupo = Integer.valueOf(binding.cupoMax.getText().toString());
                     Nivel nivel = Nivel.valueOf(binding.spinnerNivel.getSelectedItem().toString());
@@ -161,10 +157,7 @@ public class AgregarClaseFragment extends Fragment {
                             }
                         }
                     });
-                } else {
-                    Toast.makeText(getContext(), "La fecha de la clase debe ser posterior a la actual.", Toast.LENGTH_LONG).show();
-                }
-            }
+
         } else {
             Toast.makeText(getContext(), "No completaste todos los campos necesarios.", Toast.LENGTH_LONG).show();
         }

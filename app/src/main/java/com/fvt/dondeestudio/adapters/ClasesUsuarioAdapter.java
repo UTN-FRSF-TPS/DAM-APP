@@ -73,6 +73,12 @@ public class ClasesUsuarioAdapter extends RecyclerView.Adapter<ClasesUsuarioAdap
                             mBinding.iconoEstado.setColorFilter(Color.RED);
                             mBinding.iconoEstado.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.reserva_rechazada));
                             break;
+                        case "cancelada":
+                            mBinding.estado.setText("Cancelada");
+                            mBinding.estado.setTextColor(Color.RED);
+                            mBinding.iconoEstado.setColorFilter(Color.RED);
+                            mBinding.iconoEstado.setImageDrawable(ContextCompat.getDrawable(this.itemView.getContext(), R.drawable.reserva_rechazada));
+                            break;
                     }
 
                 } else {

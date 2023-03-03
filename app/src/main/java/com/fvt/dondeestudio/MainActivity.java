@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.fvt.dondeestudio.databinding.ActivityMainBinding;
 import com.fvt.dondeestudio.helpers.Util;
 import com.fvt.dondeestudio.listeners.AlumnoReservasListener;
+import com.fvt.dondeestudio.listeners.ChatListener;
 import com.fvt.dondeestudio.listeners.ProfesorReservasListener;
 
 
@@ -56,11 +57,13 @@ public class MainActivity extends AppCompatActivity {
                     switch (Util.getRol(getApplicationContext())) {
                         case "Profesor":
                             navController.navigate(R.id.action_global_agregarClaseFragment);
-                            ProfesorReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), context);
+                            ChatListener.seguirChat(Util.getUserId(context), context);
+                            ProfesorReservasListener.seguirReserva(Util.getUserId(context), context);
                             break;
                         case "Alumno":
                             navController.navigate(R.id.action_global_buscarClasesFragment);
-                            AlumnoReservasListener.seguirReserva(Util.getUserId(getApplicationContext()), context);
+                            ChatListener.seguirChat(Util.getUserId(context), context);
+                            AlumnoReservasListener.seguirReserva(Util.getUserId(context), context);
                             break;
                         case "nulo":
                             navController.navigate(R.id.action_global_loginFragment2);

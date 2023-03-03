@@ -20,11 +20,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GestorReservas {
@@ -44,18 +48,23 @@ public void getReservasNuevas(String idProfesor, final Callback<ArrayList<Reserv
                         ArrayList<ReservaDTO> lista =  new ArrayList<ReservaDTO>();
                         GestorClases gC = new GestorClases();
                         final int[] numCalls = {documents.size()};
-                        for(DocumentSnapshot documento : documents){
-                            ReservaDTO rDTO = new ReservaDTO();
-                            gC.getClase(documento.get("idClase").toString(), new Callback<Clase>() {
-                                @Override
-                                public void onComplete(Clase data) {
-                                    String fechaHora = data.getHorario();
-                                    DateTimeFormatter formatter = null;
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                        formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                                        LocalDateTime fechaClase = LocalDateTime.parse(fechaHora, formatter);
-                                        System.out.println("Fecha clase" + fechaClase);
-                                        if(fechaClase.isAfter(LocalDateTime.now())) {
+                        if(task.getResult().size() > 0) {
+                            for (DocumentSnapshot documento : documents) {
+                                ReservaDTO rDTO = new ReservaDTO();
+                                gC.getClase(documento.get("idClase").toString(), new Callback<Clase>() {
+                                    @Override
+                                    public void onComplete(Clase data) {
+                                        String fechaHora = data.getHorario();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                                        Date date = null;
+                                        try {
+                                           date = formatter.parse(fechaHora);
+                                        } catch(Exception e){
+                                            System.out.println("Error de parseo");
+                                        }
+                                        Calendar calendar = Calendar.getInstance();
+                                        calendar.setTime(date);
+                                        if (calendar.getTimeInMillis() > System.currentTimeMillis()) {
                                             rDTO.setIdAlumno(documento.get("idAlumno").toString());
                                             rDTO.setIdProfesor(documento.get("idProfesor").toString());
                                             rDTO.setEstado(documento.get("estado").toString());
@@ -63,13 +72,15 @@ public void getReservasNuevas(String idProfesor, final Callback<ArrayList<Reserv
                                             rDTO.setId(documento.getId());
                                             lista.add(rDTO);
                                         }
+                                        numCalls[0]--;
+                                        if (numCalls[0] == 0) {
+                                            callback.onComplete(lista);
+                                        }
                                     }
-                                    numCalls[0]--;
-                                    if(numCalls[0] == 0){
-                                        callback.onComplete(lista);
-                                    }
-                                }
-                            });
+                                });
+                            }
+                        } else {
+                            callback.onComplete(lista);
                         }
                     }
                 }

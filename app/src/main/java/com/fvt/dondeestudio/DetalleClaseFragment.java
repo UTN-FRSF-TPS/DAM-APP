@@ -268,7 +268,14 @@ public class DetalleClaseFragment extends Fragment {
                 binding.statusIcon.setColorFilter(Color.RED);
                 binding.statusIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.reserva_rechazada));
                 break;
+            case "cancelada":
+                binding.estado.setText("Cancelada");
+                binding.estado.setTextColor(Color.RED);
+                binding.statusIcon.setColorFilter(Color.RED);
+                binding.statusIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.reserva_rechazada));
+                break;
         }
+
     }
 
     @Override

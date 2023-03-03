@@ -102,11 +102,13 @@ public class VerificacionFragment extends Fragment {
                                     ChatListener.seguirChat(idLog, getContext());
                                     if (data instanceof Alumno) {
                                         AlumnoReservasListener.seguirReserva(idLog, getContext());
+                                        ChatListener.seguirChat(Util.getUserId(getContext()), getContext());
                                         Util.guardarRol(1, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_buscarClasesFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
                                     } else {
                                         ProfesorReservasListener.seguirReserva(idLog, getContext());
+                                        ChatListener.seguirChat(Util.getUserId(getContext()), getContext());
                                         Util.guardarRol(2, getContext(), user.getUid());
                                         Navigation.findNavController(binding.getRoot()).navigate(R.id.action_verificacionFragment_to_agregarClaseFragment, null);
                                         Toast.makeText(getContext(), "Te logueaste correctamente!", Toast.LENGTH_LONG).show();
