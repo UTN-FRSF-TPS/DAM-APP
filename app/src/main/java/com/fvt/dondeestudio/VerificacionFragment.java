@@ -73,14 +73,17 @@ public class VerificacionFragment extends Fragment {
     }
 
     private void verifyNumber() {
-       smsCode = binding.codigoVerificacion.getText().toString();
-
-       if(smsCode.length() > 0) {
-           PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
-           signInWithPhoneAuthCredential(credential);
-       } else {
-           Toast.makeText(getContext(), "El código que ingresaste no es correcto. Ingresalo correctamente", Toast.LENGTH_LONG).show();
-       }
+        smsCode = binding.codigoVerificacion.getText().toString();
+        if (smsCode != null && mVerificationId != null) {
+            if (smsCode.length() > 0) {
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
+                signInWithPhoneAuthCredential(credential);
+            } else {
+                Toast.makeText(getContext(), "El código que ingresaste no es correcto. Ingresalo correctamente", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "Debes verificar que no sos un robot primero", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
